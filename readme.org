@@ -1,0 +1,22 @@
+* What's this repository?
+  This is a repository for some researcher to build some Generative models using Tensorflow 2.0.
+
+* Zen of this repository
+#+begin_example
+We don't want to need flexible architectures.
+We need strict definitions for shapes, parameters, and formulas.
+We should Implement correct codes with well-documented(tested).
+#+end_example
+
+* How to run?
+  1. clone this repository (If you want to do it, I will push this repository to PYPI)
+  2. build this repository ~docker-compose build~
+  3. run the environment ~sh run_script.sh~
+  4. connect it via VSCode or Emacs or vi or anything.
+
+* Roadmap
+    - [ ] Flow-based Model Architecture (RealNVP, Glow)
+    - [ ] i-ResNet Model Architecture (i-ResNet, i-RevNet)
+    - [ ] GANs Model Architecture (GANs)
+
+

@@ -1,0 +1,7 @@
+python-language-server[all]
+ptvsd
+yapf
+tensorflow-probability
+sentencepiece
+pandas
+tensorflow_datasets

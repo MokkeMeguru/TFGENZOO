@@ -53,8 +53,16 @@ class Flow(ABC, Layer):
             tf.debugging.assert_shapes([(x, z.shape)])
 
     def assert_log_det_jacobian(self, log_det_jacobian: tf.Tensor):
+        """assert log_det_jacobian's shape
+        TODO:
+        tf-2.0's bug
+        tf.debugging.assert_shapes([(tf.constant(1.0), (None, ))]) # => None (true)
+        tf.debugging.assert_shapes([(tf.constant([1.0, 1.0]), (None, ))]) # => None (true)
+        tf.debugging.assert_shapes([(tf.constant([[1.0], [1.0]]), (None, ))]) # => Error
+        """
         if self.with_debug:
-            tf.debugging.assert_shapes([(log_det_jacobian, [None, ])])
+            tf.debugging.assert_shapes(
+                [(log_det_jacobian, (None, ))])
 
 
 class FlowList(Flow):
@@ -94,22 +102,5 @@ class FlowList(Flow):
         for flow in reversed(self.flow_list):
             z, _inverse_log_det_jacobian = flow.inverse(z)
             inverse_log_det_jacobian += _inverse_log_det_jacobian
-        self.assert_log_det_jacobian(inverse_log_det_jacobian)
+        self.assert_log_det_jacobian(inverse_log_det_jacobian, z)
         return z, inverse_log_det_jacobian
-
-# class Test(Layer):
-#     def __init__(self, **kargs):
-#         "docstring"
-#         super(Test, self).__init__()
-
-#         print(kargs)
-#         self.with_debug = kargs['with_debug']
-
-#     def call(self, x: tf.Tensor, **kargs):
-#         log_det_jacobian = tf.broadcast_to(0.0, [x.shape[0]])
-#         if self.with_debug:
-#             tf.debugging.assert_shapes([(log_det_jacobian, [None, ])])
-#         return x, log_det_jacobian
-
-# test = Test(with_debug=True)
-# test(tf.random.normal([128, 32, 32, 1]))

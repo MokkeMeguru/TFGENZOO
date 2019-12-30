@@ -1,7 +1,9 @@
 import tensorflow as tf
 from flows import flows
+from flows import identity
 from typing import List
 Flow = flows.Flow
+Identity = identity.Identity
 
 
 class FlowBlockHalf(Flow):
@@ -40,6 +42,24 @@ class FlowBlockHalf(Flow):
             raise Exception("last dimention's size must be even")
 
     def call(self, x: tf.Tensor, **kargs):
+        """Half blockwised Flow Layer
+        Args:
+        - x: tf.Tensor
+        input data
+        Returns:
+        - z: tf.Tensor
+        output latent
+        - log_det_jacobian: tf.Tensor
+        formula:
+        x_1, x_2 = split(x)
+        z_1, log_det_jacobian_1 = flow_1(x_1)
+        z_2, log_det_jacobian_2 = flow_2(x_2)
+        z = concat(z_1, z_2)
+        log_det_jacobian = log_det_jacobian_1 + log_det_jacobian_2
+        where
+        x in [H, W, C]
+        x_1, x_2 in [H, W, C // 2]
+        """
         x_1, x_2 = tf.split(x, 2, axis=-1)
         z_1, z_1_log_det_jacobian = flows[0](x_1, **kargs)
         z_2, z_2_log_det_jacobian = flows[1](x_2, **kargs)
@@ -50,11 +70,31 @@ class FlowBlockHalf(Flow):
         return z, log_det_jacobian
 
     def inverse(self, z: tf.Tensor, **kargs):
+        """De Half blockwised Flow Layer
+        Args:
+        - z: tf.Tensor
+        input latent
+        Returns:
+        - x: tf.Tensor
+        output data
+        - ildj: tf.Tensor
+        inverse log_det_jacobian
+        formula:
+        z_1, x_2 = split(x)
+        x_1, ildj_1 = flow_1(z_1)
+        x_2, ildj_2 = flow_2(z_2)
+        x = concat(x_1, x_2)
+        ildj = ildj_1 + ildj_2
+        where
+        z in [H, W, C]
+        z_1, z_2 in [H, W, C // 2]
+        """
         z_1, z_2 = tf.split(z, 2, axis=-1)
         x_1, x_1_inverse_log_det_jacobian = flows[0].inverse(z_1, **kargs)
         x_2, x_2_inverse_log_det_jacobian = flows[1].inverse(z_2, **kargs)
         x = tf.concat([x_1, x_2], axis=-1)
-        inverse_log_det_jacobian = x_1_inverse_log_det_jacobian + x_2_inverse_log_det_jacobian
+        inverse_log_det_jacobian = (
+            x_1_inverse_log_det_jacobian + x_2_inverse_log_det_jacobian)
         self.assert_tensor(z, x)
         self.assert_log_det_jacobian(inverse_log_det_jacobian)
         return x, inverse_log_det_jacobian

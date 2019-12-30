@@ -144,6 +144,10 @@ class BatchNormalization(Flow):
         output latent
         - log_det_jacobian: tf.Tensor
         log determinant jacobian
+
+        TODO: in tensorflow probability,
+        forward step is De-Batchnormalization
+        I don't know how to calculate batch's mean and variance
         """
         z, log_det_jacobian = self.normalize(x, training)
         self.assert_tensor(x, z)
@@ -164,7 +168,7 @@ class BatchNormalization(Flow):
         return x, inverse_log_det_jacobian
 
 
-def test_batchnorm():
+def test_Batchnorm():
     batchnorms = BatchNormalization()
     x = tf.keras.Input([32, 32, 3])
     z, log_det_jacobian = batchnorms(x, training=True)
@@ -185,3 +189,8 @@ def test_batchnorm():
     # nearly zero
     print('whole shape: x: {} / z: {} ldj: {} / ildj: {}'
           .format(_x.shape, z.shape, log_det_jacobian.shape, ildj.shape))
+    assert log_det_jacobian.shape == z.shape[0:1], \
+        "log_det_jacobian's shape is invalid"
+    assert ildj.shape == _x.shape[0:1], "log_det_jacobian's shape is invalid"
+    print('diff: {}'.format(tf.reduce_mean(x - _x)))
+    print('sum: {}'.format(tf.reduce_mean(log_det_jacobian + ildj)))

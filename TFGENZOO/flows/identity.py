@@ -22,11 +22,11 @@ class Identity(Flow):
 
     def inverse(self, z: tf.Tensor, **kargs):
         inverse_log_det_jacobian = tf.broadcast_to(
-            tf.constant(0.0), tf.shape(z[0:1]))
+            tf.constant(0.0), tf.shape(z)[0:1])
         return z, inverse_log_det_jacobian
 
 
-def test_identity_layer():
+def test_Identity():
     iflow = Identity()
     x = tf.keras.Input(shape=(32, 32, 1))
     y, log_det_jacobian = iflow(x)
@@ -36,8 +36,13 @@ def test_identity_layer():
     x = tf.random.normal([128, 32, 32, 1])
     y_, ldj_ = iflow(x)
     assert y_.shape == x.shape, "in-out shapes are not same"
-    assert ldj_.shape == x.shape[0:1], "log detarminant Jacobian's shape is invalid"
+    assert ldj_.shape == x.shape[0:1],\
+        "log detarminant Jacobian's shape is invalid"
     x_, ildj_ = iflow.inverse(y_)
+    assert ldj_.shape == x.shape[0:1], \
+        "log_det_jacobian's shape is invalid"
+    assert ildj_.shape == x.shape[0:1], \
+        "inverse_log_det_jacobian's shape is invalid"
     assert x.shape == x_.shape, "inversed shape are invalid"
     assert tf.reduce_sum(
         (x_ - x)**2) < 1e-5, "this flow layer is inverative function"

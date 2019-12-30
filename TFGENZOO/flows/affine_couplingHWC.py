@@ -151,7 +151,7 @@ class AffineCouplingHWC(Flow):
         - x: tf.Tensor
         input data
         Returns:
-        - y: tf.Tensor
+        - z: tf.Tensor
         output latent
         - log_det_jacobian: tf.Tensor
         log determinant jacobian
@@ -164,7 +164,7 @@ class AffineCouplingHWC(Flow):
         y_b = x_b
         y = concat(y_a, y_b)
         where
-        (data) x <-> z (latent)
+        (data) x <-> y (latent)
         x_a, x_b in [H, W, C // 2]
         """
         x_a, x_b = tf.split(x, 2, axis=-1)
@@ -225,4 +225,8 @@ def test_AffineCouplingHWC():
     x = tf.random.normal([32, 16, 16, 2])
     y, log_det_jacobian = aff(x)
     x_, ildj = aff.inverse(y)
+    assert log_det_jacobian.shape == y.shape[0:1], \
+        "log_det_jacobian's shape is invalid"
+    assert ildj.shape == y.shape[0:1], "log_det_jacobian's shape is invalid"
     print('diff: {}'.format(tf.reduce_mean(x - x_)))
+    print('sum: {}'.format(tf.reduce_mean(log_det_jacobian + ildj)))

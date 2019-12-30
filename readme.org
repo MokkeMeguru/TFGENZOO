@@ -1,6 +1,7 @@
 * What's this repository?
   This is a repository for some researcher to build some Generative models using Tensorflow 2.0.
 
+  I NEED YOUR HELP(please let me know about formula, implementation and anything you worried)
 * Zen of this repository
 #+begin_example
 We don't want to need flexible architectures.

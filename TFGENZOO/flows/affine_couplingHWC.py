@@ -174,7 +174,7 @@ class AffineCouplingHWC(Flow):
         y_a = s * x_a + t
         y = tf.concat([y_a, y_b], axis=-1)
         log_det_jacobian = tf.reduce_sum(
-            log_s, axis=list(range(len([32, 32, 32, 1])))[1:])
+            log_s, axis=list(range(len(['B', 'H', 'W', 'C'])))[1:])
         self.assert_tensor(x, y)
         self.assert_log_det_jacobian(log_det_jacobian)
         return y, log_det_jacobian
@@ -208,7 +208,7 @@ class AffineCouplingHWC(Flow):
         x_a = (y_a - t) / s
         x = tf.concat([x_a, x_b], axis=-1)
         inverse_log_det_jacobian = tf.reduce_sum(
-            log_s, axis=list(range(len([32, 32, 32, 1])))[1:])
+            log_s, axis=list(range(len(['B', 'H', 'W', 'C'])))[1:])
         self.assert_tensor(y, x)
         self.assert_log_det_jacobian(inverse_log_det_jacobian)
         return x, inverse_log_det_jacobian

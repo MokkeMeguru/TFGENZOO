@@ -2,15 +2,15 @@ import tensorflow as tf
 
 
 def load_dataset(BATCH_SIZE=120):
-    (train_x, train_y), (test_x, test_y) = tf.keras.datasets.mnist.load_data()
+    (train_x, train_y), (test_x, test_y) = tf.keras.datasets.cifar10.load_data()
     SHUFFLE_BUFFER_SIZE = 1000
     
     @tf.function
     def _parse_function(img, label):
         feature = {}
-        img = tf.pad(img, paddings=[[2, 2], [2, 2]], mode="CONSTANT")
-        img = tf.expand_dims(img, axis=-1)
-        img = tf.reshape(img, [32, 32, 1])
+        # img = tf.pad(img, paddings=[[2, 2], [2, 2]], mode="CONSTANT")
+        # img = tf.expand_dims(img, axis=-1)
+        # img = tf.reshape(img, [32, 32, 1])
         img = tf.cast(img, dtype=tf.float32)
         img = (img / (255.0 / 2)) - 1
         feature["img"] = img

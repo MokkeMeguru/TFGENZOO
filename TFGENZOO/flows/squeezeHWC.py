@@ -41,7 +41,6 @@ class SqueezeHWC(Flow):
         self.assert_log_det_jacobian(ildj)
         return x, ildj
 
-
 class UnSqueezeHWC(Flow):
     """Squeeze Flow Layer for image [H, W, C]
     formula:
@@ -111,7 +110,6 @@ def test_SqueeseHWC():
     assert x.shape == _x.shape, "inversed shape are invalid"
     print('diff: {}'.format(tf.reduce_mean(x - _x)))
     print('sum: {}'.format(tf.reduce_mean(ldj + ildj)))
-
 
 def test_UnSqueeseHWC():
     sflow = UnSqueezeHWC()

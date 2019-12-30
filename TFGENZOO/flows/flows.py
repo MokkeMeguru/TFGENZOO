@@ -90,7 +90,7 @@ class FlowList(Flow):
         self.shape = input_shape
 
     def call(self, x: tf.Tensor, **kargs):
-        log_det_jacobian = tf.zeros([x.shape[0]])
+        log_det_jacobian = tf.broadcast_to(0.0, tf.shape(x)[0:1])
         for flow in self.flow_list:
             x,  _log_det_jacobian = flow(x, **kargs)
             log_det_jacobian += _log_det_jacobian
@@ -98,9 +98,25 @@ class FlowList(Flow):
         return x, log_det_jacobian
 
     def inverse(self, z: tf.Tensor, **kargs):
-        inverse_log_det_jacobian = tf.zeros([z.shape[0]])
+        inverse_log_det_jacobian = tf.broadcast_to(0.0, tf.shape(z)[0:1])
         for flow in reversed(self.flow_list):
             z, _inverse_log_det_jacobian = flow.inverse(z)
             inverse_log_det_jacobian += _inverse_log_det_jacobian
-        self.assert_log_det_jacobian(inverse_log_det_jacobian, z)
+        self.assert_log_det_jacobian(inverse_log_det_jacobian)
         return z, inverse_log_det_jacobian
+
+    def assert_tensor(self, x: tf.Tensor, z: tf.Tensor):
+        if self.with_debug:
+            tf.debugging.assert_shapes([(x, z.shape)])
+
+    def assert_log_det_jacobian(self, log_det_jacobian: tf.Tensor):
+        """assert log_det_jacobian's shape
+        TODO:
+        tf-2.0's bug
+        tf.debugging.assert_shapes([(tf.constant(1.0), (None, ))]) # => None (true)
+        tf.debugging.assert_shapes([(tf.constant([1.0, 1.0]), (None, ))]) # => None (true)
+        tf.debugging.assert_shapes([(tf.constant([[1.0], [1.0]]), (None, ))]) # => Error
+        """
+        if self.with_debug:
+            tf.debugging.assert_shapes(
+                [(log_det_jacobian, (None, ))])

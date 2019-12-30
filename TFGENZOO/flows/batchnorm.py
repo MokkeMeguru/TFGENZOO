@@ -28,9 +28,12 @@ class BatchNormalization(Flow):
         """
         super(BatchNormalization, self).__init__(with_debug=with_debug)
         def g_constraint(x): return tf.nn.relu(x) + 1e-6
-        self.batchnorm = batchnorm_layer or BatchNorm(
-            axis=batchnorm_axis,
-            gamma_constraint=g_constraint)
+        if batchnorm_layer is not None:
+            self.batchnorm = batchnorm_layer
+        else:
+            self.batchnorm = BatchNorm(
+                axis=batchnorm_axis,
+                gamma_constraint=g_constraint)
 
     def build(self, input_shape):
         """build this Layer
@@ -52,14 +55,11 @@ class BatchNormalization(Flow):
         if not self.batchnorm.built:
             self.batchnorm.build(self.shape)
         ndims = len(self.shape)
-        print('ndims: ', ndims)
-        print('batchnorm: ', self.batchnorm.axis)
         reduction_axes = [i for i in range(ndims)
                           if i not in self.batchnorm.axis]
         broadcast_shape = [1] * ndims
         broadcast_shape[self.batchnorm.axis[0]] = \
             self.shape[self.batchnorm.axis[0]]
-        print(broadcast_shape)
 
         def _broadcast(v: tf.Tensor):
             if (reduction_axes != list(range(ndims - 1))):
@@ -127,7 +127,7 @@ class BatchNormalization(Flow):
     def normalize(self, x: tf.Tensor, training):
         """Batch Normalization
         """
-        print('normalize:', training)
+        # print('batch-normalize:', training)
         z = self.batchnorm(x, training=training)
         log_det_jacobian = self.normalize_log_det_jacobian(x, training)
         return z, log_det_jacobian

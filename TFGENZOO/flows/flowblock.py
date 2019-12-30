@@ -36,9 +36,10 @@ class FlowBlockHalf(Flow):
         """
         super(FlowBlockHalf, self).__init__(with_debug=with_debug)
         assert len(flows) == 2, "this model can has only two Flow Layer"
+        self.flows = flows
 
     def build(self, input_shape):
-        if input_shape[-1] % 2 == 1:
+        if input_shape[-1] % 2 != 0:
             raise Exception("last dimention's size must be even")
 
     def call(self, x: tf.Tensor, **kargs):
@@ -61,8 +62,8 @@ class FlowBlockHalf(Flow):
         x_1, x_2 in [H, W, C // 2]
         """
         x_1, x_2 = tf.split(x, 2, axis=-1)
-        z_1, z_1_log_det_jacobian = flows[0](x_1, **kargs)
-        z_2, z_2_log_det_jacobian = flows[1](x_2, **kargs)
+        z_1, z_1_log_det_jacobian = self.flows[0](x_1, **kargs)
+        z_2, z_2_log_det_jacobian = self.flows[1](x_2, **kargs)
         z = tf.concat([z_1, z_2], axis=-1)
         log_det_jacobian = z_1_log_det_jacobian + z_2_log_det_jacobian
         self.assert_tensor(x, z)
@@ -90,8 +91,8 @@ class FlowBlockHalf(Flow):
         z_1, z_2 in [H, W, C // 2]
         """
         z_1, z_2 = tf.split(z, 2, axis=-1)
-        x_1, x_1_inverse_log_det_jacobian = flows[0].inverse(z_1, **kargs)
-        x_2, x_2_inverse_log_det_jacobian = flows[1].inverse(z_2, **kargs)
+        x_1, x_1_inverse_log_det_jacobian = self.flows[0].inverse(z_1, **kargs)
+        x_2, x_2_inverse_log_det_jacobian = self.flows[1].inverse(z_2, **kargs)
         x = tf.concat([x_1, x_2], axis=-1)
         inverse_log_det_jacobian = (
             x_1_inverse_log_det_jacobian + x_2_inverse_log_det_jacobian)

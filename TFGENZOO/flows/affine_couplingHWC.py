@@ -37,18 +37,18 @@ class NNHWC(Layer):
             name='s/kernel',
             shape=self.kernel_size + [self.n_hidden[-1]] + [input_shape[-1]],
             initializer=self.kernel_initializer)
-        self.s_bias = self.nn_add_weight(
-            name='s/bias',
-            shape=(self.filters,),
-            initializer=self.bias_initializer)
+        # self.s_bias = self.nn_add_weight(
+        #     name='s/bias',
+        #     shape=(self.filters,),
+        #     initializer=self.bias_initializer)
         self.t_kernel = self.nn_add_weight(
             name='t/kernel',
             shape=self.kernel_size + [self.n_hidden[-1]] + [input_shape[-1]],
             initializer=self.kernel_initializer)
-        self.t_bias = self.nn_add_weight(
-            name='t/bias',
-            shape=(self.filters,),
-            initializer=self.bias_initializer)
+        # self.t_bias = self.nn_add_weight(
+        #     name='t/bias',
+        #     shape=(self.filters,),
+        #     initializer=self.bias_initializer)
 
     def __init__(self,
                  n_hidden=[512, 512],
@@ -97,11 +97,11 @@ class NNHWC(Layer):
             y = layer(y)
         s = tf.nn.conv2d(y, self.log_s_kernel,
                              self.strides, self.padding, data_format='NHWC')
-        s = s + self.s_bias
+        # s = s + self.s_bias
         s = self.s_activation(s)
         t = tf.nn.conv2d(y, self.t_kernel, self.strides,
                          self.padding, data_format='NHWC')
-        t = t + self.t_bias
+        # t = t + self.t_bias
         t = self.t_activation(t)
         return s, t
 

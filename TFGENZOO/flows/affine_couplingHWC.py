@@ -33,12 +33,12 @@ class NNHWC(Layer):
             'this model is for Image which shape is [H, W, C]'
         self.shape = input_shape
         self.filters = input_shape[-1]
-        self.log_s_kernel = self.nn_add_weight(
-            name='log_s/kernel',
+        self.s_kernel = self.nn_add_weight(
+            name='s/kernel',
             shape=self.kernel_size + [self.n_hidden[-1]] + [input_shape[-1]],
             initializer=self.kernel_initializer)
-        self.log_s_bias = self.nn_add_weight(
-            name='log_s/bias',
+        self.s_bias = self.nn_add_weight(
+            name='s/bias',
             shape=(self.filters,),
             initializer=self.bias_initializer)
         self.t_kernel = self.nn_add_weight(
@@ -82,7 +82,7 @@ class NNHWC(Layer):
     def setup_output_layer(self):
         """setup output layer
         """
-        self.log_s_activation = tf.nn.tanh
+        self.s_activation = tf.nn.sigmoid
         self.t_activation = tf.nn.relu6
         self.kernel_size = [3, 3]
         self.rank = 2
@@ -95,22 +95,22 @@ class NNHWC(Layer):
         y = x
         for layer in self.layer_list:
             y = layer(y)
-        log_s = tf.nn.conv2d(y, self.log_s_kernel,
+        s = tf.nn.conv2d(y, self.log_s_kernel,
                              self.strides, self.padding, data_format='NHWC')
-        log_s = log_s + self.log_s_bias
-        log_s = self.log_s_activation(log_s)
+        s = s + self.s_bias
+        s = self.s_activation(s)
         t = tf.nn.conv2d(y, self.t_kernel, self.strides,
                          self.padding, data_format='NHWC')
         t = t + self.t_bias
         t = self.t_activation(t)
-        return log_s, t
+        return s, t
 
 
 def test_NNHWC():
     nn = NNHWC([64, 64])
     x = tf.keras.Input([32, 32, 1])
-    log_s, t = nn(x)
-    model = tf.keras.Model(x, [log_s, t])
+    s, t = nn(x)
+    model = tf.keras.Model(x, [s, t])
     model.summary()
     for i in model.trainable_variables:
         print(i.name)
@@ -158,8 +158,7 @@ class AffineCouplingHWC(Flow):
 
         formula:
         x_a, x_b = split(x, axis=-1)
-        (log s, t) = NN(x_b)
-        s = exp(log s)
+        (s, t) = NN(x_b)
         y_a = s o x_a + t
         y_b = x_b
         y = concat(y_a, y_b)
@@ -169,12 +168,11 @@ class AffineCouplingHWC(Flow):
         """
         x_a, x_b = tf.split(x, 2, axis=-1)
         y_b = x_b
-        log_s, t = self.NN(x_b)
-        s = tf.exp(log_s)
+        s, t = self.NN(x_b)
         y_a = s * x_a + t
         y = tf.concat([y_a, y_b], axis=-1)
         log_det_jacobian = tf.reduce_sum(
-            log_s, axis=list(range(len(['B', 'H', 'W', 'C'])))[1:])
+            tf.math.log(s), axis=list(range(len(['B', 'H', 'W', 'C'])))[1:])
         self.assert_tensor(x, y)
         self.assert_log_det_jacobian(log_det_jacobian)
         return y, log_det_jacobian
@@ -203,12 +201,11 @@ class AffineCouplingHWC(Flow):
         """
         y_a, y_b = tf.split(y, 2, axis=-1)
         x_b = y_b
-        log_s, t = self.NN(y_b)
-        s = tf.exp(log_s)
+        s, t = self.NN(y_b)
         x_a = (y_a - t) / s
         x = tf.concat([x_a, x_b], axis=-1)
-        inverse_log_det_jacobian = tf.reduce_sum(
-            log_s, axis=list(range(len(['B', 'H', 'W', 'C'])))[1:])
+        inverse_log_det_jacobian = - tf.reduce_sum(
+            tf.math.log(s), axis=list(range(len(['B', 'H', 'W', 'C'])))[1:])
         self.assert_tensor(y, x)
         self.assert_log_det_jacobian(inverse_log_det_jacobian)
         return x, inverse_log_det_jacobian

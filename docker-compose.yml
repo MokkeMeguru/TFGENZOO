@@ -5,6 +5,8 @@ services:
     build:
       context: .
       dockerfile: ./dockerfile
+    ports:
+      - 8888:8888
     volumes:
       - ./:/workspace/Github
     runtime: nvidia

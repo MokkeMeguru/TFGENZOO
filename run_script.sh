@@ -1,3 +1,3 @@
 #!/bin/sh
 
-docker-compose run --rm tensorflow  /bin/bash
+docker-compose run --rm --service-port tensorflow  /bin/bash

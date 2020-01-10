@@ -5,3 +5,4 @@ tensorflow-probability
 sentencepiece
 pandas
 tensorflow_datasets
+jupyterlab

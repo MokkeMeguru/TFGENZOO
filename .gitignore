@@ -1,2 +1,6 @@
 /memo.lisp
 *.pyc
+/TFGENZOO/examples/.ipynb_checkpoints/
+/TFGENZOO/glow_log/
+/checkpoints/
+/venv/

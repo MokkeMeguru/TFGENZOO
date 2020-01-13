@@ -1,4 +1,4 @@
-FROM tensorflow/tensorflow:2.0.0-gpu-py3
+FROM tensorflow/tensorflow:2.1.0-gpu-py3
 RUN mkdir /workspace
 RUN pip install -U pip
 COPY ./requirements.txt /tmp/

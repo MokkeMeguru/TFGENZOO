@@ -10,17 +10,17 @@ class Identity(Flow):
     log_det_jacobian = 0
     """
 
-    def __init__(self, with_debug: bool = True, **kargs):
+    def __init__(self, with_debug: bool = True, **kwargs):
         super(Identity, self).__init__(with_debug=with_debug)
 
     def build(self, input_shape):
         self.shape = input_shape
 
-    def call(self, x: tf.Tensor, **kargs):
+    def call(self, x: tf.Tensor, **kwargs):
         log_det_jacobian = tf.broadcast_to(tf.constant(0.0), tf.shape(x)[0:1])
         return x, log_det_jacobian
 
-    def inverse(self, z: tf.Tensor, **kargs):
+    def inverse(self, z: tf.Tensor, **kwargs):
         inverse_log_det_jacobian = tf.broadcast_to(
             tf.constant(0.0), tf.shape(z)[0:1])
         return z, inverse_log_det_jacobian

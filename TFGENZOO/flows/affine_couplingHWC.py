@@ -95,10 +95,11 @@ class NNHWC(Layer):
         y = x
         for layer in self.layer_list:
             y = layer(y)
-        s = tf.nn.conv2d(y, self.log_s_kernel,
+        s = tf.nn.conv2d(y, self.s_kernel,
                              self.strides, self.padding, data_format='NHWC')
         # s = s + self.s_bias
-        s = self.s_activation(s)
+        # s = self.s_activation(s)
+        s = self.s_activation(s + 2.0)
         t = tf.nn.conv2d(y, self.t_kernel, self.strides,
                          self.padding, data_format='NHWC')
         # t = t + self.t_bias

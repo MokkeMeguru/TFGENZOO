@@ -18,6 +18,7 @@ class SqueezeHWC(Flow):
         _, self.h, self.w, self.c = input_shape
         assert self.h % 2 == 0, "height must be even"
         assert self.w % 2 == 0, "width must be even"
+        super(SqueezeHWC, self).build(input_shape)
 
     def call(self, x: tf.Tensor, **kargs):
         z = tf.reshape(

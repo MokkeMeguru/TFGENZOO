@@ -2,11 +2,12 @@ import tensorflow as tf
 from flows import flows
 from flows import identity
 from typing import List
+FlowAbst = flows.FlowAbst
 Flow = flows.Flow
 Identity = identity.Identity
 
 
-class FlowBlockHalf(Flow):
+class FlowBlockHalf(FlowAbst):
     """the Half blockwised Flow Layer
     formula:
     [x_1, x_2] = split(x)
@@ -99,3 +100,10 @@ class FlowBlockHalf(Flow):
         self.assert_tensor(z, x)
         self.assert_log_det_jacobian(inverse_log_det_jacobian)
         return x, inverse_log_det_jacobian
+
+    def setStat(self, x: tf.Tensor, **kwargs):
+        x_1, x_2 = tf.split(x, 2, axis=-1)
+        if callable(flows[0].setStat):
+            flows[0].setStat(x_1)
+        if callable(flows[1].setStat):
+            flows[1].setStat(x_2)

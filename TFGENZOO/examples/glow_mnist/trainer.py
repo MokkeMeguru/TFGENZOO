@@ -108,7 +108,7 @@ class Glow_trainer:
         self.val_loss(loss)
         return loss
 
-    # @tf.function
+    @tf.function
     def train_step(self, x):
         with tf.GradientTape() as tape:
             z, log_det_jacobian = self.glow(x, training=False)

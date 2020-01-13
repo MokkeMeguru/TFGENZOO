@@ -1,19 +1,19 @@
-"""BatchNorm flow Layer with tf.keras.layers.BatchNormalization
-TODO:
-Tensorflow's official tf.keras.layers.BatchNormalization is THE INVALID LAYER
-WE SHOULD RE-IMPLEMENT BatchNormalization Layer
+"""BatchNorm flow Layer with Custom BatchNormalization
+ref.
+https://github.com/tensorflow/tensorflow/issues/18222
+https://github.com/jkyl/biggan-deep/blob/master/src/custom_layers/batch_normalization.py
+https://github.com/tensorflow/community/blob/master/rfcs/20181016-replicator.md#global-batch-normalization
+This Layer is for BatchNormalization Bijector with Big Batch (multi GPU/TPU)
 """
 import tensorflow as tf
 from flows import flows
 from tensorflow.keras import layers
 Flow = flows.Flow
-BatchNorm = layers.BatchNormalization
+Layer = layers.Layer
 
 
 class BatchNormalization(Flow):
     """the rough BatchNormalization flow layer
-    TODO: WE SHOULD NOT USE official BatchNormalization Layer...
-    this layer has many and many bugs.
     formula:
     z = f(x) =  X - mean(X)/ std(X)
     x = f^{-1}(z) = Y * std(X) + mean(X)
@@ -22,28 +22,43 @@ class BatchNormalization(Flow):
     """
 
     def __init__(self,
-                 batchnorm_layer: tf.keras.layers.Layer = None,
-                 batchnorm_axis: int = -1, with_debug: bool = True,  **kargs):
+                 center: bool = True,
+                 scale: bool = True,
+                 epsilon: float = 1e-6,
+                 name: str = 'BatchNorm',
+                 normaxis: int = -1,
+                 momentum: float = 0.99,
+                 with_debug: bool = True,
+                 **kwargs):
         """
+        args:
+        - center: bool
+        use mean statistics
+        - scale: bool
+        use stddev statistics
+        - epsilon: float
+        epsilon for zero division
+        - name: str
+        layer's name
+        - normaxis: int
+        layer's feature axis
+        if data is NHWC => C (-1)
+        - momentum: float
+        momentum of batchnormalization
+        - with_debug: bool
+        debug for Flow Layer
         """
-        super(BatchNormalization, self).__init__(with_debug=with_debug)
-        def g_constraint(x): return tf.nn.relu(x) + 1e-6
-        if batchnorm_layer is not None:
-            self.batchnorm = batchnorm_layer
-        else:
-            self.batchnorm = BatchNorm(
-                axis=batchnorm_axis,
-                gamma_constraint=g_constraint)
+        super(BatchNormalization, self).__init__(
+            name=name,
+            **kwargs
+        )
+        self.axis = normaxis
+        self.center = center
+        self.scale = scale
+        self.epsilon = epsilon
+        self.momentum = momentum
 
-    def build(self, input_shape):
-        """build this Layer
-        Note:
-        input_shape is [H, W, C] = [32, 32, 3] (ex. Image such as MNIST)
-        """
-        self.shape = input_shape
-        self._broadcast_fn = self._get_broadcast_fn()
-
-    def _get_broadcast_fn(self):
+    def _get_broadcast_fn(self, input_shape):
         """broadcasting for de-normalization
         Note:
         If data's shape is [None, 32, 32, 3],
@@ -52,14 +67,12 @@ class BatchNormalization(Flow):
         But BatchNormalization's mean or variance 's shape is [3,]
         Then, we need broadcast [3,] -> [1,1, 1, 3]
         """
-        if not self.batchnorm.built:
-            self.batchnorm.build(self.shape)
-        ndims = len(self.shape)
+        ndims = len(input_shape)
         reduction_axes = [i for i in range(ndims)
-                          if i not in self.batchnorm.axis]
+                          if i not in [self.axis]]
         broadcast_shape = [1] * ndims
-        broadcast_shape[self.batchnorm.axis[0]] = \
-            self.shape[self.batchnorm.axis[0]]
+        broadcast_shape[self.axis] = \
+            input_shape[self.axis]
 
         def _broadcast(v: tf.Tensor):
             if (reduction_axes != list(range(ndims - 1))):
@@ -67,74 +80,56 @@ class BatchNormalization(Flow):
             return v
         return _broadcast
 
-    def de_normalize_inverse_log_det_jacobian(self, z: tf.Tensor):
-        log_var = tf.math.log(
-                     self.batchnorm.moving_variance + self.batchnorm.epsilon)
-        log_gamma = tf.math.log(self.batchnorm.gamma)
-        log_det_jacobian = tf.reduce_sum(log_gamma - 0.5 * log_var)
-        log_det_jacobian = tf.broadcast_to(log_det_jacobian, tf.shape(z)[0:1])
-        return - log_det_jacobian
-
-    def de_normalize(self, z: tf.Tensor, training):
-        """Batch de-Normalize
-        formula:
-        x = (z / scale) + mean
-        where
-        scale and mean are stored value calculated at forward process
+    def build(self, input_shape: list):
         """
-        # mean, variance, beta, gamma are the shape [z.shape[-1],]
-        # epsilon is the shape ()
-        mean = self._broadcast_fn(self.batchnorm.moving_mean)
-        variance = self._broadcast_fn(self.batchnorm.moving_variance)
-        beta = self._broadcast_fn(self.batchnorm.beta) \
-            if self.batchnorm.center else None
-        gamma = self._broadcast_fn(self.batchnorm.gamma)\
-            if self.batchnorm.scale else None
-        epsilon = self.batchnorm.epsilon
-
-        rescale = tf.sqrt(variance + epsilon)
-        if self.batchnorm.scale is not None:
-            rescale = rescale / gamma
-        x = z * rescale + \
-            (mean - beta * rescale if beta is not None else mean)
-        inverse_log_det_jacobian = \
-            self.de_normalize_inverse_log_det_jacobian(z)
-        return x, inverse_log_det_jacobian
-
-    def normalize_log_det_jacobian(self, x: tf.Tensor, training):
-        """Batch Normalization's log determinant jacobian
-        formula:
-        log (PI(sigma^2_i + epsilon))^{-1/2}
-        = -0.5 * Sigma {log(sigma^2_i + epsilon)}
-        reference: https://arxiv.org/pdf/1605.08803.pdf
+        args:
+        - input_shape: list
+        example. [None, H, W, C] = [None, 32, 32, 3] (cifer 10)
         """
-        # log_var is the shape [x.shape[-1],]
-        # log_gamma is the shape [x.shape[-1],]
-        # log_det_jacobian is the shape [] -> [batch_size, ] (broadcasting)
-        event_ndims = self.batchnorm.axis
-        reduction_axes = [i for i in range(len(self.shape))
-                          if i not in event_ndims]
-        log_var = tf.math.log(
-            tf.where(tf.logical_not(training),
-                     self.batchnorm.moving_variance,
-                     tf.nn.moments(x=x, axes=reduction_axes)[1])
-            + self.batchnorm.epsilon)
-        log_gamma = tf.math.log(self.batchnorm.gamma)
-        log_det_jacobian = tf.reduce_sum(log_gamma - 0.5 * log_var)
-        log_det_jacobian = tf.broadcast_to(log_det_jacobian, tf.shape(x)[0:1])
-        return log_det_jacobian
+        self.feature_dim = input_shape[self.axis]
+        self.axes = list(range(len(input_shape)))
+        self.axes.pop(self.axis)
+        if self.scale:
+            self.gamma = self.add_weight(
+                shape=(self.feature_dim,),
+                name='gamma',
+                initializer='ones',
+                constraint='non_neg'
+            )
+        if self.center:
+            self.beta = self.add_weight(
+                shape=(self.feature_dim,),
+                name='beta',
+                initializer='zeros',
+            )
+        self.moving_mean = self.add_weight(
+            name='moving_mean',
+            shape=(self.feature_dim,),
+            initializer=tf.initializers.zeros,
+            synchronization=tf.VariableSynchronization.ON_READ,
+            trainable=False,
+            aggregation=tf.VariableAggregation.MEAN,
+            experimental_autocast=False)
+        self.moving_variance = self.add_weight(
+            name='moving_variance',
+            shape=(self.feature_dim,),
+            initializer=tf.initializers.ones,
+            synchronization=tf.VariableSynchronization.ON_READ,
+            trainable=False,
+            aggregation=tf.VariableAggregation.MEAN,
+            experimental_autocast=False)
 
-    def normalize(self, x: tf.Tensor, training):
-        """Batch Normalization
+        self._broadcast_fn = self._get_broadcast_fn(input_shape)
+        super(BatchNormalization, self).build(input_shape)
+        self.built = True
+
+    def _assign_moving_average(self, variable: tf.Tensor, value: tf.Tensor):
+        return variable.assign(variable * self.momentum
+                               + value * (1.0 - self.momentum))
+
+    def call(self, x: tf.Tensor, training=True, **kwargs):
         """
-        # print('batch-normalize:', training)
-        z = self.batchnorm(x, training=training)
-        log_det_jacobian = self.normalize_log_det_jacobian(x, training)
-        return z, log_det_jacobian
-
-    def call(self, x: tf.Tensor, training: bool = True, **kargs):
-        """BatchNormalization
-        Args:
+        args:
         - x: tf.Tensor
         input data
         - training: bool
@@ -144,26 +139,64 @@ class BatchNormalization(Flow):
         output latent
         - log_det_jacobian: tf.Tensor
         log determinant jacobian
-
-        TODO: in tensorflow probability,
-        forward step is De-Batchnormalization
-        I don't know how to calculate batch's mean and variance
+        note:
+        z = (gamma (x - mu) / sigma) + beta
         """
-        z, log_det_jacobian = self.normalize(x, training)
+        if training:
+            ctx = tf.distribute.get_replica_context()
+            n = ctx.num_replicas_in_sync
+            mean, mean_sq = ctx.all_reduce(
+                tf.distribute.ReduceOp.SUM,
+                [tf.reduce_mean(x, axis=self.axes) / n,
+                 tf.reduce_mean(tf.square(x),
+                                axis=self.axes) / n]
+            )
+            variance = mean_sq - mean ** 2
+            mean_update = self._assign_moving_average(self.moving_mean, mean)
+            variance_update = self._assign_moving_average(
+                self.moving_variance, variance)
+            self.add_update(mean_update)
+            self.add_update(variance_update)
+        else:
+            mean = self.moving_mean
+            variance = self.moving_variance
+        z = tf.nn.batch_normalization(x, mean=mean,
+                                      variance=variance,
+                                      offset=self.beta,
+                                      scale=self.gamma + 1e-6,
+                                      variance_epsilon=self.epsilon)
+        log_variance = tf.reduce_sum(tf.math.log(variance + self.epsilon))
+        log_gamma = tf.reduce_sum(tf.math.log(self.gamma + 1e-6))
+        log_det_jacobian = log_gamma - 0.5 * log_variance
+        log_det_jacobian = tf.broadcast_to(log_det_jacobian, tf.shape(x)[0:1])
         self.assert_tensor(x, z)
         self.assert_log_det_jacobian(log_det_jacobian)
         return z, log_det_jacobian
 
     def inverse(self, z: tf.Tensor, training: bool = False, **kargs):
         """De-BatchNormalization
-        Args:
+        args:
         - z: tf.Tensor
         input latent
         - training: bool
         switch of training
+        note:
+        x = sigma (z - beta) / gamma  + mu
         """
-        x, inverse_log_det_jacobian = self.de_normalize(z, training)
-        self.assert_tensor(x, z)
+        mean = self._broadcast_fn(self.moving_mean)
+        variance = self._broadcast_fn(self.moving_variance)
+        beta = self._broadcast_fn(self.beta)
+        gamma = self._broadcast_fn(self.gamma)
+        sigma = tf.sqrt(variance + self.epsilon)
+        x = (z - beta) * sigma / (gamma + 1e-6) + mean
+        log_variance = tf.reduce_sum(tf.math.log(
+            self.moving_variance + self.epsilon))
+        log_gamma = tf.reduce_sum(tf.math.log(self.gamma + 1e-6))
+        log_det_jacobian = log_gamma - 0.5 * log_variance
+        inverse_log_det_jacobian = - log_det_jacobian
+        inverse_log_det_jacobian = tf.broadcast_to(
+            inverse_log_det_jacobian, tf.shape(z)[0:1])
+        self.assert_tensor(z, x)
         self.assert_log_det_jacobian(inverse_log_det_jacobian)
         return x, inverse_log_det_jacobian
 

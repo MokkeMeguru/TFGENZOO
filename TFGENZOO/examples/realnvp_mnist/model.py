@@ -13,10 +13,21 @@ from flows.metrics import Process
 from flows.utils import RevPermute
 
 
-def single_scale_realnvp(x: tf.keras.Input, K: int,
+def single_scale_realnvp(x: tf.keras.Input, K: int = 32,
                          n_hidden: List[int] = [64, 64],
                          with_debug: bool = False,
                          preprocess: bool = True):
+    """single scale realnvp
+    - x: tf.keras.Input
+    has shape [H, W, C]
+    - n_hidden: List[int]
+    affine_coupling's hidden wize
+    - with_debug: bool
+    assertion flag
+    - preprocess: bool
+    image preprocess [0, 255] -> [-0.5, 0.5]
+    DEFAULT TRUE
+    """
     def _realnvp_step(n_hidden: List[int]):
         step = []
         step.append(BatchNormalization(with_debug=with_debug))
@@ -26,7 +37,7 @@ def single_scale_realnvp(x: tf.keras.Input, K: int,
     process = Process(n_bins=256.0, with_debug=with_debug)
     squeeze = SqueezeHWC(with_debug=with_debug)
     steps = []
-    for i in range (K):
+    for i in range(K):
         steps += _realnvp_step(n_hidden)
     unsqueeze = UnSqueezeHWC(with_debug=with_debug)
     if preprocess:
@@ -90,10 +101,11 @@ def test_single_scale_realnvp():
     nobj = nll - log_det
     bits_x = nobj / (np.log(2.) * np.prod(x.shape[1:]))
     print('bits_x: {}'.format(tf.reduce_mean(bits_x)))
-    _, flow = single_scale_realnvp(tf.keras.Input([32, 32, 1]), K=12, preprocess=False)
-    x = tf.random.uniform ([64, 32, 32, 1])
-    z, ldj= flow (x, training=False)
-    _x, ildj = flow.inverse (z)
+    _, flow = single_scale_realnvp(
+        tf.keras.Input([32, 32, 1]), K=12, preprocess=False)
+    x = tf.random.uniform([64, 32, 32, 1])
+    z, ldj = flow(x, training=False)
+    _x, ildj = flow.inverse(z)
     print('inference diff without preprocess\n\tdiff                                 :{}\n\tlog_det_jacobian:{}'.format(
         tf.reduce_mean((x - _x) ** 2), tf.reduce_mean(ldj + ildj)))
     # => <tf.Tensor: shape=(), dtype=float32, numpy=10.463169><tf.Tensor: shape=(), dtype=float32, numpy=10.463169>

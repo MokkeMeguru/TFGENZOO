@@ -24,7 +24,7 @@ class Process(Flow):
     def call(self, x: tf.Tensor, **kwargs):
 
         def preprocess(x):
-            x = tf.cast(x, 'float32')
+            x = tf.cast(x, tf.float32)
             x = x / self.n_bins - 0.5
             x += tf.random.uniform(tf.shape(x), 0, 1.0 / self.n_bins)
             return x
@@ -48,10 +48,10 @@ class Process(Flow):
             note:
             ref. https://github.com/openai/glow/blob/master/model.py
             """
-        return tf.cast(tf.clip_by_value(
-            tf.floor((z + 0.5) * self.n_bins) * (256. / self.n_bins), 0, 255), 'uint8')
+            return tf.cast(tf.clip_by_value(
+                tf.floor((z + 0.5) * self.n_bins) * (256. / self.n_bins), 0, 255), 'uint8')
 
-        x = self.postprocess(z)
+        x = postprocess(z)
         return x, tf.broadcast_to(0.0, tf.shape(z)[0:1])
 
 

@@ -88,8 +88,6 @@ def read_mnist_dataset(show_example: bool = True):
     filenames = [os.path.join('mnists', 'train.tfrecord')]
     raw_dataset = tf.data.TFRecordDataset(filenames)
     parsed_dataset = raw_dataset.map(_parse_function)
-    print(parsed_dataset)
-    print(raw_dataset)
     if show_example:
         for img in parsed_dataset.take(1):
             plt.imshow(tf.squeeze(img['img'], axis=-1), cmap='gray_r')

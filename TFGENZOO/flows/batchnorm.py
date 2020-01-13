@@ -80,15 +80,13 @@ class BatchNormalization(Flow):
             return v
         return _broadcast
 
-    def build(self, input_shape: list):
+    def build(self, input_shape):
         """
         args:
         - input_shape: list
         example. [None, H, W, C] = [None, 32, 32, 3] (cifer 10)
         """
         self.feature_dim = input_shape[self.axis]
-        self.axes = list(range(len(input_shape)))
-        self.axes.pop(self.axis)
         if self.scale:
             self.gamma = self.add_weight(
                 shape=(self.feature_dim,),
@@ -143,13 +141,16 @@ class BatchNormalization(Flow):
         z = (gamma (x - mu) / sigma) + beta
         """
         if training:
+            # axes = list(range(len(self.input_shape)))
+            # axes.pop(self.axis)
+        
             ctx = tf.distribute.get_replica_context()
             n = ctx.num_replicas_in_sync
             mean, mean_sq = ctx.all_reduce(
                 tf.distribute.ReduceOp.SUM,
-                [tf.reduce_mean(x, axis=self.axes) / n,
+                [tf.reduce_mean(x, axis=[0, 1, 2]) / n,
                  tf.reduce_mean(tf.square(x),
-                                axis=self.axes) / n]
+                                axis=[0, 1, 2]) / n]
             )
             variance = mean_sq - mean ** 2
             mean_update = self._assign_moving_average(self.moving_mean, mean)

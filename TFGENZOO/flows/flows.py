@@ -164,7 +164,7 @@ class FlowList(FlowAbst):
 
     def setStat(self, x: tf.Tensor, **kwargs):
         for flow in self.flow_list:
-            if callable(flow.setStat):
+            if callable(getattr(flow, 'setStat', None)):
                 flow.setStat(x)
             x, _log_det_jacobian = flow(x, **kwargs)
 

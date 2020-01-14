@@ -7,6 +7,10 @@ import numpy as np
 
 Flow = flows.Flow
 
+def regular_matrix_init(shape, dtype=tf.float32):
+    c = shape[0]
+    w_init = np.linalg.qr(np.random.randn(c, c))[0]
+    return w_init
 
 class Inv1x1Conv(Flow):
     """Invertible 1x1 Convolution layer
@@ -18,12 +22,6 @@ class Inv1x1Conv(Flow):
     x_{i, j}, y_{i, j} in [C, C]
     W in [C, C]
     """
-    @staticmethod
-    def regular_matrix_init(shape, dtype=tf.float32):
-        c = shape[0]
-        w_init = np.linalg.qr(np.random.randn(c, c))[0]
-        return w_init
-
     def build(self, input_shape, **kargs):
         h, w, c = input_shape[1:]
         self.h = h
@@ -32,7 +30,7 @@ class Inv1x1Conv(Flow):
         self.W = self.add_weight(
             name='W',
             shape=(c, c),
-            initializer=self.regular_matrix_init
+            initializer=regular_matrix_init
         )
 
     def __init__(self, with_debug: bool = True, **kargs):

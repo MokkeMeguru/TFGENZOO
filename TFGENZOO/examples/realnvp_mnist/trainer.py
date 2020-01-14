@@ -2,9 +2,9 @@
 Architecture:
 ref. https://github.com/tensorflow/models/blob/master/official/transformer/v2/transformer_main.py
 """
-from examples.realnvp_mnist import model
-from examples.realnvp_mnist import args
-from examples.realnvp_mnist import dataset
+from TFGENZOO.TFGENZOO.examples.realnvp_mnist import model
+from TFGENZOO.TFGENZOO.examples.realnvp_mnist import args
+from TFGENZOO.TFGENZOO.examples.realnvp_mnist import dataset
 import matplotlib.pyplot as plt
 import tensorflow_probability as tfp
 import tensorflow as tf

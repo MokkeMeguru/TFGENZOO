@@ -18,8 +18,8 @@ class Inv1x1Conv(Flow):
     x_{i, j}, y_{i, j} in [C, C]
     W in [C, C]
     """
-    @classmethod
-    def regular_matrix_init(self, shape, dtype=tf.float32):
+    @staticmethod
+    def regular_matrix_init(shape, dtype=tf.float32):
         c = shape[0]
         w_init = np.linalg.qr(np.random.randn(c, c))[0]
         return w_init

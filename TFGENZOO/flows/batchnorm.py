@@ -79,13 +79,17 @@ class BatchNormalization(Flow):
                 return tf.reshape(v, broadcast_shape)
             return v
         return _broadcast
-
     def build(self, input_shape):
         """
         args:
         - input_shape: list
         example. [None, H, W, C] = [None, 32, 32, 3] (cifer 10)
         """
+        super(BatchNormalization, self).build(input_shape)
+        self.built = True
+        axes = list(range(len(input_shape)))
+        axes.pop(self.axis)
+        self.axes = axes # ERROR
         self.feature_dim = input_shape[self.axis]
         if self.scale:
             self.gamma = self.add_weight(
@@ -118,8 +122,6 @@ class BatchNormalization(Flow):
             experimental_autocast=False)
 
         self._broadcast_fn = self._get_broadcast_fn(input_shape)
-        super(BatchNormalization, self).build(input_shape)
-        self.built = True
 
     def _assign_moving_average(self, variable: tf.Tensor, value: tf.Tensor):
         return variable.assign(variable * self.momentum
@@ -148,9 +150,9 @@ class BatchNormalization(Flow):
             n = ctx.num_replicas_in_sync
             mean, mean_sq = ctx.all_reduce(
                 tf.distribute.ReduceOp.SUM,
-                [tf.reduce_mean(x, axis=[0, 1, 2]) / n,
+                [tf.reduce_mean(x, axis=self.axes) / n,
                  tf.reduce_mean(tf.square(x),
-                                axis=[0, 1, 2]) / n]
+                                axis=self.axes) / n]
             )
             variance = mean_sq - mean ** 2
             mean_update = self._assign_moving_average(self.moving_mean, mean)

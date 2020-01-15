@@ -7,8 +7,9 @@ Flow = flows.Flow
 Identity = identity.Identity
 
 
-class FlowBlockHalf(FlowAbst):
+class FlowBlockHalf(Flow):
     """the Half blockwised Flow Layer
+    TODO: Flow or FlowAbst
     formula:
     [x_1, x_2] = split(x)
     z = [f(x_1), f(x_2)]

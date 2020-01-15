@@ -11,12 +11,13 @@ from flows.squeezeHWC import SqueezeHWC, UnSqueezeHWC
 from flows.batchnorm import BatchNormalization
 from flows.affine_couplingHWC import AffineCouplingHWC
 from flows.inv1x1conv import Inv1x1Conv
+from flows.metrics import Preprocess
 
 
 def gen_flowStep(n_hidden: List[int] = [64, 64], with_debug: bool = False):
     flow_step = FlowList(flow_list=[
-        # BatchNormalization(with_debug=with_debug),
-        # Inv1x1Conv(with_debug=with_debug),
+        BatchNormalization(with_debug=with_debug),
+        Inv1x1Conv(with_debug=with_debug),
         AffineCouplingHWC(n_hidden, with_debug=with_debug),
     ], with_debug=with_debug)
     return flow_step
@@ -34,7 +35,9 @@ def gen_MultiScaleFlow(
         L=2,
         K=16,
         n_hidden=[64, 64],
-        with_debug: bool = False):
+        with_debug: bool = False,
+        preprocess: bool = False
+):
     """Multi-Scale-Architecture in RealNVP
     ref:
     https://github.com/MokkeMeguru/glow-realnvp-tutorial/blob/master/examples/img/multi-scale-arch.png
@@ -57,7 +60,11 @@ def gen_MultiScaleFlow(
             sHWC = SqueezeHWC(with_debug=with_debug)
             usHWC = UnSqueezeHWC(with_debug=with_debug)
             return FlowList([sHWC, flow_steps, block, usHWC])
-    return _gen_MSF(L - 1, K, n_hidden)
+    if preprocess:
+        preprocess = Preprocess(n_bins=256.0, with_debug=with_debug)
+        return FlowList([preprocess, _gen_MSF(L - 1, K, n_hidden)])
+    else:
+        return _gen_MSF(L - 1, K, n_hidden)
 
 
 class Glow(tf.keras.Model):
@@ -67,8 +74,13 @@ class Glow(tf.keras.Model):
             L=args['L'],
             K=args['K'],
             n_hidden=args['n_hidden'],
-            with_debug=False
+            with_debug=False,
+            preprocess=True
         )
+    def setStat(self, x, **kargs):
+        if callable(self.Glow.setStat):
+            tf.print("called set Stat")
+            self.Glow.setStat(x)
 
     def call(self, x, **kargs):
         z, log_det_jacobian = self.Glow(x, **kargs)

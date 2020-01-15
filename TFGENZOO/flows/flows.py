@@ -122,8 +122,9 @@ class Flow(ABC, Layer):
                 [(log_det_jacobian, (None, ))])
 
 
-class FlowList(FlowAbst):
+class FlowList(Flow):
     """Flow Layer's list
+    TODO: Flow or FlowAbst
     formula:
     z  = f_n o ...  o f_2 o f_1(x)
     where (data) x -> z (latent space)

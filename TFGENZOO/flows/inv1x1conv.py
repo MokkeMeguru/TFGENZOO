@@ -53,8 +53,7 @@ class Inv1x1Conv(Flow):
         """
         _W = tf.reshape(self.W, [1, 1, self.c, self.c])
         z = tf.nn.conv2d(x, _W, [1, 1, 1, 1], 'SAME')
-        log_det_jacobian = self.h * self.w * \
-            tf.math.log(abs(tf.linalg.det(self.W)))
+        log_det_jacobian = self.h * self.w * tf.math.log(abs(tf.linalg.det(self.W)))
         log_det_jacobian = tf.broadcast_to(log_det_jacobian, tf.shape(x)[0:1])
         self.assert_tensor(x, z)
         self.assert_log_det_jacobian(log_det_jacobian)
@@ -93,8 +92,7 @@ def test_Inv1x1Conv():
     x = tf.random.normal([12, 16, 16, 2])
     z, log_det_jacobian = conv1x1(x)
     _x, ildj = conv1x1.inverse(z)
-    assert log_det_jacobian.shape == z.shape[0:1], \
-        "log_det_jacobian's shape is invalid"
+    assert log_det_jacobian.shape == z.shape[0:1], "log_det_jacobian's shape is invalid"
     assert ildj.shape == _x.shape[0:1], "log_det_jacobian's shape is invalid"
     print('diff: {}'.format(tf.reduce_mean(x - _x)))
     print('sum: {}'.format(tf.reduce_mean(log_det_jacobian + ildj)))

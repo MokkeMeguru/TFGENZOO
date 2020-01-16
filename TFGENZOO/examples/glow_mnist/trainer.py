@@ -5,9 +5,9 @@ ref:
 https://colab.research.google.com/gist/MokkeMeguru/cec2fd9acfdca6ba7173b0e0cf2a86f7/torch-log_prob.ipynb
 https://colab.research.google.com/gist/MokkeMeguru/1de367931dc690bcfdf7bc9e76fe9a95/tensorflow-log_prob.ipynb
 """
-from examples.glow_mnist import model
-from examples.utils import load_mnist, load_cifar10
-from examples.glow_mnist import args
+from TFGENZOO.TFGENZOO.examples.glow_mnist import model
+from TFGENZOO.TFGENZOO.examples.utils import load_mnist, load_cifar10
+from TFGENZOO.TFGENZOO.examples.glow_mnist import args
 import tensorflow_probability as tfp
 from tensorflow.keras import Model
 from functools import reduce

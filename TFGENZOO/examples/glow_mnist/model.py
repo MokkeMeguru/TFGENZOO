@@ -11,7 +11,7 @@ from flows.squeezeHWC import SqueezeHWC, UnSqueezeHWC
 from flows.batchnorm import BatchNormalization
 from flows.affine_couplingHWC import AffineCouplingHWC
 from flows.inv1x1conv import Inv1x1Conv
-from flows.metrics import Preprocess
+from flows.metrics import Process
 
 
 def gen_flowStep(n_hidden: List[int] = [64, 64], with_debug: bool = False):

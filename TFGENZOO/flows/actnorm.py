@@ -88,6 +88,9 @@ class Actnorm(Flow):
         log_scale = tf.broadcast_to(self.log_scale, tf.shape(x))
         z = (x + bias) * tf.exp(log_scale)
         log_det_jacobian = self.reduce_pixel * tf.reduce_sum(self.log_scale)
+        log_det_jacobian = tf.broadcast_to(log_det_jacobian, tf.shape(x)[0:1])
+        self.assert_shape(x, z)
+        self.assert_log_det_jacobian(inverse_log_det_jacobian)
         return z, log_det_jacobian
 
     def inverse(self, z: tf.Tensor, **kwargs):
@@ -100,11 +103,14 @@ class Actnorm(Flow):
         log_scale = tf.broadcast_to(self.log_scale, tf.shape(z))
         x = (z * tf.exp(- log_scale)) - bias
         inverse_log_det_jacobian = - (self.reduce_pixel * tf.reduce_sum(self.log_scale))
+        inverse_log_det_jacobian = tf.broadcast_to(inverse_log_det_jacobian, tf.shape(x)[0:1])
+        self.assert_shape(x, z)
+        self.assert_log_det_jacobian(inverse_log_det_jacobian)
         return x, inverse_log_det_jacobian
 
 
 def test_actnorm():
-    actnorm = Actnorm(-1)
+    actnorm = Actnorm(-1, with_debug=True)
     x = tf.keras.Input([16, 16, 4])
     model = tf.keras.Model(x, actnorm(x))
     x = tf.random.normal([100, 16, 16, 4]) + 100

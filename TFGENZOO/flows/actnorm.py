@@ -99,8 +99,7 @@ class Actnorm(Flow):
         bias = tf.broadcast_to(self.bias, tf.shape(z))
         log_scale = tf.broadcast_to(self.log_scale, tf.shape(z))
         x = (z * tf.exp(- log_scale)) - bias
-        inverse_log_det_jacobian = - \
-            (self.reduce_pixel * tf.reduce_sum(self.log_scale))
+        inverse_log_det_jacobian = - (self.reduce_pixel * tf.reduce_sum(self.log_scale))
         return x, inverse_log_det_jacobian
 
 

@@ -69,8 +69,8 @@ class Glow_trainer:
     def __init__(self, args=args.args, training=True):
         self.args = args
         self.glow = Glow(self.args)
-        self.glow.build(tuple([None] + self.args['input_shape']))
-        self.glow.summary()
+        # self.glow.build(tuple([None] + self.args['input_shape']))
+        # self.glow.summary()
         self.pixels = reduce(lambda x, y: x * y, args['input_shape'])
         self.target_distribution = tfd.MultivariateNormalDiag(
             loc=tf.zeros([self.pixels], dtype=tf.float32),
@@ -96,7 +96,7 @@ class Glow_trainer:
             'checkpoint_path', Path('../checkpoints/glow'))
         for sample in self.train_dataset.take(1):
             print('init loss (log_prob bits/dims) {}'.format(
-                bits_per_dims(-(tf.reduce_mean(self.val_step(sample['img']))), self.pixels)))
+                tf.reduce_mean(self.val_step(sample['img']))))
         self.setup_checkpoint(checkpoint_path)
         if training:
             self.writer = tf.summary.create_file_writer(
@@ -112,7 +112,7 @@ class Glow_trainer:
             print('[Flow] Latest checkpoint restored!!')
             for sample in self.train_dataset.take(1):
                 print('restored loss (log_prob bits/dims) {}'.format(
-                    bits_per_dims(-(tf.reduce_mean(self.val_step(sample['img']))), self.pixels)))
+                    tf.reduce_mean(self.val_step(sample['img']))))
         self.ckpt = ckpt
         self.ckpt_manager = ckpt_manager
 
@@ -140,17 +140,21 @@ class Glow_trainer:
         self.log_prob_loss(lp)
         self.log_det_jacobian_loss(log_det_jacobian)
         self.loss(loss)
-
+    
     def train(self):
+        first = False
         for epoch in range(self.args['epochs']):
             for x in tqdm(self.train_dataset):
+                if not first:
+                  first = True
+                  self.glow.setStat(x['img'])
                 self.train_step(x['img'])
             for x in tqdm(self.test_dataset):
                 self.val_step(x['img'])
             ckpt_save_path = self.ckpt_manager.save()
             print('epoch {}: train_loss={}, val_loss={}, bits per dims={}, saved at {}'.format(
                 epoch, self.loss.result().numpy(), self.val_loss.result().numpy(),
-                bits_per_dims(self.val_loss.result().numpy(), self.pixels), ckpt_save_path))
+                self.val_loss.result().numpy(), ckpt_save_path))
             print('log_prob {} + ldj {}'.format(self.val_log_prob_loss.result(), self.val_log_det_jacobian_loss.result()))
             tf.summary.scalar('loss[train]', self.loss.result(), step=epoch)
             tf.summary.scalar('log_prob[train]', self.log_prob_loss.result(), step=epoch)

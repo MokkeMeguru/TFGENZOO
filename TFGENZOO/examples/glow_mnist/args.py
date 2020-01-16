@@ -4,5 +4,5 @@ args = {
     'K': 6,
     'n_hidden': [64, 64],
     'batch_size': 512,
-    'epochs': 1,
+    'epochs': 1000,
 }

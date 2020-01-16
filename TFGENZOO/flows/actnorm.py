@@ -64,7 +64,7 @@ class Actnorm(Flow):
         scale = 1/ stdvar(x)
         """
         tf.print('Set stat is called')
-        mean = - tf.reduce_mean(x, axis=self.reduce_axis, keepdims=True)
+        mean = tf.reduce_mean(x, axis=self.reduce_axis, keepdims=True)
         var = tf.reduce_mean((x - mean) ** 2,
                              axis=self.reduce_axis, keepdims=True)
         stdvar = tf.math.sqrt(var) + 1e-6

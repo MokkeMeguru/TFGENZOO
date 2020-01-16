@@ -1,5 +1,5 @@
 args = {
-    'input_shape': [32, 32, 3],
+    'input_shape': [32, 32, 1],
     'L': 3,
     'K': 16,
     'n_hidden': [64, 64],

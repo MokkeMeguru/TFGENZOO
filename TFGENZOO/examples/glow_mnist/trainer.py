@@ -41,9 +41,28 @@ class CustomSchedule(tf.keras.optimizers.schedules.LearningRateSchedule):
         arg2 = step * (self.warmup_steps**-1.5)
         return tf.math.rsqrt(self.d_model) * tf.math.minimum(arg1, arg2)
 
+def bits_x(log_likelihood: tf.Tensor, log_det_jacobian: tf.Tensor, pixels: int):
+    """bits/dims
+    args:
+    - log_likelihood: tf.Tensor
+    shape is [batch_size,]
+    - log_det_jacobian: tf.Tensors
+    shape is [batch_size,]
+    - pixels: int
+    pixels
+    ex. HWC image => H * W * C
+    returns:
+    - bits_x: tf.Tensor
+    shape is [batch_size,]
+    formula:
+    - (log_likelihood + log_det_jacobian) / (log 2 * h * w * c)
+    """
+    nobj = - 1.0 * (log_likelihood + log_det_jacobian)
+    _bits_x = nobj / (np.log(2.) * pixels)
+    return _bits_x
 
-def bits_per_dims(log_prob, pixels):
-    return ((log_prob / pixels) - np.log(128.)) / np.log(2.)
+# def bits_per_dims(log_prob, pixels):
+#     return ((log_prob / pixels) - np.log(128.)) / np.log(2.)
 
 
 class Glow_trainer:
@@ -102,7 +121,7 @@ class Glow_trainer:
         z, log_det_jacobian = self.glow(x, training=False)
         z = tf.reshape(z, [-1, self.pixels])
         lp = self.target_distribution.log_prob(z)
-        loss = - (lp + log_det_jacobian)
+        loss = bits_x(lp, log_det_jacobian, self.pixels)
         self.val_log_prob_loss(lp)
         self.val_log_det_jacobian_loss(log_det_jacobian)
         self.val_loss(loss)
@@ -114,7 +133,7 @@ class Glow_trainer:
             z, log_det_jacobian = self.glow(x, training=False)
             z = tf.reshape(z, [-1, self.pixels])
             lp = self.target_distribution.log_prob(z)
-            loss = - (lp + log_det_jacobian)
+            loss = bits_x(lp, log_det_jacobian, self.pixels)
         grads = tape.gradient(loss, self.glow.trainable_variables)
         self.optimizer.apply_gradients(
             zip(grads, self.glow.trainable_variables))

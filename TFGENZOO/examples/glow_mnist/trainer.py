@@ -130,7 +130,7 @@ class Glow_trainer:
     @tf.function
     def train_step(self, x):
         with tf.GradientTape() as tape:
-            z, log_det_jacobian = self.glow(x, training=False)
+            z, log_det_jacobian = self.glow(x, training=True)
             z = tf.reshape(z, [-1, self.pixels])
             lp = self.target_distribution.log_prob(z)
             loss = bits_x(lp, log_det_jacobian, self.pixels)

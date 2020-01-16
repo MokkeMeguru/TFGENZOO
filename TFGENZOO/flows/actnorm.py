@@ -64,7 +64,7 @@ class Actnorm(Flow):
         the first batch
         note:
         bias = - mean(x)
-        scale = 1/ stddev(x)
+        scale = 1/ stdvar(x)
         """
         tf.print('Set stat is called')
         mean = - tf.reduce_mean(x, axis=self.reduce_axis, keepdims=True)

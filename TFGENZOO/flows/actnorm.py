@@ -89,7 +89,7 @@ class Actnorm(Flow):
         z = (x + bias) * tf.exp(log_scale)
         log_det_jacobian = self.reduce_pixel * tf.reduce_sum(self.log_scale)
         log_det_jacobian = tf.broadcast_to(log_det_jacobian, tf.shape(x)[0:1])
-        self.assert_shape(x, z)
+        self.assert_tensor(x, z)
         self.assert_log_det_jacobian(inverse_log_det_jacobian)
         return z, log_det_jacobian
 
@@ -104,7 +104,7 @@ class Actnorm(Flow):
         x = (z * tf.exp(- log_scale)) - bias
         inverse_log_det_jacobian = - (self.reduce_pixel * tf.reduce_sum(self.log_scale))
         inverse_log_det_jacobian = tf.broadcast_to(inverse_log_det_jacobian, tf.shape(x)[0:1])
-        self.assert_shape(x, z)
+        self.assert_tensor(x, z)
         self.assert_log_det_jacobian(inverse_log_det_jacobian)
         return x, inverse_log_det_jacobian
 

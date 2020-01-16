@@ -3,9 +3,10 @@ from tensorflow.keras import layers
 from abc import ABC, abstractmethod
 from typing import List
 Layer = layers.Layer
+Model = tf.keras.Model
 
 
-class FlowAbst(ABC):
+class FlowAbst(ABC, Model):
     """the base of Flow Layer (abstruction)
     this layer is for FlowList, Blockwise, etc...
     """
@@ -122,7 +123,7 @@ class Flow(ABC, Layer):
                 [(log_det_jacobian, (None, ))])
 
 
-class FlowList(Flow):
+class FlowList(FlowAbst):
     """Flow Layer's list
     TODO: Flow or FlowAbst
     formula:

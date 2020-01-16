@@ -104,7 +104,7 @@ class FlowBlockHalf(FlowAbst):
 
     def setStat(self, x: tf.Tensor, **kwargs):
         x_1, x_2 = tf.split(x, 2, axis=-1)
-        if callable(self.flows[0].setStat):
+        if callable(getattr(self.flows[0], 'setStat', None)):
             self.flows[0].setStat(x_1)
-        if callable(self.flows[1].setStat):
+        if callable(getattr(self.flows[1], 'setStat', None)):
             self.flows[1].setStat(x_2)

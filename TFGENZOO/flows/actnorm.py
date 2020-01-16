@@ -14,7 +14,6 @@ class Actnorm(Flow):
     """
 
     def build(self, input_shape):
-        super(Actnorm, self).build(input_shape)
         input_shape = input_shape.as_list()
         shapes = [1 for i in range(len(input_shape))]
         shapes[self.normaxis] = input_shape[self.normaxis]
@@ -37,7 +36,6 @@ class Actnorm(Flow):
         reduce_pixel.pop(self.normaxis)
         reduce_pixel.pop(0)
         self.reduce_pixel = np.prod(reduce_pixel)
-        self.built = True
 
     def __init__(self, normaxis: int = -1,
                  log_scale_factor: float = 1.0,

@@ -88,10 +88,10 @@ class Glow_trainer:
             name='log_det_jacobian[val]', dtype=tf.float32)
         self.val_loss = Mean(name='loss[val]', dtype=tf.float32)
 
-        # self.train_dataset, self.test_dataset = load_mnist.load_dataset(
-        #     BATCH_SIZE=self.args['batch_size'])
-        self.train_dataset, self.test_dataset = load_cifar10.load_dataset(
+        self.train_dataset, self.test_dataset = load_mnist.load_dataset(
             BATCH_SIZE=self.args['batch_size'])
+        # self.train_dataset, self.test_dataset = load_cifar10.load_dataset(
+        #     BATCH_SIZE=self.args['batch_size'])
         checkpoint_path = args.get(
             'checkpoint_path', Path('../checkpoints/glow'))
         for sample in self.train_dataset.take(1):

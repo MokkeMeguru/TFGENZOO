@@ -158,10 +158,11 @@ class FlowList(FlowAbst):
         return x, log_det_jacobian
 
     def inverse(self, z: tf.Tensor, **kwargs):
-        inverse_log_det_jacobian = tf.broadcast_to(0.0, tf.shape(z)[0:1])
+        inverse_log_det_jacobians = [] # tf.broadcast_to(0.0, tf.shape(z)[0:1])
         for flow in reversed(self.flow_list):
             z, _inverse_log_det_jacobian = flow.inverse(z)
-            inverse_log_det_jacobian += _inverse_log_det_jacobian
+            inverse_log_det_jacobians.append(_inverse_log_det_jacobian)
+        inverse_log_det_jacobian = sum(inverse_log_det_jacobian)
         self.assert_log_det_jacobian(inverse_log_det_jacobian)
         return z, inverse_log_det_jacobian
 

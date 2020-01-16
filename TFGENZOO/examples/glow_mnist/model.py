@@ -61,7 +61,7 @@ def gen_MultiScaleFlow(
             usHWC = UnSqueezeHWC(with_debug=with_debug)
             return FlowList([sHWC, flow_steps, block, usHWC])
     if preprocess:
-        preprocess = Preprocess(n_bins=256.0, with_debug=with_debug)
+        preprocess = Process(n_bins=256.0, with_debug=with_debug)
         return FlowList([preprocess, _gen_MSF(L - 1, K, n_hidden)])
     else:
         return _gen_MSF(L - 1, K, n_hidden)

@@ -54,7 +54,6 @@ class Actnorm(Flow):
         super(Actnorm, self).__init__(with_debug=with_debug)
         self.normaxis = normaxis
         self.log_scale_factor = log_scale_factor
-        self.initialized = False
 
     def setStat(self, x: tf.Tensor):
         """Actnorm's initialization of first batch

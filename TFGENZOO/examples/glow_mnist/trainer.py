@@ -150,7 +150,7 @@ class Glow_trainer:
             ckpt_save_path = self.ckpt_manager.save()
             print('epoch {}: train_loss={}, val_loss={}, bits per dims={}, saved at {}'.format(
                 epoch, self.loss.result().numpy(), self.val_loss.result().numpy(),
-                bits_per_dims(-self.val_loss.result().numpy(), self.pixels), ckpt_save_path))
+                bits_per_dims(self.val_loss.result().numpy(), self.pixels), ckpt_save_path))
             print('log_prob {} + ldj {}'.format(self.val_log_prob_loss.result(), self.val_log_det_jacobian_loss.result()))
             tf.summary.scalar('loss[train]', self.loss.result(), step=epoch)
             tf.summary.scalar('log_prob[train]', self.log_prob_loss.result(), step=epoch)

@@ -77,7 +77,7 @@ class Glow_trainer:
             with_debug=False,
             preprocess=True 
         )
-        x = tf.keras.Input([args['input_shape']])
+        x = tf.keras.Input(args['input_shape'])
         self.glow = tf.keras.Model(x, self.glowflow(x))
         # self.glow.build(tuple([None] + self.args['input_shape']))
         self.glow.summary()

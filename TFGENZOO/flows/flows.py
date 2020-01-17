@@ -162,7 +162,7 @@ class FlowList(FlowAbst):
         for flow in reversed(self.flow_list):
             z, _inverse_log_det_jacobian = flow.inverse(z)
             inverse_log_det_jacobians.append(_inverse_log_det_jacobian)
-        inverse_log_det_jacobian = sum(inverse_log_det_jacobian)
+        inverse_log_det_jacobian = sum(inverse_log_det_jacobians)
         self.assert_log_det_jacobian(inverse_log_det_jacobian)
         return z, inverse_log_det_jacobian
 

@@ -1,5 +1,5 @@
 import tensorflow as tf
-from flows import flows
+from TFGENZOO.flows import flows
 Flow = flows.Flow
 
 
@@ -131,3 +131,6 @@ def test_UnSqueeseHWC():
     assert x.shape == _x.shape, "inversed shape are invalid"
     print('diff: {}'.format(tf.reduce_mean(x - _x)))
     print('sum: {}'.format(tf.reduce_mean(ldj + ildj)))
+    ssflow = SqueezeHWC()
+    __x, lldj = ssflow(x)
+    print('diff: {}'.format(tf.reduce_mean(x - __x)))

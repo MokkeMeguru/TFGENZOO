@@ -68,15 +68,24 @@ def bits_x(log_likelihood: tf.Tensor, log_det_jacobian: tf.Tensor, pixels: int):
 class Glow_trainer:
     def __init__(self, args=args.args, training=True):
         self.args = args
-        self.glow = Glow(self.args)
+        print(self.args)
+        self.glowflow = gen_MultiScaleFlow(
+            L=self.args['L'],
+            K=self.args['K'],
+            n_hidden=self.args['n_hidden'],
+            with_debug=False,
+            preprocess=True 
+        )
+        x = tf.kersa.Input([args['input_shape']])
+        self.glow = tf.keras.Model(x, self.glowflow(x))
         # self.glow.build(tuple([None] + self.args['input_shape']))
-        # self.glow.summary()
+        self.glow.summary()
         self.pixels = reduce(lambda x, y: x * y, args['input_shape'])
         self.target_distribution = tfd.MultivariateNormalDiag(
             loc=tf.zeros([self.pixels], dtype=tf.float32),
             scale_diag=tf.ones([self.pixels], dtype=tf.float32))
         self.learning_rate_schedule = CustomSchedule(d_model=self.pixels)
-        self.optimizer = Adam(self.learning_rate_schedule)
+        self.optimizer = Adam(lr = 1e-8) # self.learning_rate_schedule)
 
         self.log_prob_loss = Mean(name='log_prob[train]', dtype=tf.float32)
         self.log_det_jacobian_loss = Mean(

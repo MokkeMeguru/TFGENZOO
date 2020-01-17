@@ -6,7 +6,7 @@ Layer = layers.Layer
 Model = tf.keras.Model
 
 
-class FlowAbst(ABC):
+class FlowAbst(ABC, Layer):
     """the base of Flow Layer (abstruction)
     this layer is for FlowList, Blockwise, etc...
     """

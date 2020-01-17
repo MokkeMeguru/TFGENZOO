@@ -68,26 +68,26 @@ def gen_MultiScaleFlow(
 
 
 class Glow(tf.keras.Model):
-    def __init__(self, args):
+    def __init__(self, args, input_shape=[32, 32, 1]):
         super(Glow, self).__init__(name='Glow')
-        self.Glow = gen_MultiScaleFlow(
+        self.glow = gen_MultiScaleFlow(
             L=args['L'],
             K=args['K'],
             n_hidden=args['n_hidden'],
             with_debug=False,
             preprocess=True
         )
-    def setStat(self, x, **kargs):
+    def setStat(self, x, **kwargs):
         if callable(self.Glow.setStat):
             tf.print("called set Stat")
             self.Glow.setStat(x)
 
-    def call(self, x, **kargs):
-        z, log_det_jacobian = self.Glow(x, **kargs)
+    def call(self, x, **kwargs):
+        z, log_det_jacobian = self.Glow(x, **kwargs)
         return z, log_det_jacobian
 
-    def inverse(self, z, **kargs):
-        x, inverse_log_det_jacobian = self.Glow.inverse(z, **kargs)
+    def inverse(self, z, **kwargs):
+        x, inverse_log_det_jacobian = self.Glow.inverse(z, **kwargs)
         return x, inverse_log_det_jacobian
 
 

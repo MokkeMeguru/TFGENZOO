@@ -143,13 +143,14 @@ class Glow_trainer:
             z, log_det_jacobian = self.glow(x, training=True)
             z = tf.reshape(z, [-1, self.pixels])
             lp = self.target_distribution.log_prob(z)
-            loss = bits_x(lp, log_det_jacobian, self.pixels)
-        grads = tape.gradient(loss, self.glow.trainable_variables)
+            _loss = - 1 * (lp + log_det_jacobian)
+        # loss = bits_x(lp, log_det_jacobian, self.pixels)
+        grads = tape.gradient(_loss, self.glow.trainable_variables)
         self.optimizer.apply_gradients(
             zip(grads, self.glow.trainable_variables))
         self.log_prob_loss(lp)
         self.log_det_jacobian_loss(log_det_jacobian)
-        self.loss(loss)
+        self.loss(_loss)
     
     def train(self):
         first = False

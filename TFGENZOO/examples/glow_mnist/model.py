@@ -82,11 +82,11 @@ class Glow(tf.keras.Model):
        self.glow.setStat(x)
 
     def call(self, x, training=True,**kwargs):
-        z, log_det_jacobian = self.glow(x, training, **kwargs)
+        z, log_det_jacobian = self.glow(x, training=training)
         return z, log_det_jacobian
 
     def inverse(self, z, training=False, **kwargs):
-        x, inverse_log_det_jacobian = self.glow.inverse(z, training, **kwargs)
+        x, inverse_log_det_jacobian = self.glow.inverse(z, training=training)
         return x, inverse_log_det_jacobian
 
 

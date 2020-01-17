@@ -71,8 +71,7 @@ class BatchNormalization(Flow):
         reduction_axes = [i for i in range(ndims)
                           if i not in [self.axis]]
         broadcast_shape = [1] * ndims
-        broadcast_shape[self.axis] = \
-            input_shape[self.axis]
+        broadcast_shape[self.axis] = input_shape[self.axis]
 
         def _broadcast(v: tf.Tensor):
             if (reduction_axes != list(range(ndims - 1))):

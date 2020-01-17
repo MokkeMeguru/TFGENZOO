@@ -44,7 +44,7 @@ class FlowBlockHalf(Flow):
         if input_shape[-1] % 2 != 0:
             raise Exception("last dimention's size must be even")
 
-    def call(self, x: tf.Tensor, **kargs):
+    def call(self, x: tf.Tensor, **kwargs):
         """Half blockwised Flow Layer
         Args:
         - x: tf.Tensor
@@ -64,15 +64,15 @@ class FlowBlockHalf(Flow):
         x_1, x_2 in [H, W, C // 2]
         """
         x_1, x_2 = tf.split(x, 2, axis=-1)
-        z_1, z_1_log_det_jacobian = self.flows[0](x_1, **kargs)
-        z_2, z_2_log_det_jacobian = self.flows[1](x_2, **kargs)
+        z_1, z_1_log_det_jacobian = self.flows[0](x_1, **kwargs)
+        z_2, z_2_log_det_jacobian = self.flows[1](x_2, **kwargs)
         z = tf.concat([z_1, z_2], axis=-1)
         log_det_jacobian = z_1_log_det_jacobian + z_2_log_det_jacobian
         self.assert_tensor(x, z)
         self.assert_log_det_jacobian(log_det_jacobian)
         return z, log_det_jacobian
 
-    def inverse(self, z: tf.Tensor, **kargs):
+    def inverse(self, z: tf.Tensor, **kwargs):
         """De Half blockwised Flow Layer
         Args:
         - z: tf.Tensor
@@ -93,8 +93,8 @@ class FlowBlockHalf(Flow):
         z_1, z_2 in [H, W, C // 2]
         """
         z_1, z_2 = tf.split(z, 2, axis=-1)
-        x_1, x_1_inverse_log_det_jacobian = self.flows[0].inverse(z_1, **kargs)
-        x_2, x_2_inverse_log_det_jacobian = self.flows[1].inverse(z_2, **kargs)
+        x_1, x_1_inverse_log_det_jacobian = self.flows[0].inverse(z_1, **kwargs)
+        x_2, x_2_inverse_log_det_jacobian = self.flows[1].inverse(z_2, **kwargs)
         x = tf.concat([x_1, x_2], axis=-1)
         inverse_log_det_jacobian = (
             x_1_inverse_log_det_jacobian + x_2_inverse_log_det_jacobian)
@@ -104,7 +104,7 @@ class FlowBlockHalf(Flow):
 
     def setStat(self, x: tf.Tensor, **kwargs):
         x_1, x_2 = tf.split(x, 2, axis=-1)
-        if callable(flows[0].setStat):
-            flows[0].setStat(x_1)
-        if callable(flows[1].setStat):
-            flows[1].setStat(x_2)
+        if callable(getattr(self.flows[0], 'setStat', None)):
+            self.flows[0].setStat(x_1)
+        if callable(getattr(self.flows[1], 'setStat', None)):
+            self.flows[1].setStat(x_2)

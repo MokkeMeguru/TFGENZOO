@@ -3,6 +3,7 @@ from tensorflow.keras import layers
 from abc import ABC, abstractmethod
 from typing import List
 Layer = layers.Layer
+Model = tf.keras.Model
 
 
 class FlowAbst(ABC):
@@ -148,18 +149,20 @@ class FlowList(Flow):
         self.shape = input_shape
 
     def call(self, x: tf.Tensor, **kwargs):
-        log_det_jacobian = tf.broadcast_to(0.0,  tf.shape(x)[0:1])
+        log_det_jacobians = [] #tf.broadcast_to(0.0,  tf.shape(x)[0:1])
         for flow in self.flow_list:
             x,  _log_det_jacobian = flow(x, **kwargs)
-            log_det_jacobian += _log_det_jacobian
+            log_det_jacobians.append(_log_det_jacobian)
+        log_det_jacobian = sum(log_det_jacobians)
         self.assert_log_det_jacobian(log_det_jacobian)
         return x, log_det_jacobian
 
     def inverse(self, z: tf.Tensor, **kwargs):
-        inverse_log_det_jacobian = tf.broadcast_to(0.0, tf.shape(z)[0:1])
+        inverse_log_det_jacobians = [] # tf.broadcast_to(0.0, tf.shape(z)[0:1])
         for flow in reversed(self.flow_list):
             z, _inverse_log_det_jacobian = flow.inverse(z)
-            inverse_log_det_jacobian += _inverse_log_det_jacobian
+            inverse_log_det_jacobians.append(_inverse_log_det_jacobian)
+        inverse_log_det_jacobian = sum(inverse_log_det_jacobians)
         self.assert_log_det_jacobian(inverse_log_det_jacobian)
         return z, inverse_log_det_jacobian
 

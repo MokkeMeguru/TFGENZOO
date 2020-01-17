@@ -170,7 +170,7 @@ class AffineCouplingHWC(Flow):
         x_a, x_b = tf.split(x, 2, axis=-1)
         y_b = x_b
         s, t = self.NN(x_b)
-        y_a = s * x_a + t
+        y_a = x_a * s + t
         y = tf.concat([y_a, y_b], axis=-1)
         log_det_jacobian = tf.reduce_sum(
             tf.math.log(s), axis=list(range(len(['B', 'H', 'W', 'C'])))[1:])

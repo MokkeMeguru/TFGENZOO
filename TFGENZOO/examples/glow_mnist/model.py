@@ -11,7 +11,7 @@ from flows.squeezeHWC import SqueezeHWC, UnSqueezeHWC
 from flows.batchnorm import BatchNormalization
 from flows.affine_couplingHWC import AffineCouplingHWC
 from flows.inv1x1conv import Inv1x1Conv
-from flows.metrics import Preprocess
+from flows.metrics import Process
 
 
 def gen_flowStep(n_hidden: List[int] = [64, 64], with_debug: bool = False):
@@ -61,33 +61,32 @@ def gen_MultiScaleFlow(
             usHWC = UnSqueezeHWC(with_debug=with_debug)
             return FlowList([sHWC, flow_steps, block, usHWC])
     if preprocess:
-        preprocess = Preprocess(n_bins=256.0, with_debug=with_debug)
+        preprocess = Process(n_bins=256.0, with_debug=with_debug)
         return FlowList([preprocess, _gen_MSF(L - 1, K, n_hidden)])
     else:
         return _gen_MSF(L - 1, K, n_hidden)
 
 
 class Glow(tf.keras.Model):
-    def __init__(self, args):
+    def __init__(self, args, input_shape=[32, 32, 1]):
         super(Glow, self).__init__(name='Glow')
-        self.Glow = gen_MultiScaleFlow(
+        self.glow = gen_MultiScaleFlow(
             L=args['L'],
             K=args['K'],
             n_hidden=args['n_hidden'],
             with_debug=False,
             preprocess=True
         )
-    def setStat(self, x, **kargs):
-        if callable(self.Glow.setStat):
-            tf.print("called set Stat")
-            self.Glow.setStat(x)
+    def setStat(self, x, **kwargs):
+       tf.print("called set Stat")
+       self.glow.setStat(x)
 
-    def call(self, x, **kargs):
-        z, log_det_jacobian = self.Glow(x, **kargs)
+    def call(self, x, training=True,**kwargs):
+        z, log_det_jacobian = self.glow(x, training=training)
         return z, log_det_jacobian
 
-    def inverse(self, z, **kargs):
-        x, inverse_log_det_jacobian = self.Glow.inverse(z, **kargs)
+    def inverse(self, z, training=False, **kwargs):
+        x, inverse_log_det_jacobian = self.glow.inverse(z, training=training)
         return x, inverse_log_det_jacobian
 
 

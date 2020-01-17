@@ -22,6 +22,7 @@ Mean = metrics.Mean
 Adam = optimizers.Adam
 tfd = tfp.distributions
 Glow = model.Glow
+gen_MultiScaleFlow = model.gen_MultiScaleFlow
 
 
 class CustomSchedule(tf.keras.optimizers.schedules.LearningRateSchedule):

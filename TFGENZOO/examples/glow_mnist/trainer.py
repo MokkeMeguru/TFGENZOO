@@ -157,7 +157,7 @@ class Glow_trainer:
             for x in tqdm(self.train_dataset):
                 if not first:
                   first = True
-                  self.glow.setStat(x['img'])
+                  self.glowflow.setStat(x['img'])
                 self.train_step(x['img'])
             for x in tqdm(self.test_dataset):
                 self.val_step(x['img'])

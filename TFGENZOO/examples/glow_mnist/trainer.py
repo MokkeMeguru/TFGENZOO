@@ -70,14 +70,20 @@ class Glow_trainer:
     def __init__(self, args=args.args, training=True):
         self.args = args
         print(self.args)
-        self.glow = gen_MultiScaleFlow(
+        # self.glow = gen_MultiScaleFlow(
+        #    L=self.args['L'],
+        #     K=self.args['K'],
+        #     n_hidden=self.args['n_hidden'],
+        #     with_debug=False,
+        #     preprocess=True 
+        # )
+        self.glow = Glow(
             L=self.args['L'],
             K=self.args['K'],
             n_hidden=self.args['n_hidden'],
             with_debug=False,
             preprocess=True 
         )
-        
         # x = tf.keras.Input(args['input_shape'])
         # self.glow = tf.keras.Model(x, self.glowflow(x))
         self.glow.build([1] + self.args['input_shape'])# 1, 32, 32, 1)) # tuple([None] + self.args['input_shape']))

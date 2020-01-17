@@ -153,7 +153,7 @@ class FlowList(FlowAbst):
         for flow in self.flow_list:
             x,  _log_det_jacobian = flow(x, **kwargs)
             log_det_jacobians.append(_log_det_jacobian)
-        log_det_jacobian = sum(log_det_jacobian)
+        log_det_jacobian = sum(log_det_jacobians)
         self.assert_log_det_jacobian(log_det_jacobian)
         return x, log_det_jacobian
 

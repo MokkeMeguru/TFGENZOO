@@ -2,7 +2,7 @@ import numpy as np
 import tensorflow as tf
 import tensorflow_probability as tfp
 from typing import List
-from flows.flows import Flow
+from TFGENZOO.flows.flows import Flow
 tfd = tfp.distributions
 
 
@@ -48,8 +48,9 @@ class Process(Flow):
             note:
             ref. https://github.com/openai/glow/blob/master/model.py
             """
-            return tf.cast(tf.clip_by_value(
-                tf.floor((z + 0.5) * self.n_bins) * (256. / self.n_bins), 0, 255), 'uint8')
+            return tf.clip_by_value(
+                # tf.floor((z + 0.5) * self.n_bins) 
+                (tf.clip_by_value(z, -0.5, 0.5) + 0.5) * self.n_bins * (256. / self.n_bins), 0, 255)
 
         x = postprocess(z)
         return x, tf.broadcast_to(0.0, tf.shape(z)[0:1])

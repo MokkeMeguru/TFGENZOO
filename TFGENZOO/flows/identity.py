@@ -1,5 +1,5 @@
 import tensorflow as tf
-from flows import flows
+from TFGENZOO.flows import flows
 Flow = flows.Flow
 
 

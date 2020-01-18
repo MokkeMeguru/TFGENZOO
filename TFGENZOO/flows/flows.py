@@ -169,7 +169,10 @@ class FlowList(Flow):
     def setStat(self, x: tf.Tensor, **kwargs):
         for flow in self.flow_list:
             if callable(getattr(flow, 'setStat', None)):
+                tf.print('[List] Flow List setStat')
                 flow.setStat(x)
+            else:
+                tf.print('[List] Flow List not called setStat ', flow.name)
             x, _log_det_jacobian = flow(x, **kwargs)
 
     def assert_tensor(self, x: tf.Tensor, z: tf.Tensor):

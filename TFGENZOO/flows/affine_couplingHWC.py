@@ -1,5 +1,5 @@
 import tensorflow as tf
-from flows import flows
+from TFGENZOO.flows import flows
 from tensorflow.keras import layers
 from tensorflow.keras import initializers
 from typing import List
@@ -214,13 +214,13 @@ class AffineCouplingHWC(Flow):
 
 def test_AffineCouplingHWC():
     aff = AffineCouplingHWC([64, 64])
-    x = tf.keras.Input([16, 16, 2])
+    x = tf.keras.Input([16, 16, 4])
     y, log_det_jacobian = aff(x)
     model = tf.keras.Model(x, [y, log_det_jacobian])
     model.summary()
     from pprint import pprint
     pprint([v.name for v in model.trainable_variables])
-    x = tf.random.normal([32, 16, 16, 2])
+    x = tf.random.normal([32, 16, 16, 4])
     y, log_det_jacobian = aff(x)
     x_, ildj = aff.inverse(y)
     assert log_det_jacobian.shape == y.shape[0:1], \
@@ -228,3 +228,8 @@ def test_AffineCouplingHWC():
     assert ildj.shape == y.shape[0:1], "log_det_jacobian's shape is invalid"
     print('diff: {}'.format(tf.reduce_mean(x - x_)))
     print('sum: {}'.format(tf.reduce_mean(log_det_jacobian + ildj)))
+
+    with tf.GradientTape() as tape:
+        y, ldj = aff(x)
+    grads = tape.gradient(ldj, aff.trainable_variables)
+    print(len(grads), len(aff.trainable_variables))

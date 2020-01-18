@@ -1,5 +1,5 @@
 import tensorflow as tf
-from flows import flows
+from TFGENZOO.flows import flows
 from tensorflow.keras import layers
 from tensorflow.keras import initializers
 from typing import List

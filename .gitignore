@@ -5,3 +5,4 @@
 /checkpoints/
 /venv/
 /TFGENZOO/mnists/
+*.png

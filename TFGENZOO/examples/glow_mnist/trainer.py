@@ -5,9 +5,9 @@ ref:
 https://colab.research.google.com/gist/MokkeMeguru/cec2fd9acfdca6ba7173b0e0cf2a86f7/torch-log_prob.ipynb
 https://colab.research.google.com/gist/MokkeMeguru/1de367931dc690bcfdf7bc9e76fe9a95/tensorflow-log_prob.ipynb
 """
-from TFGENZOO.TFGENZOO.examples.glow_mnist import model
-from TFGENZOO.TFGENZOO.examples.utils import load_mnist, load_cifar10
-from TFGENZOO.TFGENZOO.examples.glow_mnist import args
+from TFGENZOO.examples.glow_mnist import model
+from TFGENZOO.examples.utils import load_mnist, load_cifar10
+from TFGENZOO.examples.glow_mnist import args
 import tensorflow_probability as tfp
 from tensorflow.keras import Model
 from functools import reduce
@@ -42,6 +42,7 @@ class CustomSchedule(tf.keras.optimizers.schedules.LearningRateSchedule):
         arg2 = step * (self.warmup_steps**-1.5)
         return tf.math.rsqrt(self.d_model) * tf.math.minimum(arg1, arg2)
 
+
 def bits_x(log_likelihood: tf.Tensor, log_det_jacobian: tf.Tensor, pixels: int):
     """bits/dims
     args:
@@ -75,25 +76,22 @@ class Glow_trainer:
         #     K=self.args['K'],
         #     n_hidden=self.args['n_hidden'],
         #     with_debug=False,
-        #     preprocess=True 
+        #     preprocess=True
         # )
         self.glow = Glow(
-            L=self.args['L'],
-            K=self.args['K'],
-            n_hidden=self.args['n_hidden'],
-            with_debug=False,
-            preprocess=True 
+            args
         )
         # x = tf.keras.Input(args['input_shape'])
         # self.glow = tf.keras.Model(x, self.glowflow(x))
-        self.glow.build([1] + self.args['input_shape'])# 1, 32, 32, 1)) # tuple([None] + self.args['input_shape']))
+        # 1, 32, 32, 1)) # tuple([None] + self.args['input_shape']))
+        self.glow.build(tuple([1] + self.args['input_shape']))
         self.glow.summary()
         self.pixels = reduce(lambda x, y: x * y, args['input_shape'])
         self.target_distribution = tfd.MultivariateNormalDiag(
             loc=tf.zeros([self.pixels], dtype=tf.float32),
             scale_diag=tf.ones([self.pixels], dtype=tf.float32))
         self.learning_rate_schedule = CustomSchedule(d_model=self.pixels)
-        self.optimizer = Adam(lr = 1e-8) # self.learning_rate_schedule)
+        self.optimizer = Adam(lr=5e-4)  # self.learning_rate_schedule)
 
         self.log_prob_loss = Mean(name='log_prob[train]', dtype=tf.float32)
         self.log_det_jacobian_loss = Mean(
@@ -158,44 +156,94 @@ class Glow_trainer:
         self.log_prob_loss(lp)
         self.log_det_jacobian_loss(log_det_jacobian)
         self.loss(_loss)
-    
+
+    def test(self):
+        taken = False
+        for x in self.test_dataset:
+            if taken:
+                break
+            else:
+                taken = True
+                _z, log_det_jacobian = self.glow(x['img'], training=True)
+                z = tf.reshape(_z, [-1, self.pixels])
+                lp = self.target_distribution.log_prob(z)
+                _loss = -1 * (lp + log_det_jacobian)
+
+        import matplotlib.pyplot as plt
+
+        rvd, _ = self.glow.inverse(_z)
+        print(tf.shape(rvd))
+        fig = plt.figure(figsize=(8, 8))
+        for i in range(9):
+            ax = fig.add_subplot(4, 4, i + 1)
+            ax.imshow(tf.squeeze(
+                rvd[i], axis=-1), aspect="auto", cmap="gray")
+        fig.savefig('test_rvd.png')
+        plt.close()
+
+    def generate_image(self, epoch,  beta=1.0):
+        import matplotlib.pyplot as plt
+        import tensorflow_probability as tfp
+        tfd = tfp.distributions
+        target_dist = tfd.MultivariateNormalDiag(
+            tf.zeros([32 * 32 * 1]), tf.broadcast_to(beta, [32 * 32 * 1]))
+        generated, _ = self.glow.inverse(target_dist.sample(16))
+        print(tf.shape(generated))
+        fig = plt.figure(figsize=(8, 8))
+        for i in range(16):
+            ax = fig.add_subplot(4, 4, i + 1)
+            ax.imshow(tf.squeeze(
+                generated[i], axis=-1), aspect="auto", cmap="gray")
+        fig.savefig('glow_generated-{:0=5}.png'.format(epoch))
+        plt.close()
+
     def train(self):
         first = False
         for epoch in range(self.args['epochs']):
             for x in tqdm(self.train_dataset):
                 if not first:
-                  first = True
-                  self.glowflow.setStat(x['img'])
+                    first = True
+                    self.glow.setStat(x['img'])
                 self.train_step(x['img'])
             for x in tqdm(self.test_dataset):
                 self.val_step(x['img'])
+            self.generate_image(epoch)
             ckpt_save_path = self.ckpt_manager.save()
             print('epoch {}: train_loss={}, val_loss={}, bits per dims={}, saved at {}'.format(
-                epoch, self.loss.result().numpy(), self.val_loss.result().numpy(),
+                epoch, self.loss.result().numpy(),
+                self.val_log_prob_loss.result().numpy(
+                ) + self.val_log_det_jacobian_loss.result().numpy(),
                 self.val_loss.result().numpy(), ckpt_save_path))
-            print('log_prob {} + ldj {}'.format(self.val_log_prob_loss.result(), self.val_log_det_jacobian_loss.result()))
+            print('log_prob {} + ldj {}'.format(self.val_log_prob_loss.result(),
+                  self.val_log_det_jacobian_loss.result()))
             tf.summary.scalar('loss[train]', self.loss.result(), step=epoch)
-            tf.summary.scalar('log_prob[train]', self.log_prob_loss.result(), step=epoch)
-            tf.summary.scalar('log_det_jacobian[train]', self.log_det_jacobian_loss.result(), step=epoch)
+            tf.summary.scalar(
+                'log_prob[train]', self.log_prob_loss.result(), step=epoch)
+            tf.summary.scalar(
+                'log_det_jacobian[train]', self.log_det_jacobian_loss.result(), step=epoch)
             tf.summary.scalar('loss[val]', self.val_loss.result(), step=epoch)
-            tf.summary.scalar('log_prob[val]', self.val_log_prob_loss.result(), step=epoch)
-            tf.summary.scalar('log_det_jacobian[val]', self.val_log_det_jacobian_loss.result(), step=epoch)
+            tf.summary.scalar(
+                'log_prob[val]', self.val_log_prob_loss.result(), step=epoch)
+            tf.summary.scalar(
+                'log_det_jacobian[val]', self.val_log_det_jacobian_loss.result(), step=epoch)
             self.loss.reset_states()
             self.log_prob_loss.reset_states()
             self.log_det_jacobian_loss.reset_states()
             self.val_loss.reset_states()
             self.val_log_prob_loss.reset_states()
             self.val_log_det_jacobian_loss.reset_states()
-    
 
+# import sys
+# sys.path.append('/workspace/Github')
 
 # glow_trainer = Glow_trainer()
+# glow_trainer.generate_image(1000, 0.1
 # >>>
 # Model: "Glow"
 # _________________________________________________________________
-# Layer (type)                 Output Shape              Param #   
+# Layer (type)                 Output Shape              Param #
 # =================================================================
-# flow_list_71 (FlowList)      multiple                  303296    
+# flow_list_71 (FlowList)      multiple                  303296
 # =================================================================
 # Total params: 303,296
 # Trainable params: 302,912

@@ -1,5 +1,5 @@
 import tensorflow as tf
-from flows import flows
+from TFGENZOO.flows import flows
 from tensorflow.keras import layers
 import numpy as np
 Flow = flows.Flow
@@ -63,7 +63,7 @@ class Actnorm(Flow):
         bias = - mean(x)
         scale = 1/ stdvar(x)
         """
-        tf.print('Set stat is called')
+        tf.print('[actnorm] Set stat is called')
         mean = tf.reduce_mean(x, axis=self.reduce_axis, keepdims=True)
         var = tf.reduce_mean((x - mean) ** 2,
                              axis=self.reduce_axis, keepdims=True)
@@ -85,7 +85,7 @@ class Actnorm(Flow):
         log_det_jacobian = self.reduce_pixel * tf.reduce_sum(self.log_scale)
         log_det_jacobian = tf.broadcast_to(log_det_jacobian, tf.shape(x)[0:1])
         self.assert_tensor(x, z)
-        self.assert_log_det_jacobian(inverse_log_det_jacobian)
+        self.assert_log_det_jacobian(log_det_jacobian)
         return z, log_det_jacobian
 
     def inverse(self, z: tf.Tensor, **kwargs):
@@ -114,7 +114,7 @@ def test_actnorm():
     print('output: z', tf.reduce_mean(z).numpy())
     print('inverse: z', tf.reduce_mean(_x).numpy())
     print('diff: {}'.format(tf.reduce_mean(x - _x)))
-    print('log_det_diff: {}'.format(log_det_jacobian +
-                                    inverse_log_det_jacobian))
+    print('log_det_diff: {}'.format(tf.reduce_sum(log_det_jacobian +
+                                    inverse_log_det_jacobian)))
     # print('log_det_jacobian: ',
     #       actnorm.forward_log_det_jacobian(y, event_ndims=3).numpy())

@@ -2,21 +2,22 @@ import numpy as np
 import tensorflow as tf
 from typing import List
 # for Flow-based Model
-from flows.flows import Flow, FlowList
+from TFGENZOO.flows.flows import Flow, FlowList
 # for Multi-Scale Architecture
-from flows.flowblock import FlowBlockHalf
-from flows.identity import Identity
+from TFGENZOO.flows.flowblock import FlowBlockHalf
+from TFGENZOO.flows.identity import Identity
 # for Flow-Step
-from flows.squeezeHWC import SqueezeHWC, UnSqueezeHWC
-from flows.batchnorm import BatchNormalization
-from flows.affine_couplingHWC import AffineCouplingHWC
-from flows.inv1x1conv import Inv1x1Conv
-from flows.metrics import Process
+from TFGENZOO.flows.squeezeHWC import SqueezeHWC, UnSqueezeHWC
+from TFGENZOO.flows.batchnorm import BatchNormalization
+from TFGENZOO.flows.affine_couplingHWC import AffineCouplingHWC
+from TFGENZOO.flows.inv1x1conv import Inv1x1Conv
+from TFGENZOO.flows.metrics import Process
+from TFGENZOO.flows.actnorm import Actnorm
 
 
 def gen_flowStep(n_hidden: List[int] = [64, 64], with_debug: bool = False):
     flow_step = FlowList(flow_list=[
-        BatchNormalization(with_debug=with_debug),
+        Actnorm(with_debug=with_debug), #  BatchNormalization(with_debug=with_debug),
         Inv1x1Conv(with_debug=with_debug),
         AffineCouplingHWC(n_hidden, with_debug=with_debug),
     ], with_debug=with_debug)

@@ -1,6 +1,6 @@
 import tensorflow as tf
-from flows import flows
-from flows import identity
+from TFGENZOO.flows import flows
+from TFGENZOO.flows import identity
 from typing import List
 FlowAbst = flows.FlowAbst
 Flow = flows.Flow

@@ -6,7 +6,7 @@ https://github.com/tensorflow/community/blob/master/rfcs/20181016-replicator.md#
 This Layer is for BatchNormalization Bijector with Big Batch (multi GPU/TPU)
 """
 import tensorflow as tf
-from flows import flows
+from TFGENZOO.flows import flows
 from tensorflow.keras import layers
 Flow = flows.Flow
 Layer = layers.Layer

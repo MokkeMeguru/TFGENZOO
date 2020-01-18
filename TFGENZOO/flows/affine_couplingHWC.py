@@ -9,6 +9,15 @@ Conv2D = layers.Conv2D
 Layer = layers.Layer
 
 
+def split_feature(x: tf.Tensor, type="split"):
+    """
+    """
+    C = tf.shape(x)[-1]
+    if type == "split":
+        return x[:, :, :, :C // 2], x[:, :, :, C // 2]
+    elif type == "cross":
+        return x[:, :, :,  0::2], x[:, :, :,  1::2]
+
 class NNHWC(Layer):
     """NN Layer for AffineCouplingHWC
     IMG has the shape [H, W, C]
@@ -33,28 +42,28 @@ class NNHWC(Layer):
             'this model is for Image which shape is [H, W, C]'
         self.shape = input_shape
         self.filters = input_shape[-1]
-        self.s_kernel = self.nn_add_weight(
-            name='s/kernel',
-            shape=self.kernel_size + [self.n_hidden[-1]] + [input_shape[-1]],
-            initializer=self.kernel_initializer)
-        # self.s_bias = self.nn_add_weight(
-        #     name='s/bias',
-        #     shape=(self.filters,),
-        #     initializer=self.bias_initializer)
-        self.t_kernel = self.nn_add_weight(
-            name='t/kernel',
-            shape=self.kernel_size + [self.n_hidden[-1]] + [input_shape[-1]],
-            initializer=self.kernel_initializer)
-        # self.t_bias = self.nn_add_weight(
-        #     name='t/bias',
-        #     shape=(self.filters,),
-        #     initializer=self.bias_initializer)
+
+        self.kernel = self.nn_add_weight(
+            name='kernel',
+            shape=self.kernel_size + [self.n_hidden[-1]] + [input_shape[-1] * 2],
+            initializer=initializers.get('zeros'))
+
+        self.bias = self.nn_add_weight(
+            name='bias',
+            shape=(self.filters * 2,),
+            initializer=initializers.get('zeros'))
+
+        self.logs = self.add_weight(
+            'logs',
+            shape=[1 for i in range(len(input_shape) - 2)] + [input_shape[-1] * 2],
+            initializer = initializers.get('zeros'))
 
     def __init__(self,
                  n_hidden=[512, 512],
                  kernel_size=[[3, 3], [1, 1]],
                  strides=[[1, 1], [1, 1]],
                  activation='relu',
+                 logscale_factor=3.0,
                  name=None,
                  **kargs):
         """
@@ -64,7 +73,11 @@ class NNHWC(Layer):
         else:
             super(NNHWC, self).__init__()
         layer_list = []
+        self.kernel_initializer = initializers.get('zeros')
+        self.bias_initializer = initializers.get('zeros')
         self.n_hidden = n_hidden
+        self.logscale_factor=3.0
+        self.rn_initialzier = tf.random_normal_initializer(mean=0, stddev =0.05)
         for i, (hidden, kernel, stride) in enumerate(
                 zip(n_hidden, kernel_size, strides)):
             layer_list.append(
@@ -74,7 +87,7 @@ class NNHWC(Layer):
                     strides=stride,
                     activation=activation,
                     padding='SAME',
-                    kernel_initializer='zeros',
+                    kernel_initializer=self.kernel_initializer,
                     name=self.name + "dense_{}_1".format(i)))
         self.layer_list = layer_list
         self.setup_output_layer()
@@ -82,29 +95,23 @@ class NNHWC(Layer):
     def setup_output_layer(self):
         """setup output layer
         """
-        self.s_activation = tf.nn.sigmoid
-        self.t_activation = tf.nn.relu6
+    #     self.s_activation = tf.nn.sigmoid
+    #     self.t_activation = tf.nn.relu6
         self.kernel_size = [3, 3]
-        self.rank = 2
+    #     self.rank = 2
         self.strides = (1, 1, 1, 1)
         self.padding = "SAME"
-        self.kernel_initializer = initializers.get('zeros')
-        self.bias_initializer = initializers.get('zeros')
 
     def call(self, x):
         y = x
         for layer in self.layer_list:
             y = layer(y)
-        s = tf.nn.conv2d(y, self.s_kernel,
-                             self.strides, self.padding, data_format='NHWC')
-        # s = s + self.s_bias
-        # s = self.s_activation(s)
-        s = self.s_activation(s + 2.0)
-        t = tf.nn.conv2d(y, self.t_kernel, self.strides,
-                         self.padding, data_format='NHWC')
-        # t = t + self.t_bias
-        t = self.t_activation(t)
-        return s, t
+        y = tf.nn.conv2d(y, self.kernel, self.strides, self.padding, data_format='NHWC')
+        y = y + self.bias
+        y = y * tf.exp(self.logs * self.logscale_factor)
+        shift, scale = split_feature(y, 'cross')
+        scale = tf.nn.sigmoid(scale + 2.0)
+        return scale, shift
 
 
 def test_NNHWC():

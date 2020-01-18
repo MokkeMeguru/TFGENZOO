@@ -68,8 +68,7 @@ class Actnorm(Flow):
         var = tf.reduce_mean((x - mean) ** 2,
                              axis=self.reduce_axis, keepdims=True)
         stdvar = tf.math.sqrt(var) + 1e-6
-        log_scale = tf.math.log(1. / stdvar /
-                                self.log_scale_factor) * self.log_scale_factor
+        log_scale = tf.math.log(self.log_scale_factor / stdvar)
         bias_update = self.bias.assign(- mean)
         log_scale_update = self.log_scale.assign(log_scale)
         self.add_update(bias_update)

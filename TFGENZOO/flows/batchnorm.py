@@ -8,8 +8,10 @@ This Layer is for BatchNormalization Bijector with Big Batch (multi GPU/TPU)
 import tensorflow as tf
 from TFGENZOO.flows import flows
 from tensorflow.keras import layers
+import numpy as np
 Flow = flows.Flow
 Layer = layers.Layer
+
 
 
 class BatchNormalization(Flow):
@@ -88,6 +90,9 @@ class BatchNormalization(Flow):
         self.built = True
         axes = list(range(len(input_shape)))
         axes.pop(self.axis)
+        pixels = input_shape
+        pixels.pop(self.axis)
+        self.pixels = np.prod(pixels[1:])
         self.axes = axes # ERROR
         self.feature_dim = input_shape[self.axis]
         if self.scale:
@@ -170,6 +175,9 @@ class BatchNormalization(Flow):
         log_variance = tf.reduce_sum(tf.math.log(variance + self.epsilon))
         log_gamma = tf.reduce_sum(tf.math.log(self.gamma + 1e-6))
         log_det_jacobian = log_gamma - 0.5 * log_variance
+        # ref. https://github.com/tensorflow/probability/blob/r0.8/tensorflow_probability/python/bijectors/batch_normalization.py
+        # I think this formula is something wrong, but the google do it...
+        log_det_jacobian = log_det_jacobian * self.pixels
         log_det_jacobian = tf.broadcast_to(log_det_jacobian, tf.shape(x)[0:1])
         self.assert_tensor(x, z)
         self.assert_log_det_jacobian(log_det_jacobian)

@@ -90,7 +90,7 @@ class BatchNormalization(Flow):
         self.built = True
         axes = list(range(len(input_shape)))
         axes.pop(self.axis)
-        pixels = input_shape
+        pixels = input_shape.as_list()
         pixels.pop(self.axis)
         self.pixels = np.prod(pixels[1:])
         self.axes = axes # ERROR

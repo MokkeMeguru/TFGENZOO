@@ -97,6 +97,12 @@ def test_MultiScaleFlow():
     z, log_det_jacobian = flow_step(x)
     model = tf.keras.Model(x, (z, log_det_jacobian))
     model.summary()
+    tf.keras.utils.plot_model(
+        model,
+        to_file='rawglow.png',
+        show_shapes=True,
+        expand_nested=True,
+    )
     # params = 7716(7708/8)
 
     x = tf.random.normal([16, 32, 32, 1])

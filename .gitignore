@@ -6,3 +6,5 @@
 /venv/
 /TFGENZOO/mnists/
 *.png
+/TFGENZOO/examples/checkpoints/
+*.v2

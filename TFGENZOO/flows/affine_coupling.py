@@ -12,10 +12,10 @@ class AffineCoupling(FlowComponent):
   """
   Affine Coupling Layer
   
-  code is highly borrowed by pixyz
+  refs: pixyz
   https://github.com/masa-su/pixyz/blob/master/pixyz/flows/coupling.py
   
-  note:
+  notes:
   - forward formula
   [x1, x2] = split(x)
   z1 = x1
@@ -34,7 +34,7 @@ class AffineCoupling(FlowComponent):
   => z = concat([x1, x2])
   => inverse_log_det_jacobian = - sum(log(scale))
   
-  note:
+  notes:
   in Glow's Paper, scale is calculated by exp(log_scale), 
   but IN IMPLEMENTATION, scale is done by sigmoid(log_scale + 2.0)
   """

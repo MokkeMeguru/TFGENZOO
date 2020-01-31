@@ -11,19 +11,29 @@ class FlowBase(Layer, metaclass=ABCMeta):
     """
     """
     @abstractmethod
-    def __init__(self, args):
-        ""
-        super(FlowBase, self).__init__()
+    def __init__(self, **kwargs):
+        self.initialized = False
+        super(FlowBase, self).__init__(kwargs)
 
-    @abstractmethod
-    def build(self, **kwargs):
+    def initialize_parameter(self, *args, **kwargs):
+        pass
+
+    def build(self, input_shape: tf.TensorShape):
         self.built = True
 
-    def call(self, inputs, inverse=False, **kwargs):
+    def call(self, x: tf.Tensor,
+             inverse=False,
+             initialize: bool = False, **kwargs):
+        if initialize:
+            if not inverse:
+                self.initialize_parameter(x)
+                self.initialized = True
+            else:
+                raise Exception('Invalid initialize')
         if inverse:
-            return self.inverse(inputs, **kwargs)
+            return self.inverse(x, initialize=initialize, **kwargs)
         else:
-            self.forward(inputs, **kwargs)
+            return self.forward(x, initialize=initialize, **kwargs)
 
     @abstractmethod
     def forward(self, inputs, **kwargs):
@@ -36,9 +46,9 @@ class FlowBase(Layer, metaclass=ABCMeta):
 
 class FlowComponent(FlowBase):
     @abstractmethod
-    def __init__(self, args):
+    def __init__(self, **kwargs):
         "docstring"
-        super(FlowComponent, self).__init__()
+        super(FlowComponent, self).__init__(**kwargs)
 
     @abstractmethod
     def forward(self, x, **kwargs):
@@ -73,8 +83,9 @@ class FlowComponent(FlowBase):
 
 
 class FlowModule(FlowBase):
-    def build(self, **kwargs):
-        super(FlowModule, self).build()
+    def build(self, input_shape: tf.TensorShape):
+        super(FlowModule, self).build(
+            input_shape=input_shape)
 
     def __init__(self, components: List[FlowComponent]):
         self.components = components
@@ -100,12 +111,11 @@ class FlowModule(FlowBase):
 
 class FactorOutBase(FlowBase):
     @abstractmethod
-    def __init__(self, args):
-        super(FactorOutBase, self).__init__()
+    def __init__(self, **kwargs):
+        super(FactorOutBase, self).__init__(kwargs)
 
-    @abstractmethod
-    def build(self, kwargs):
-        super(FactorOutBase, self).build()
+    def build(self, input_shape: tf.TensorShape):
+        super(FactorOutBase, self).build(input_shape)
 
     @abstractmethod
     def forward(self, x: tf.Tensor, zs: List[tf.Tensor], **kwargs):
@@ -126,12 +136,11 @@ class FactorOutBase(FlowBase):
 
 class ConditionalFactorOutBase(FlowBase):
     @abstractmethod
-    def __init__(self, args):
-        super(ConditionalFactorOutBase, self).__init__()
+    def __init__(self, **kwargs):
+        super(ConditionalFactorOutBase, self).__init__(kwargs)
 
-    @abstractmethod
-    def build(self, kwargs):
-        super(ConditionalFactorOutBase, self).build()
+    def build(self, input_shape: tf.TensorShape):
+        super(ConditionalFactorOutBase, self).build(input_shape)
 
     @abstractmethod
     def forward(self, x: tf.Tensor, c: tf.Tensor, **kwargs):

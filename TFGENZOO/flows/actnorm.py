@@ -2,7 +2,7 @@ from functools import reduce
 
 import tensorflow as tf
 
-from flowbase import FlowComponent
+from flows.flowbase import FlowComponent
 
 
 class Actnorm(FlowComponent):

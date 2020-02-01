@@ -1,7 +1,7 @@
 import numpy as np
 import tensorflow as tf
 
-from actnorm import Actnorm
+from flows.actnorm import Actnorm
 
 
 class ActnormTest(tf.test.TestCase):

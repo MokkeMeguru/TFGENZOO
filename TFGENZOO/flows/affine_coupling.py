@@ -3,8 +3,8 @@ from enum import Enum
 import tensorflow as tf
 from tensorflow.keras import Sequential, layers
 
-from actnorm import Actnorm
-from flowbase import FlowComponent
+from flows.actnorm import Actnorm
+from flows.flowbase import FlowComponent
 
 Layer = layers.Layer
 
@@ -55,7 +55,7 @@ class SequentialWithKwargs(Sequential):
             if isinstance(layer, FlowComponent):
                 outputs = layer(inputs, initialize=initialize, **kwargs)
             else:
-                outputs = layer(inputs,**kwargs)
+                outputs = layer(inputs, **kwargs)
             # `outputs` will be the inputs to the next layer.
             inputs = outputs
             mask = outputs._keras_mask

@@ -3,8 +3,8 @@ from enum import Enum
 import tensorflow as tf
 from tensorflow.keras import Sequential, layers
 
-from flows.actnorm import Actnorm
-from flows.flowbase import FlowComponent
+from TFGENZOO.flows.actnorm import Actnorm
+from TFGENZOO.flows.flowbase import FlowComponent
 
 Layer = layers.Layer
 

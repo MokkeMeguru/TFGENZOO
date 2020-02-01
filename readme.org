@@ -1,6 +1,6 @@
 [[https://github.com/MokkeMeguru/TFGENZOO/workflows/tensorflow%20test/badge.svg?branch=flow%2Fdevelop]]
 [[https://img.shields.io/badge/License-MIT-yellow.svg]]
-[[https://img.shields.io/badge/python-3.7-blue]]
+[[file:https://img.shields.io/badge/python-3.7-blue]]
 * What's this repository?
   This is a repository for some researcher to build some Generative models using Tensorflow 2.0.
 

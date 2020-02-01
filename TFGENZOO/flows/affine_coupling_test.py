@@ -1,8 +1,8 @@
 import numpy as np
 import tensorflow as tf
 
-from flows.affine_coupling import AffineCoupling, GlowNN
-from flows.flowbase import FlowComponent
+from TFGENZOO.flows.affine_coupling import AffineCoupling, GlowNN
+from TFGENZOO.flows.flowbase import FlowComponent
 
 
 class GlowNNTest(tf.test.TestCase):

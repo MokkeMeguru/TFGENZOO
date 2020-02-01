@@ -1,0 +1,3 @@
+prune TFGENZOO/flows-bak
+prune TFGENZOO/examples
+global-exclude *_test.py

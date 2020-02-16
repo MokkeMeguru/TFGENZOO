@@ -11,8 +11,10 @@ class ActnormTest(tf.test.TestCase):
         self.actnorm.build((None, 16, 16, 4))
 
     def testActnormInitializeOutputShape(self):
+        self.assertFalse(self.actnorm.initialized)
         x = tf.random.normal([1024, 16, 16, 4])
-        z,  ldj = self.actnorm(x, initialize=True)
+        z,  ldj = self.actnorm(x)
+        self.assertTrue(self.actnorm.initialized)
         self.assertShapeEqual(
             np.zeros(x.shape), z)
         self.assertShapeEqual(
@@ -20,15 +22,19 @@ class ActnormTest(tf.test.TestCase):
 
     def testActnormOutput(self):
         x = tf.random.normal([1024, 16, 16, 4])
-        self.actnorm(x, initialize=True)
+        self.actnorm(x)
         self.assertShapeEqual(
             np.zeros([1, 1, 1, 4]), self.actnorm.logs.value())
         self.assertShapeEqual(
             np.zeros([1, 1, 1, 4]), self.actnorm.bias.value())
-        self.assertAllClose(self.actnorm.logs.value(),
-                            tf.math.log(tf.ones([1, 1, 1, 4])
-                                        / self.actnorm.logscale_factor),
-                            rtol=1e-8, atol=1e-1)
+        self.assertAllClose(
+            self.actnorm.logs.value(),
+            tf.math.log(
+                self.actnorm.scale / tf.ones([1, 1, 1, 4])
+                # / self.actnorm.logscale_factor
+            ),
+            # * self.actnorm.logscale_factor,
+            rtol=1e-8, atol=1e-1)
         self.assertAllClose(self.actnorm.bias.value(),
                             tf.zeros([1, 1, 1, 4]), rtol=1e-8, atol=1e-1)
 
@@ -41,23 +47,9 @@ class ActnormWithOutLDJTest (tf.test.TestCase):
 
     def testActnormInitializeOutputShape(self):
         x = tf.random.normal([1024, 16, 16, 4])
-        z = self.actnorm(x, initialize=True)
+        z = self.actnorm(x)
         self.assertShapeEqual(
             np.zeros(x.shape), z)
-
-    def testActnormOutput(self):
-        x = tf.random.normal([1024, 16, 16, 4])
-        self.actnorm(x, initialize=True)
-        self.assertShapeEqual(
-            np.zeros([1, 1, 1, 4]), self.actnorm.logs.value())
-        self.assertShapeEqual(
-            np.zeros([1, 1, 1, 4]), self.actnorm.bias.value())
-        self.assertAllClose(self.actnorm.logs.value(),
-                            tf.math.log(tf.ones([1, 1, 1, 4])
-                                        / self.actnorm.logscale_factor),
-                            rtol=1e-8, atol=1e-1)
-        self.assertAllClose(self.actnorm.bias.value(),
-                            tf.zeros([1, 1, 1, 4]), rtol=1e-8, atol=1e-1)
 
 
 class ActnormScaleTest(tf.test.TestCase):
@@ -69,25 +61,11 @@ class ActnormScaleTest(tf.test.TestCase):
 
     def testActnormInitializeOutputShape(self):
         x = tf.random.normal([1024, 16, 16, 4])
-        z,  ldj = self.actnorm(x, initialize=True)
+        z,  ldj = self.actnorm(x)
         self.assertShapeEqual(
             np.zeros(x.shape), z)
         self.assertShapeEqual(
             np.zeros(x.shape[0:1]), ldj)
-
-    def testActnormOutput(self):
-        x = tf.random.normal([1024, 16, 16, 4])
-        self.actnorm(x, initialize=True)
-        self.assertShapeEqual(
-            np.zeros([1, 1, 1, 4]), self.actnorm.logs.value())
-        self.assertShapeEqual(
-            np.zeros([1, 1, 1, 4]), self.actnorm.bias.value())
-        self.assertAllClose(self.actnorm.logs.value() - np.log(self.scale),
-                            tf.math.log(tf.ones([1, 1, 1, 4])
-                                        / self.actnorm.logscale_factor),
-                            rtol=1e-8, atol=1e-1)
-        self.assertAllClose(self.actnorm.bias.value(),
-                            tf.zeros([1, 1, 1, 4]), rtol=1e-8, atol=1e-1)
 
 
 class ActnormInvTest(tf.test.TestCase):
@@ -98,7 +76,7 @@ class ActnormInvTest(tf.test.TestCase):
 
     def testActnormInitializeOutputShape(self):
         x = tf.random.normal([1024, 16, 16, 4])
-        z,  ldj = self.actnorm(x, initialize=True)
+        z,  ldj = self.actnorm(x)
         self.assertShapeEqual(
             np.zeros(x.shape), z)
         self.assertShapeEqual(
@@ -106,9 +84,9 @@ class ActnormInvTest(tf.test.TestCase):
 
     def testActnormInvOutput(self):
         x = tf.random.normal([1024, 16, 16, 4])
-        self.actnorm(x, initialize=True)
+        self.actnorm(x)
         x = tf.random.normal([1024, 16, 16, 4])
-        z,  ldj = self.actnorm(x, initialize=False)
+        z,  ldj = self.actnorm(x)
         rev_x, ildj = self.actnorm(z, inverse=True)
         self.assertAllClose(
             ldj + ildj, tf.zeros(x.shape[0:1]),

@@ -45,7 +45,7 @@ class Actnorm(FlowComponent):
         self.logscale_factor = logscale_factor
         super(Actnorm, self).__init__(**kwargs)
 
-    def build(self, input_shape: tf.TensorShape, **kwargs):
+    def build(self, input_shape: tf.TensorShape):
         reduce_axis = list(range(len(input_shape)))
         reduce_axis.pop(-1)
         self.reduce_axis = reduce_axis
@@ -56,11 +56,13 @@ class Actnorm(FlowComponent):
         logs_shape[-1] = input_shape[-1]
         self.logs = self.add_weight(shape=tuple(logs_shape),
                                     initializer='zeros',
+                                    # regularizer=tf.keras.regularizers.l2(0.01),
                                     trainable=True)
         self.bias = self.add_weight(shape=tuple(logs_shape),
                                     initializer='zeros',
+                                    # regularizer=tf.keras.regularizers.l2(0.02),
                                     trainable=True)
-        super(Actnorm, self).build(input_shape, **kwargs)
+        super(Actnorm, self).build(input_shape)
 
     def initialize_parameter(self, x: tf.Tensor):
         tf.print('[Info] initialize parameter at {}'.format(self.name))
@@ -74,17 +76,18 @@ class Actnorm(FlowComponent):
                  tf.square(x), axis=self.reduce_axis, keepdims=True) / n]
         )
         x_var = x_mean_sq - tf.square(x_mean)
-        logs = tf.math.log(
-            self.scale / (tf.sqrt(x_var) + 1e-6) / self.logscale_factor)
+        logs = tf.math.log(self.scale * tf.math.rsqrt(x_var + 1e-6))
+        # logs = tf.math.log(
+        #  self.scale * tf.math.rsqrt(x_var + 1e-6) / self.log_scale_factor)
+        #  * self.log_scale_factor
         self.add_update(self.bias.assign(- x_mean))
         self.add_update(self.logs.assign(logs))
 
     def forward(self, x: tf.Tensor, **kwargs):
-        logs = self.logs * self.logscale_factor
         z = x + self.bias
-        z = z * tf.exp(logs)
+        z = z * tf.exp(self.logs)
         if self.calc_ldj:
-            log_det_jacobian = tf.reduce_sum(logs) * self.logdet_factor
+            log_det_jacobian = tf.reduce_sum(self.logs) * self.logdet_factor
             log_det_jacobian = tf.broadcast_to(
                 log_det_jacobian, tf.shape(x)[0:1])
             return z, log_det_jacobian
@@ -92,12 +95,11 @@ class Actnorm(FlowComponent):
             return z
 
     def inverse(self, z: tf.Tensor, **kwargs):
-        logs = self.logs * self.logscale_factor
-        x = z * tf.exp(- 1 * logs)
+        x = z * tf.exp(- 1 * self.logs)
         x = x - self.bias
         if self.calc_ldj:
             inverse_log_det_jacobian = (
-                -1 * tf.reduce_sum(logs) * self.logdet_factor)
+                -1 * tf.reduce_sum(self.logs) * self.logdet_factor)
             inverse_log_det_jacobian = tf.broadcast_to(
                 inverse_log_det_jacobian, tf.shape(x)[0:1])
             return x, inverse_log_det_jacobian

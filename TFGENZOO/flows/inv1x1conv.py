@@ -17,7 +17,7 @@ def regular_matrix_init(
         'this initialization for 2D matrix, C \times C'
     )
     c = shape[0]
-    w_init = np.linalg.qr(np.random.randn(c, c))[0]
+    w_init = np.linalg.qr(np.random.randn(c, c))[0].astype("float32")
     return w_init
 
 
@@ -48,8 +48,11 @@ class Inv1x1Conv(FlowComponent):
         self.W = self.add_weight(
             name='W',
             shape=(c, c),
+            # regularizer=tf.keras.regularizers.l2(0.01),
             initializer=regular_matrix_init
         )
+        super(Inv1x1Conv, self).build(input_shape)
+
 
     def __init__(self, **kwargs):
         super(Inv1x1Conv, self).__init__()
@@ -69,3 +72,23 @@ class Inv1x1Conv(FlowComponent):
         inverse_log_det_jacobian = tf.broadcast_to(
             inverse_log_det_jacobian, tf.shape(z)[0:1])
         return x, inverse_log_det_jacobian
+
+def test_():
+    
+    origin_x = tf.random.uniform([16, 12, 12, 12])
+
+    x= origin_x
+    ws = []
+    inv_ws = []
+    for i in range(200):
+        w = np.linalg.qr(np.random.randn(12, 12))[0].astype("float32")
+        inv_w = tf.linalg.inv(w)
+        ws.append(w)
+        inv_ws.append(inv_w)
+    z = x
+    for w in ws:
+        z = tf.nn.conv2d(z, tf.reshape(w, [1, 1, 12, 12]), [1, 1, 1, 1], 'SAME')
+    x = z
+    for inv_w in reversed(inv_ws):
+         x = tf.nn.conv2d(x, tf.reshape(inv_w, [1, 1, 12, 12]), [1, 1, 1, 1], 'SAME')
+    print(tf.reduce_sum((x - origin_x)**2))

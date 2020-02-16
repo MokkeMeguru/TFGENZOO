@@ -1,23 +1,25 @@
 from enum import Enum
 
 import tensorflow as tf
-from tensorflow.keras import Sequential, layers
+from tensorflow.keras import Model, Sequential, layers, regularizers
 
 from TFGENZOO.flows.actnorm import Actnorm
 from TFGENZOO.flows.flowbase import FlowComponent
 
 Layer = layers.Layer
+Conv2D = layers.Conv2D
 
 
 class LogScale(Layer):
-    def build(self, input_shape):
+    def build(self, input_shape: tf.TensorShape):
         shape = [1, input_shape[-1]]
         self.logs = self.add_weight(
             shape=tuple(shape),
             initializer='zeros',
+            # regularizer=tf.keras.regularizers.l2(0.01),
             trainable=True)
 
-    def __init__(self, log_scale_factor=3.0, **kwargs):
+    def __init__(self, log_scale_factor: float = 3.0, **kwargs):
         super(LogScale, self).__init__(**kwargs)
         self.log_scale_factor = log_scale_factor
 
@@ -31,13 +33,14 @@ class SequentialWithKwargs(Sequential):
             layers=layers, name=name)
 
     def call(self,
-             inputs, training=None, mask=None, initialize=False, **kwargs):
+             inputs, training=None, mask=None):
         if self._is_graph_network:
             if not self.built:
                 self._init_graph_network(
                     self.inputs, self.outputs, name=self.name)
-            return super(Sequential, self).call(
+            return super(SequentialWithKwargs, self).call(
                 inputs, training=training, mask=mask)
+
         outputs = inputs  # handle the corner case where self.layers is empty
         for layer in self.layers:
             # During each iteration,
@@ -52,10 +55,9 @@ class SequentialWithKwargs(Sequential):
                 kwargs['mask'] = mask
             if 'training' in argspec:
                 kwargs['training'] = training
-            if isinstance(layer, FlowComponent):
-                outputs = layer(inputs, initialize=initialize, **kwargs)
-            else:
-                outputs = layer(inputs, **kwargs)
+
+            outputs = layer(inputs, **kwargs)
+
             # `outputs` will be the inputs to the next layer.
             inputs = outputs
             mask = outputs._keras_mask
@@ -161,9 +163,11 @@ class AffineCoupling(FlowComponent):
         if self.mask_type == AffineCouplingMask.ChannelWise:
             shift = h[..., 0::2]
             log_scale = h[..., 1::2]
-        scale = tf.nn.sigmoid(log_scale + 2.0)
+        # scale = tf.nn.sigmoid(log_scale + 2.0)
+        scale = tf.exp(tf.clip_by_value(log_scale, -15.0, 15.0))
         z2 = (x2 + shift) * scale
-        log_det_jacobian = tf.reduce_sum(log_scale, axis=self.reduce_axis)
+        log_det_jacobian = tf.reduce_sum(
+            tf.math.log(scale), axis=self.reduce_axis)
         return tf.concat([z1, z2], axis=-1), log_det_jacobian
 
     def inverse(self, z: tf.Tensor, **kwargs):
@@ -173,8 +177,9 @@ class AffineCoupling(FlowComponent):
         if self.mask_type == AffineCouplingMask.ChannelWise:
             shift = h[..., 0::2]
             log_scale = h[..., 1::2]
-        scale = tf.nn.sigmoid(log_scale + 2.0)
-        x2 = (z2 / scale) - shift
+        # scale = tf.nn.sigmoid(log_scale + 2.0)
+        scale = tf.exp(- tf.clip_by_value(log_scale, -15.0, 15.0))
+        x2 = (z2 * scale) - shift
         inverse_log_det_jacobian = - 1 * tf.reduce_sum(
-            log_scale, axis=self.reduce_axis)
+            tf.math.log(scale), axis=self.reduce_axis)
         return tf.concat([x1, x2], axis=-1), inverse_log_det_jacobian

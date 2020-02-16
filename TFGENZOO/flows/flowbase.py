@@ -12,28 +12,32 @@ class FlowBase(Layer, metaclass=ABCMeta):
     """
     @abstractmethod
     def __init__(self, **kwargs):
-        self.initialized = False
         super(FlowBase, self).__init__(kwargs)
 
-    def initialize_parameter(self, *args, **kwargs):
+    def initialize_parameter(self, x: tf.Tensor):
         pass
 
     def build(self, input_shape: tf.TensorShape):
+        self.initialized = self.add_weight(
+            name='initialized',
+            dtype=tf.bool,
+            trainable=False)
+        self.initialized.assign(False)
         self.built = True
 
     def call(self, x: tf.Tensor,
              inverse=False,
-             initialize: bool = False, **kwargs):
-        if initialize:
+             **kwargs):
+        if not self.initialized:
             if not inverse:
                 self.initialize_parameter(x)
-                self.initialized = True
+                self.initialized.assign(True)
             else:
                 raise Exception('Invalid initialize')
         if inverse:
-            return self.inverse(x, initialize=initialize, **kwargs)
+            return self.inverse(x, **kwargs)
         else:
-            return self.forward(x, initialize=initialize, **kwargs)
+            return self.forward(x, **kwargs)
 
     @abstractmethod
     def forward(self, inputs, **kwargs):
@@ -88,13 +92,14 @@ class FlowModule(FlowBase):
             input_shape=input_shape)
 
     def __init__(self, components: List[FlowComponent]):
+        super(FlowModule, self).__init__()
         self.components = components
 
     def forward(self, x, **kwargs):
         z = x
         log_det_jacobian = []
         for component in self.components:
-            z, ldj = component(x, inverse=False, **kwargs)
+            z, ldj = component(z, inverse=False, **kwargs)
             log_det_jacobian.append(ldj)
         log_det_jacobian = sum(log_det_jacobian)
         return z, log_det_jacobian
@@ -103,53 +108,72 @@ class FlowModule(FlowBase):
         x = z
         inverse_log_det_jacobian = []
         for component in reversed(self.components):
-            z, ildj = component(x, inverse=True, **kwargs)
+            x, ildj = component(x, inverse=True, **kwargs)
             inverse_log_det_jacobian.append(ildj)
         inverse_log_det_jacobian = sum(inverse_log_det_jacobian)
-        return z, inverse_log_det_jacobian
+        return x, inverse_log_det_jacobian
 
 
 class FactorOutBase(FlowBase):
     @abstractmethod
     def __init__(self, **kwargs):
-        super(FactorOutBase, self).__init__(kwargs)
+        super(FactorOutBase, self).__init__(**kwargs)
 
     def build(self, input_shape: tf.TensorShape):
         super(FactorOutBase, self).build(input_shape)
 
-    @abstractmethod
-    def forward(self, x: tf.Tensor, zs: List[tf.Tensor], **kwargs):
-        z1, z2 = tf.split(x, 2, axis=-1)
-        zs = [z2] + zs
-        log_det_jacobian = tf.zeros(tf.shape(z1)[0:1])
-        return z1, log_det_jacobian, zs
+    def call(self, x: tf.Tensor,
+             zaux: tf.Tensor = None,
+             inverse=False,
+             **kwargs):
+        if not self.initialized:
+            if not inverse:
+                self.initialize_parameter(x)
+                self.initialized.assign(True)
+            else:
+                raise Exception('Invalid initialize')
+        if inverse:
+            return self.inverse(x, zaux, **kwargs)
+        else:
+            return self.forward(x, zaux, **kwargs)
 
     @abstractmethod
-    def inverse(self, x: tf.Tensor, zs: List[tf.Tensor], **kwargs):
-        z1 = x
-        z2 = zs[0]
-        zs = zs[1:]
-        z = tf.concat([z1, z2], axis=-1)
-        inverse_log_det_jacobian = tf.zeros(tf.shape(z)[0:1])
-        return z, inverse_log_det_jacobian, zs
+    def forward(self, x: tf.Tensor, zaux: tf.Tensor, **kwargs):
+        pass
+
+    @abstractmethod
+    def inverse(self, x: tf.Tensor, zaux: tf.Tensor, **kwargs):
+        pass
 
 
 class ConditionalFactorOutBase(FlowBase):
     @abstractmethod
     def __init__(self, **kwargs):
-        super(ConditionalFactorOutBase, self).__init__(kwargs)
+        super(ConditionalFactorOutBase, self).__init__(**kwargs)
 
     def build(self, input_shape: tf.TensorShape):
         super(ConditionalFactorOutBase, self).build(input_shape)
 
-    @abstractmethod
-    def forward(self, x: tf.Tensor, c: tf.Tensor, **kwargs):
-        z = x
-        log_det_jacobian = tf.zeros(tf.shape(z)[0:1])
-        return x, log_det_jacobian
+    def call(self, x: tf.Tensor,
+             zaux: tf.Tensor,
+             c: tf.Tensor,
+             inverse=False,
+             **kwargs):
+        if not self.initialized:
+            if not inverse:
+                self.initialize_parameter(x)
+                self.initialized.assign(True)
+            else:
+                raise Exception('Invalid initialize')
+        if inverse:
+            return self.inverse(x, zaux, c, **kwargs)
+        else:
+            return self.forward(x, zaux, c, **kwargs)
 
     @abstractmethod
-    def inverse(self, z: tf.Tensor, c: tf.Tensor, **kwargs):
-        x = z
-        inverse_log_det_jacobian = tf.zeros(tf.shape(z)[0:1])
-        return x, inverse_log_det_jacobian
+    def forward(self, x: tf.Tensor, zaux: tf.Tensor, c: tf.Tensor, **kwargs):
+        pass
+
+    @abstractmethod
+    def inverse(self, x: tf.Tensor, zaux: tf.Tensor, c: tf.Tensor, **kwargs):
+        pass

@@ -1,0 +1,137 @@
+from enum import Enum
+from typing import Callable, Dict, List, Union
+
+import tensorflow as tf
+from tensorflow.keras import Model, Sequential, layers, regularizers
+
+from TFGENZOO.flows.actnorm import Actnorm
+from TFGENZOO.flows.flowbase import FlowComponent
+
+Layer = layers.Layer
+Conv2D = layers.Conv2D
+
+
+class ResidualBlock(Model):
+    def build(self, input_shape: tf.TensorShape):
+        if len(input_shape) != 4:
+            raise NotImplementedError(
+                'this resblock can be applyed NHWC tensor')
+
+        num_channels = input_shape[-1]
+
+        if not self.out_channels:
+            self.out_channels = num_channels
+
+        self.conv1 = layers.Conv2D(
+            filters=self.out_channels, kernel_size=1, strides=(1, 1),
+            padding='same',
+            # kernel_regularizer=regularizers.l2(self.l2_reg_scale),
+            # activity_regularizer=regularizers.l2(self.l2_reg_scale)
+        )
+        self.conv2 = layers.Conv2D(
+            filters=self.out_channels, kernel_size=3, strides=(1, 1),
+            padding='same',
+            # kernel_regularizer=regularizers.l2(self.l2_reg_scale),
+            # activity_regularizer=regularizers.l2(self.l2_reg_scale)
+        )
+        self.conv3 = layers.Conv2D(
+            filters=self.out_channels, kernel_size=3, strides=(1, 1),
+            padding='same',
+            # kernel_regularizer=regularizers.l2(self.l2_reg_scale),
+            # activity_regularizer=regularizers.l2(self.l2_reg_scale)
+        )
+
+        if self.skip_connection:
+            if not self.out_channels == num_channels:
+                self.shortcut = layers.Conv2D(
+                    filters=self.out_channels, kernel_size=1, strides=(1, 1),
+                    padding='same',
+                    # kernel_regularizer=regularizers.l2(self.l2_reg_scale),
+                    # activity_regularizer=regularizers.l2(self.l2_reg_scale)
+                )
+            else:
+                self.shortcut = None
+        super(ResidualBlock, self).build(input_shape)
+
+    def __init__(self,
+                 activation_fn: Callable = tf.nn.relu,
+                 l2_reg_scale: float = 0.01,
+                 skip_connection: bool = True,
+                 out_channels: Union[int, None] = None):
+        super(ResidualBlock, self).__init__()
+        self.skip_connection = skip_connection
+        self.activation_fn = activation_fn
+        self.l2_reg_scale = l2_reg_scale
+        self.out_channels = out_channels
+
+    def get_config(self):
+        return {
+            'activation_fn': self.activation_fn,
+            'l2_reg_scale': self.l2_reg_scale,
+            'skip_connection': self.skip_connection,
+            'out_channels': self.out_channels}
+
+    def call(self, x, training=None, mask=None, initialize=False):
+        x_init = x
+        h = x
+        h = self.conv1(h)
+        h = self.conv2(h)
+        h = self.conv3(h)
+        if self.skip_connection:
+            if self.shortcut:
+                x_init = self.shortcut(x_init)
+            h = h + x_init
+        return self.activation_fn(h)
+
+
+class ResidualNet(Model):
+    def build(self, input_shape: tf.TensorShape):
+        num_channels = input_shape[-1]
+        num_units = num_channels * self.units_factor
+        self.resblk_kwargs['out_channels'] = num_units
+        layers = []
+        for _ in range(self.num_block):
+            layers.append(ResidualBlock(**self.resblk_kwargs))
+        self.res_layers = layers
+        self.output_fn = tf.keras.layers.Conv2D(
+            filters=num_channels * 2,
+            kernel_size=3, strides=(1, 1),
+            padding='same',
+            activation=tf.nn.sigmoid) # None
+        super(ResidualNet, self).build(input_shape)
+
+    def __init__(self,
+                 num_block: int = 1,
+                 units_factor: int = 2,
+                 resblk_kwargs: Dict = None):
+        super(ResidualNet, self).__init__()
+        self.num_block = num_block
+        self.units_factor = units_factor
+        self.resblk_kwargs = resblk_kwargs if resblk_kwargs else {}
+
+    def get_config(self):
+        return {
+            'num_block': self.num_block,
+            'units_factor': self.units_factor}
+
+    def call(self, x, training=None, mask=None, initialize=False):
+        for layer in self.res_layers:
+            x = layer(x, training=training, initialize=initialize)
+        x = self.output_fn(x, training=training)
+        return x
+
+
+def main():
+    x = tf.keras.Input([32, 32, 3])
+    model = ResidualNet(num_block=3, units_factor=6)
+    y = model(x, training=True, mask=None, initialize=False)
+    model.summary()
+    x = tf.random.normal([16, 32, 32, 3])
+    y = model(x)
+    print (tf.reduce_max (y))
+    print (tf.reduce_min (y))
+    return model
+
+
+if __name__ == '__main__':
+    main()

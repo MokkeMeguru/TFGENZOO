@@ -13,7 +13,7 @@ class GlowNNTest(tf.test.TestCase):
 
     def testGlowNN(self):
         x = tf.random.normal([1024, 16, 16, 4])
-        self.nn(x, initialize=True)
+        self.nn(x)
         y = self.nn(x)
         self.assertShapeEqual(
             np.zeros([1024, 16, 16, 8]), y)
@@ -26,15 +26,17 @@ class AffineCouplingTest(tf.test.TestCase):
         self.affine_coupling.build((None, 16, 16, 4))
 
     def testAffineCouplingInitialize(self):
+        assert self.affine_coupling.initialized == False
         x = tf.random.uniform((1024, 16, 16, 4))
-        self.affine_coupling(x, initialize=True)
+        self.affine_coupling(x)
+        assert self.affine_coupling.initialized == True
         for i in self.affine_coupling.scale_shift_net.res_block.layers:
             if isinstance(i, FlowComponent):
                 self.assertTrue(i.initialized)
 
     def testAffineCouplingInv(self):
         x = tf.random.normal((1024, 16, 16, 4))
-        self.affine_coupling(x, initialize=True)
+        self.affine_coupling(x)
         x = tf.random.normal((1024, 16, 16, 4))
         z,  ldj = self.affine_coupling(x)
         rev_x, ildj = self.affine_coupling(x, inverse=True)

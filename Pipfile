@@ -6,6 +6,7 @@ verify_ssl = true
 [dev-packages]
 python-language-server = {extras = ["all"],version = "*"}
 ipython = "*"
+matplotlib = "*"
 
 [packages]
 python-language-server = {extras = ["all"],version = "*"}

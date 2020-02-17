@@ -78,7 +78,7 @@ class SingleFlow(Model):
         return x, inverse_log_det_jacobian
 
     def forward(self, x, training):
-        # zaux = None
+        zaux = None
         log_det_jacobian = tf.zeros(tf.shape(x)[0:1])
         for flow in self.flows:
             if isinstance(flow, Squeezing):

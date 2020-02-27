@@ -1,119 +1,109 @@
+from functools import reduce
+
 import tensorflow as tf
-from TFGENZOO.flows import flows
-from tensorflow.keras import layers
-import numpy as np
-Flow = flows.Flow
-Layer = layers.Layer
+
+from TFGENZOO.flows.flowbase import FlowComponent
 
 
-class Actnorm(Flow):
-    """Actnorm bijector
-    ref.
-    https://arxiv.org/pdf/1807.03039.pdf
-    https://github.com/y0ast/Glow-PyTorch/blob/master/modules.py
+class Actnorm(FlowComponent):
+    """Actnorm Layer
+    attributes:
+    - calc_ldj: bool
+    flag of calculate log det jacobian
+    - scale: float
+    initialize batch's variance scaling
+    - logscale_factor: float
+    barrier log value to - Inf
+
+    notes:
+    - initialize
+    mean = mean(first_batch)
+    var = variance(first_batch)
+    logs = log(scale / sqrt(var) / log_scale_factor)
+    bias = - mean
+
+    - forward formula
+    logs = logs * log_scale_factor
+    scale = exp(logs)
+    z = (x + bias) * scale
+    log_det_jacobain = sum(logs) * H * W
+
+    - inverse
+    logs = logs * log_scale_factor
+    inv_scale = exp(-logs)
+    z = x * inv_scale - bias
+    inverse_log_det_jacobian = sum(- logs) * H * W
     """
 
-    def build(self, input_shape):
-        input_shape = input_shape.as_list()
-        shapes = [1 for i in range(len(input_shape))]
-        shapes[self.normaxis] = input_shape[self.normaxis]
-        self.log_scale = self.add_weight(
-            "log_scale",
-            shape=shapes,
-            dtype=tf.float32,
-            initializer='zeros',
-            )
-        self.bias = self.add_weight(
-            "bias",
-            shape=shapes,
-            dtype=tf.float32,
-            initializer='zeros'
+    def __init__(self,
+                 calc_ldj: bool = True,
+                 scale: float = 1.0,
+                 logscale_factor: float = 3.0,
+                 **kwargs):
+        self.calc_ldj = calc_ldj
+        self.scale = scale
+        self.logscale_factor = logscale_factor
+        super(Actnorm, self).__init__(**kwargs)
+
+    def build(self, input_shape: tf.TensorShape):
+        reduce_axis = list(range(len(input_shape)))
+        reduce_axis.pop(-1)
+        self.reduce_axis = reduce_axis
+        self.logdet_factor = tf.constant(
+            reduce(lambda x, y: x*y,
+                   list(input_shape[1:-1])), tf.float32)
+        logs_shape = [1 for i in range(len(input_shape))]
+        logs_shape[-1] = input_shape[-1]
+        self.logs = self.add_weight(name='log_scale',
+                                    shape=tuple(logs_shape),
+                                    initializer='zeros',
+                                    # regularizer=tf.keras.regularizers.l2(0.01),
+                                    trainable=True)
+        self.bias = self.add_weight(name='bias',
+                                    shape=tuple(logs_shape),
+                                    initializer='zeros',
+                                    # regularizer=tf.keras.regularizers.l2(0.02),
+                                    trainable=True)
+        super(Actnorm, self).build(input_shape)
+
+    def initialize_parameter(self, x: tf.Tensor):
+        tf.print('[Info] initialize parameter at {}'.format(self.name))
+        ctx = tf.distribute.get_replica_context()
+        n = ctx.num_replicas_in_sync
+        x_mean, x_mean_sq = ctx.all_reduce(
+            tf.distribute.ReduceOp.SUM,
+            [tf.reduce_mean(
+                x, axis=self.reduce_axis, keepdims=True) / n,
+             tf.reduce_mean(
+                 tf.square(x), axis=self.reduce_axis, keepdims=True) / n]
         )
-        axis = [i for i in range(len(input_shape))]
-        axis.pop(self.normaxis)
-        self.reduce_axis = axis
-        reduce_pixel = input_shape
-        reduce_pixel.pop(self.normaxis)
-        reduce_pixel.pop(0)
-        self.reduce_pixel = np.prod(reduce_pixel)
+        x_var = x_mean_sq - tf.square(x_mean)
+        logs = tf.math.log(self.scale * tf.math.rsqrt(x_var + 1e-6))
+        # logs = tf.math.log(
+        #  self.scale * tf.math.rsqrt(x_var + 1e-6) / self.log_scale_factor)
+        #  * self.log_scale_factor
+        self.add_update(self.bias.assign(- x_mean))
+        self.add_update(self.logs.assign(logs))
 
-    def __init__(self, normaxis: int = -1,
-                 log_scale_factor: float = 1.0,
-                 with_debug: bool = False):
-        """
-        args:
-        - normaxis: int
-        normalization's axis
-        ex. if HWC, -1
-        - log_scale_factor: float
-        scaling factor avoiding zero devision
-        default 1.0
-        - with_debug: bool
-        debugging assertion flag
-        """
-        super(Actnorm, self).__init__(with_debug=with_debug)
-        self.normaxis = normaxis
-        self.log_scale_factor = log_scale_factor
-
-    def setStat(self, x: tf.Tensor):
-        """Actnorm's initialization of first batch
-        - x: tf.Tensor
-        the first batch
-        note:
-        bias = - mean(x)
-        scale = 1/ stdvar(x)
-        """
-        tf.print('[actnorm] Set stat is called')
-        mean = tf.reduce_mean(x, axis=self.reduce_axis, keepdims=True)
-        var = tf.reduce_mean((x - mean) ** 2,
-                             axis=self.reduce_axis, keepdims=True)
-        stdvar = tf.math.sqrt(var) + 1e-6
-        log_scale = tf.math.log(self.log_scale_factor / stdvar)
-        bias_update = self.bias.assign(- mean)
-        log_scale_update = self.log_scale.assign(log_scale)
-        self.add_update(bias_update)
-        self.add_update(log_scale_update)
-
-    def call(self, x: tf.Tensor, **kwargs):
-        """forward
-        formula:
-        z = (x +bias) * scale
-        log_det_jacobian = h * w * sum(log(scale))
-        """
-        z = (x + self.bias) * tf.exp(self.log_scale)
-        log_det_jacobian = self.reduce_pixel * tf.reduce_sum(self.log_scale)
-        log_det_jacobian = tf.broadcast_to(log_det_jacobian, tf.shape(x)[0:1])
-        self.assert_tensor(x, z)
-        self.assert_log_det_jacobian(log_det_jacobian)
-        return z, log_det_jacobian
+    def forward(self, x: tf.Tensor, **kwargs):
+        z = x + self.bias
+        z = z * tf.exp(self.logs)
+        if self.calc_ldj:
+            log_det_jacobian = tf.reduce_sum(self.logs) * self.logdet_factor
+            log_det_jacobian = tf.broadcast_to(
+                log_det_jacobian, tf.shape(x)[0:1])
+            return z, log_det_jacobian
+        else:
+            return z
 
     def inverse(self, z: tf.Tensor, **kwargs):
-        """
-        formula:
-        x = z / scale - bias
-        inverse_log_det_jacobian = - h * w * sum(log(scale))
-        """
-        x = (z * tf.exp(- self.log_scale)) - self.bias
-        inverse_log_det_jacobian = - (self.reduce_pixel * tf.reduce_sum(self.log_scale))
-        inverse_log_det_jacobian = tf.broadcast_to(inverse_log_det_jacobian, tf.shape(x)[0:1])
-        self.assert_tensor(x, z)
-        self.assert_log_det_jacobian(inverse_log_det_jacobian)
-        return x, inverse_log_det_jacobian
-
-
-def test_actnorm():
-    actnorm = Actnorm(-1, with_debug=True)
-    x = tf.keras.Input([16, 16, 4])
-    model = tf.keras.Model(x, actnorm(x))
-    x = tf.random.normal([100, 16, 16, 4]) + 100
-    actnorm.setStat(x)
-    z, log_det_jacobian = model(x)
-    _x, inverse_log_det_jacobian = actnorm.inverse(z)
-    print('input: x', tf.reduce_mean(x).numpy())
-    print('output: z', tf.reduce_mean(z).numpy())
-    print('inverse: z', tf.reduce_mean(_x).numpy())
-    print('diff: {}'.format(tf.reduce_mean(x - _x)))
-    print('log_det_diff: {}'.format(tf.reduce_sum(log_det_jacobian +
-                                    inverse_log_det_jacobian)))
-    # print('log_det_jacobian: ',
-    #       actnorm.forward_log_det_jacobian(y, event_ndims=3).numpy())
+        x = z * tf.exp(- 1 * self.logs)
+        x = x - self.bias
+        if self.calc_ldj:
+            inverse_log_det_jacobian = (
+                -1 * tf.reduce_sum(self.logs) * self.logdet_factor)
+            inverse_log_det_jacobian = tf.broadcast_to(
+                inverse_log_det_jacobian, tf.shape(x)[0:1])
+            return x, inverse_log_det_jacobian
+        else:
+            return x

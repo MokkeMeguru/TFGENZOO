@@ -8,3 +8,6 @@
 *.png
 /TFGENZOO/examples/checkpoints/
 *.v2
+/TFGENZOO/flows-bak/
+/build/
+/dist/

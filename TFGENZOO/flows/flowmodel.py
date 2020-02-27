@@ -1,6 +1,5 @@
-from typing import Dict, List
+from typing import Dict
 
-import numpy as np
 import tensorflow as tf
 from tensorflow.keras import Model
 
@@ -15,6 +14,8 @@ from TFGENZOO.flows.utils import ResidualNet
 
 
 class SingleFlow(Model):
+    # super(BasicGlow, self).build(input_shape)
+    # 5, 3
     def __init__(self, K: int = 5, L: int = 1, resblk_kwargs: Dict = None):
         super().__init__()
         if resblk_kwargs is None:
@@ -34,6 +35,22 @@ class SingleFlow(Model):
                 layers.append(Inv1x1Conv())
                 layers.append(AffineCoupling(scale_shift_net=ResidualNet(
                     **self.resblk_kwargs)))
+        # for l in range(self.L):
+        #     if l == 0:
+        #         layers.append(Squeezing(with_zaux=False))
+        #     else:
+        #         layers.append(Squeezing(with_zaux=True))
+        #     fml = []
+        #     for k in range(self.K):
+        #         # fml.append(Actnorm())
+        #         fml.append(Inv1x1Conv())
+        #         # fml.append(AffineCoupling(scale_shift_net=ResidualNet(
+        #         #     **self.resblk_kwargs)))
+        #     layers.append(FlowModule(fml))
+        #     if l == 0:
+        #         layers.append(FactorOut())
+        #     elif l != self.L - 1:
+        #         layers.append(FactorOut(with_zaux=True))
         self.flows = layers
 
     def call(self, x, zaux=None, inverse=False, training=True):
@@ -78,6 +95,9 @@ class SingleFlow(Model):
 
 
 class BasicGlow(Model):
+    # def build(self, input_shape: tf.TensorShape):
+    #     super(BasicGlow, self).build(input_shape)
+    # 5, 3
     def __init__(self, K: int = 5, L: int = 3, resblk_kwargs: Dict = None):
         super(BasicGlow, self).__init__()
         if resblk_kwargs is None:
@@ -149,6 +169,115 @@ class BasicGlow(Model):
         return x, log_det_jacobian, zaux
 
 
+class SqueezeFactorOut(Model):
+    def __init__(self, L=3):
+        super(SqueezeFactorOut, self).__init__()
+        self.flows = [
+            LogitifyImage(),
+            Squeezing(),
+            FactorOut(),
+            Squeezing(with_zaux=True),
+            FactorOut(with_zaux=True),
+            Squeezing(with_zaux=True),
+            FactorOut(with_zaux=True)
+        ]
+
+    def call(self, x, zaux=None, inverse=False):
+        if inverse:
+            return self.inverse(x, zaux)
+        else:
+            return self.forward(x)
+
+    def inverse(self, x, zaux):
+        inverse_log_det_jacobian = tf.zeros(tf.shape(x)[0:1])
+        for flow in reversed(self.flows):
+            if isinstance(flow, Squeezing):
+                if flow.with_zaux:
+                    x, zaux = flow(x, zaux=zaux, inverse=True)
+                else:
+                    x = flow(x, inverse=True)
+            elif isinstance(flow, FactorOutBase):
+                if flow.with_zaux:
+                    x, zaux = flow(x, zaux=zaux, inverse=True)
+                else:
+                    x = flow(x, zaux=zaux, inverse=True)
+            else:
+                x, ldj = flow(x, inverse=True)
+                inverse_log_det_jacobian += ldj
+        return x, inverse_log_det_jacobian
+
+    def forward(self, x):
+        zaux = None
+        log_det_jacobian = tf.zeros(tf.shape(x)[0:1])
+        for flow in self.flows:
+            if isinstance(flow, Squeezing):
+                if flow.with_zaux:
+                    x, zaux = flow(x, zaux=zaux)
+                else:
+                    x = flow(x)
+            elif isinstance(flow, FactorOutBase):
+                x, zaux = flow(x, zaux)
+            else:
+                x, ldj = flow(x)
+                log_det_jacobian += ldj
+        return x, log_det_jacobian, zaux
+
+
+def squeeze_factor_Test():
+    tf.debugging.enable_check_numerics()
+    x = tf.keras.Input([24, 24, 1])
+    model = SqueezeFactorOut()
+    model.build(x.shape)
+    z, ldj, zaux = model(x)
+    print(z.shape)
+    print(ldj.shape)
+    model.summary()
+    x = tf.abs(tf.random.normal([16, 24, 24, 1]))
+    x = tf.clip_by_value(x, 0.5, 1.0)
+    z, ldj, zaux = model(x, inverse=False)
+    print(z.shape)
+    print(ldj.shape)
+    print(zaux.shape)
+    # _x, ildj = model(z, zaux=zaux, inverse=True)
+    # print(_x.shape)
+    # print(ildj.shape)
+    # print(tf.reduce_mean(x - _x))
+    # print(tf.reduce_mean(ldj + ildj))
+
+    # train, test = tf.keras.datasets.mnist.load_data()
+    # train_image = train[0] / 255.0
+    # train_image = train_image[..., tf.newaxis]
+    # train_image = tf.compat.v1.image.resize_bilinear(
+    #     train_image, size=(24, 24))
+    # # forward -> inverse
+    # train_image = train_image[0:12]
+    # forward, ldj, zaux = model(train_image, inverse=False)
+    # inverse, ildj = model(forward, zaux=zaux, inverse=True)
+    # print(forward.shape)
+    # print(zaux.shape)
+    # print(ldj.shape)
+    # print(ildj.shape)
+    # print(tf.reduce_sum(ldj + ildj))
+    # print(tf.reduce_mean(train_image - inverse))
+    # train_image = inverse
+    # print(train_image.shape)
+    # import matplotlib.pyplot as plt
+    # fig = plt.figure(figsize=(18, 18))
+    # for i in range(9):
+    #     img = tf.squeeze(train_image[i])
+    #     fig.add_subplot(3, 3, i + 1)
+    #     plt.title(train[1][i])
+    #     plt.tick_params(bottom=False,
+    #                     left=False,
+    #                     labelbottom=False,
+    #                     labelleft=False)
+    #     plt.imshow(img, cmap='gray_r')
+    # plt.show(block=True)
+
+    tf.debugging.disable_check_numerics()
+    return model
+
+
 def basic_glow_Test():
     tf.debugging.enable_check_numerics()
     x = tf.keras.Input([24, 24, 1])
@@ -158,6 +287,17 @@ def basic_glow_Test():
     print(z.shape)
     print(ldj.shape)
     model.summary()
+    # x = tf.abs(tf.random.normal([16, 24, 24, 1]))
+    # x = tf.clip_by_value(x, 0.0, 1.0)
+    # z, ldj, zaux = model(x, inverse=False)
+    # print(z.shape)
+    # print(ldj.shape)
+    # print(zaux.shape)
+    # _x, ildj = model(z, zaux=zaux, inverse=True)
+    # print(_x.shape)
+    # print(ildj.shape)
+    # print(tf.reduce_mean(x - _x))
+    # print(tf.reduce_mean(ldj + ildj))
 
     train, test = tf.keras.datasets.mnist.load_data()
     train_image = train[0] / 255.0
@@ -198,9 +338,69 @@ def basic_glow_Test():
     tf.debugging.disable_check_numerics()
     # return model
 
+
+def basic_flow_Test():
+    tf.debugging.enable_check_numerics()
+    x = tf.keras.Input([24, 24, 1])
+    model = SingleFlow()
+    model.build(x.shape)
+    z, ldj = model(x)
+    print(z)
+    print(ldj)
+    print(z.shape)
+    print(ldj.shape)
+    model.summary()
+
+    # x = tf.abs(tf.random.normal([16, 24, 24, 1]))
+    # x = tf.clip_by_value(x, 0.0, 1.0)
+    # z, ldj, zaux = model(x, inverse=False)
+    # print(z.shape)
+    # print(ldj.shape)
+    # print(zaux.shape)
+    # _x, ildj = model(z, zaux=zaux, inverse=True)
+    # print(_x.shape)
+    # print(ildj.shape)
+    # print(tf.reduce_mean(x - _x))
+    # print(tf.reduce_mean(ldj + ildj))
+
+    train, test = tf.keras.datasets.mnist.load_data()
+    train_image = train[0] / 255.0
+    train_image = train_image[..., tf.newaxis]
+    train_image = tf.compat.v1.image.resize_bilinear(
+        train_image, size=(24, 24))
+    # forward -> inverse
+    train_image = train_image[0:12]
+    forward, ldj = model(train_image, inverse=False)
+    print('max-min')
+    tf.print(tf.reduce_max(forward))
+    tf.print(tf.reduce_min(forward))
+    tf.print(tf.reduce_sum(tf.cast(tf.math.is_inf(forward), tf.float32)))
+    tf.print(tf.reduce_sum(tf.cast(tf.math.is_nan(forward), tf.float32)))
+    inverse, ildj = model(forward, inverse=True)
+    print(forward.shape)
+    print(ldj.shape)
+    print(ildj.shape)
+    print('diffs')
+    tf.print(tf.reduce_sum(ldj + ildj))
+    tf.print(tf.reduce_mean(train_image - inverse))
+    train_image = inverse
+    print(train_image.shape)
+    import matplotlib.pyplot as plt
+    fig = plt.figure(figsize=(18, 18))
+    for i in range(9):
+        img = tf.squeeze(train_image[i])
+        fig.add_subplot(3, 3, i + 1)
+        plt.title(train[1][i])
+        plt.tick_params(bottom=False,
+                        left=False,
+                        labelbottom=False,
+                        labelleft=False)
+        plt.imshow(img, cmap='gray_r')
+    plt.show(block=True)
+
+    tf.debugging.disable_check_numerics()
+    # return model
+
+
 def main():
     basic_glow_Test()
-
-
-if __name__ == '__main__':
-    main()

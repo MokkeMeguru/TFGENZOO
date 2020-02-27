@@ -1,28 +1,46 @@
-import tensorflow as tf
-from TFGENZOO.flows import flows
-from tensorflow.keras import layers
-from tensorflow.keras import initializers
-from typing import List
+from typing import Tuple
+
 import numpy as np
+import tensorflow as tf
 
-Flow = flows.Flow
+from TFGENZOO.flows.flowbase import FlowComponent
 
-def regular_matrix_init(shape, dtype=tf.float32):
+
+def regular_matrix_init(
+        shape: Tuple[int, int], dtype=tf.float32):
+    """initialize with orthogonal matrix
+    args:
+    - shape: Tuple
+    """
+    assert len(shape) == 2, 'this initialization for 2D matrix'
+    assert shape[0] == shape[1], (
+        'this initialization for 2D matrix, C \times C'
+    )
     c = shape[0]
-    w_init = np.linalg.qr(np.random.randn(c, c))[0]
+    w_init = np.linalg.qr(np.random.randn(c, c))[0].astype("float32")
     return w_init
 
-class Inv1x1Conv(Flow):
-    """Invertible 1x1 Convolution layer
+
+class Inv1x1Conv(FlowComponent):
+    """Invertible 1x1 Convolution Layer
     ref. Glow https://arxiv.org/pdf/1807.03039.pdf
-    formula:
-    forall i, j: y_{i, j} = W x_{i, j}
-    log_determinant_jacobian = h * w * log|det (W)|
+
+    notes:
+    - forward formula
+    => forall i, j: z_{i, j} = W x_{i, j}
+    => log_det_jacobian = H * W * log|det(W)|
+    where
+    x_{i, j}, y_{i, j} in [C, C]
+    W in [C, C]
+    - inverse formula
+    => forall i, j: x_{i, j} = W^{-1} z_{i, j}
+    => inverse_log_det_jacobian = - 1 * H * W * log|det(W)|
     where
     x_{i, j}, y_{i, j} in [C, C]
     W in [C, C]
     """
-    def build(self, input_shape, **kargs):
+
+    def build(self, input_shape: tf.TensorShape):
         h, w, c = input_shape[1:]
         self.h = h
         self.w = w
@@ -30,70 +48,49 @@ class Inv1x1Conv(Flow):
         self.W = self.add_weight(
             name='W',
             shape=(c, c),
+            regularizer=tf.keras.regularizers.l2(0.01),
             initializer=regular_matrix_init
         )
+        super(Inv1x1Conv, self).build(input_shape)
 
-    def __init__(self, with_debug: bool = True, **kargs):
-        """
-        """
-        super(Inv1x1Conv, self).__init__(with_debug=with_debug)
+    def __init__(self, **kwargs):
+        super(Inv1x1Conv, self).__init__()
 
-    def call(self, x: tf.Tensor, **kargs):
-        """Invertible 1x1 Convolution
-        Args:
-        - x: tf.Tensor
-        input data
-        Returns:
-        - z: tf.Tensor
-        ouptut latent
-        - log_det_jacobian
-        formula:
-        z = W x
-        log_det_jacobian = log|det W|
-        """
+    def forward(self, x: tf.Tensor, **kwargs):
         _W = tf.reshape(self.W, [1, 1, self.c, self.c])
-        z = tf.nn.conv2d(x, _W, [1, 1, 1, 1], 'SAME')
-        log_det_jacobian = self.h * self.w * tf.math.log(abs(tf.linalg.det(self.W)))
+        z = tf.nn.conv2d(x, _W, [1, 1, 1, 1], "SAME")
+        log_det_jacobian = tf.linalg.slogdet(self.W)[1] * self.h * self.w
         log_det_jacobian = tf.broadcast_to(log_det_jacobian, tf.shape(x)[0:1])
-        self.assert_tensor(x, z)
-        self.assert_log_det_jacobian(log_det_jacobian)
         return z, log_det_jacobian
 
-    def inverse(self, z: tf.Tensor, **kargs):
-        """De Invertible 1x1 Convolution
-        Args:
-        - z: tf.Tensor
-        input latent
-        Returns:
-        - x: tf.Tensor
-        output data
-        - inverse_log_det_jacobian
-        formula:
-        x = W^{-1} x
-        inverse_log_det_jacobian = - log |det (W)|
-        """
-        _inv_W = tf.linalg.inv(self.W)
-        _inv_W = tf.reshape(_inv_W, [1, 1, self.c, self.c])
-        x = tf.nn.conv2d(z, _inv_W, [1, 1, 1, 1], 'SAME')
-        ildj = - self.h * self.w * \
-            tf.math.log(abs(tf.linalg.det(self.W)))
-        ildj = tf.broadcast_to(ildj, tf.shape(x)[0:1])
-        self.assert_tensor(z, x)
-        self.assert_log_det_jacobian(ildj)
-        return x, ildj
+    def inverse(self, z: tf.Tensor, **kwargs):
+        _W = tf.reshape(tf.linalg.inv(self.W), [1, 1, self.c, self.c])
+        x = tf.nn.conv2d(z, _W, [1, 1, 1, 1], "SAME")
+        inverse_log_det_jacobian = -1 * \
+            tf.linalg.slogdet(self.W)[1] * self.h * self.w
+        inverse_log_det_jacobian = tf.broadcast_to(
+            inverse_log_det_jacobian, tf.shape(z)[0:1])
+        return x, inverse_log_det_jacobian
 
 
-def test_Inv1x1Conv():
-    conv1x1 = Inv1x1Conv()
-    x = tf.keras.Input([16, 16, 2])
-    y, log_det_jacobian = conv1x1(x)
-    model = tf.keras.Model(x, [y, log_det_jacobian])
-    model.summary()
-    x = tf.random.normal([12, 16, 16, 2])
-    z, log_det_jacobian = conv1x1(x)
-    _x, ildj = conv1x1.inverse(z)
-    assert log_det_jacobian.shape == z.shape[0:1], "log_det_jacobian's shape is invalid"
-    assert ildj.shape == _x.shape[0:1], "log_det_jacobian's shape is invalid"
-    print('diff: {}'.format(tf.reduce_mean(x - _x)))
-    print('sum: {}'.format(tf.reduce_mean(log_det_jacobian + ildj)))
+def test_():
 
+    origin_x = tf.random.uniform([16, 12, 12, 12])
+
+    x = origin_x
+    ws = []
+    inv_ws = []
+    for i in range(200):
+        w = np.linalg.qr(np.random.randn(12, 12))[0].astype("float32")
+        inv_w = tf.linalg.inv(w)
+        ws.append(w)
+        inv_ws.append(inv_w)
+    z = x
+    for w in ws:
+        z = tf.nn.conv2d(z, tf.reshape(
+            w, [1, 1, 12, 12]), [1, 1, 1, 1], 'SAME')
+    x = z
+    for inv_w in reversed(inv_ws):
+        x = tf.nn.conv2d(x, tf.reshape(
+            inv_w, [1, 1, 12, 12]), [1, 1, 1, 1], 'SAME')
+    print(tf.reduce_sum((x - origin_x)**2))

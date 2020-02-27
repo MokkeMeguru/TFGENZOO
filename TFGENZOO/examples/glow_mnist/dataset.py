@@ -1,6 +1,7 @@
+import os
+
 import matplotlib.pyplot as plt
 import tensorflow as tf
-import os
 
 # From tensorflow's BEGINNER TUTORIALS
 
@@ -77,8 +78,9 @@ def _parse_function(example_proto):
     }
     feature = tf.io.parse_single_example(example_proto, feature_description)
     img = tf.io.decode_raw(feature['img'], out_type=tf.uint8)
-    img = tf.reshape(img, [32, 32, 1])
     img = tf.cast(img, dtype=tf.float32)
+    img = img[..., tf.newaxis]
+    img = tf.image.resize(img, (24, 24, 1))
     # img = (img / (255.0 / 2)) - 1
     feature['img'] = img
     return feature

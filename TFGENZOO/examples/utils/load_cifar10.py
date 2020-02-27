@@ -12,6 +12,9 @@ def load_dataset(BATCH_SIZE=120):
         # img = tf.expand_dims(img, axis=-1)
         # img = tf.reshape(img, [32, 32, 1])
         img = tf.cast(img, dtype=tf.float32)
+        # img = img[..., tf.newaxis]
+        img = tf.image.resize(img, (24, 24, 1))
+        img = tf.cast(img, dtype=tf.float32)
         img = (img / (255.0 / 2)) - 1
         feature["img"] = img
         feature["label"] = label

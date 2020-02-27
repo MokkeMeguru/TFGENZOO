@@ -48,36 +48,36 @@ class Inv1x1Conv(FlowComponent):
         self.W = self.add_weight(
             name='W',
             shape=(c, c),
-            # regularizer=tf.keras.regularizers.l2(0.01),
+            regularizer=tf.keras.regularizers.l2(0.01),
             initializer=regular_matrix_init
         )
         super(Inv1x1Conv, self).build(input_shape)
-
 
     def __init__(self, **kwargs):
         super(Inv1x1Conv, self).__init__()
 
     def forward(self, x: tf.Tensor, **kwargs):
         _W = tf.reshape(self.W, [1, 1, self.c, self.c])
-        z = tf.nn.conv2d(x, _W, [1, 1, 1, 1], 'SAME')
+        z = tf.nn.conv2d(x, _W, [1, 1, 1, 1], "SAME")
         log_det_jacobian = tf.linalg.slogdet(self.W)[1] * self.h * self.w
         log_det_jacobian = tf.broadcast_to(log_det_jacobian, tf.shape(x)[0:1])
         return z, log_det_jacobian
 
     def inverse(self, z: tf.Tensor, **kwargs):
         _W = tf.reshape(tf.linalg.inv(self.W), [1, 1, self.c, self.c])
-        x = tf.nn.conv2d(z, _W, [1, 1, 1, 1], 'SAME')
+        x = tf.nn.conv2d(z, _W, [1, 1, 1, 1], "SAME")
         inverse_log_det_jacobian = -1 * \
             tf.linalg.slogdet(self.W)[1] * self.h * self.w
         inverse_log_det_jacobian = tf.broadcast_to(
             inverse_log_det_jacobian, tf.shape(z)[0:1])
         return x, inverse_log_det_jacobian
 
+
 def test_():
-    
+
     origin_x = tf.random.uniform([16, 12, 12, 12])
 
-    x= origin_x
+    x = origin_x
     ws = []
     inv_ws = []
     for i in range(200):
@@ -87,8 +87,10 @@ def test_():
         inv_ws.append(inv_w)
     z = x
     for w in ws:
-        z = tf.nn.conv2d(z, tf.reshape(w, [1, 1, 12, 12]), [1, 1, 1, 1], 'SAME')
+        z = tf.nn.conv2d(z, tf.reshape(
+            w, [1, 1, 12, 12]), [1, 1, 1, 1], 'SAME')
     x = z
     for inv_w in reversed(inv_ws):
-         x = tf.nn.conv2d(x, tf.reshape(inv_w, [1, 1, 12, 12]), [1, 1, 1, 1], 'SAME')
+        x = tf.nn.conv2d(x, tf.reshape(
+            inv_w, [1, 1, 12, 12]), [1, 1, 1, 1], 'SAME')
     print(tf.reduce_sum((x - origin_x)**2))

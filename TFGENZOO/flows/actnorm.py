@@ -54,11 +54,13 @@ class Actnorm(FlowComponent):
                    list(input_shape[1:-1])), tf.float32)
         logs_shape = [1 for i in range(len(input_shape))]
         logs_shape[-1] = input_shape[-1]
-        self.logs = self.add_weight(shape=tuple(logs_shape),
+        self.logs = self.add_weight(name='log_scale',
+                                    shape=tuple(logs_shape),
                                     initializer='zeros',
                                     # regularizer=tf.keras.regularizers.l2(0.01),
                                     trainable=True)
-        self.bias = self.add_weight(shape=tuple(logs_shape),
+        self.bias = self.add_weight(name='bias',
+                                    shape=tuple(logs_shape),
                                     initializer='zeros',
                                     # regularizer=tf.keras.regularizers.l2(0.02),
                                     trainable=True)

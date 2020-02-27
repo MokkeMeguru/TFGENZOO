@@ -34,11 +34,6 @@ class LogitifyImage(FlowBase):
         return new_z, logdet_jacobian
 
     def inverse(self, z: tf.Tensor, **kwargs):
-        tf.print(z.shape)
-        tf.print(tf.reduce_sum(tf.cast(tf.math.is_inf(z), tf.float32)))
-        tf.print(tf.reduce_sum(tf.cast(tf.math.is_nan(z), tf.float32)))
-        tf.print(tf.reduce_max(z))
-        tf.print(tf.reduce_min(z))
         denominator = 1 + tf.exp(-z)
         x = 1 / denominator
         inverse_log_det_jacobian = tf.reduce_sum(

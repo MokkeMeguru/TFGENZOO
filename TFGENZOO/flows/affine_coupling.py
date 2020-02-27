@@ -14,6 +14,7 @@ class LogScale(Layer):
     def build(self, input_shape: tf.TensorShape):
         shape = [1, input_shape[-1]]
         self.logs = self.add_weight(
+            name='log_scale',
             shape=tuple(shape),
             initializer='zeros',
             # regularizer=tf.keras.regularizers.l2(0.01),
@@ -163,8 +164,8 @@ class AffineCoupling(FlowComponent):
         if self.mask_type == AffineCouplingMask.ChannelWise:
             shift = h[..., 0::2]
             log_scale = h[..., 1::2]
-        # scale = tf.nn.sigmoid(log_scale + 2.0)
-        scale = tf.exp(tf.clip_by_value(log_scale, -15.0, 15.0))
+        scale = tf.nn.sigmoid(log_scale + 2.0) + 1e-10
+        # scale = tf.exp(tf.clip_by_value(log_scale, -15.0, 15.0))
         z2 = (x2 + shift) * scale
         log_det_jacobian = tf.reduce_sum(
             tf.math.log(scale), axis=self.reduce_axis)
@@ -177,8 +178,8 @@ class AffineCoupling(FlowComponent):
         if self.mask_type == AffineCouplingMask.ChannelWise:
             shift = h[..., 0::2]
             log_scale = h[..., 1::2]
-        # scale = tf.nn.sigmoid(log_scale + 2.0)
-        scale = tf.exp(- tf.clip_by_value(log_scale, -15.0, 15.0))
+        scale = tf.nn.sigmoid(log_scale + 2.0) + 1e-10
+        # scale = tf.exp(- tf.clip_by_value(log_scale, -15.0, 15.0))
         x2 = (z2 * scale) - shift
         inverse_log_det_jacobian = - 1 * tf.reduce_sum(
             tf.math.log(scale), axis=self.reduce_axis)

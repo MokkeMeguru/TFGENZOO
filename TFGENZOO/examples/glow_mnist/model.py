@@ -1,201 +1,206 @@
+from typing import Dict, List
+
 import numpy as np
 import tensorflow as tf
-from typing import List
-# for Flow-based Model
-from TFGENZOO.flows.flows import Flow, FlowList
-# for Multi-Scale Architecture
-from TFGENZOO.flows.flowblock import FlowBlockHalf
-from TFGENZOO.flows.identity import Identity
-# for Flow-Step
-from TFGENZOO.flows.squeezeHWC import SqueezeHWC, UnSqueezeHWC
-from TFGENZOO.flows.batchnorm import BatchNormalization
-from TFGENZOO.flows.affine_couplingHWC import AffineCouplingHWC
-from TFGENZOO.flows.inv1x1conv import Inv1x1Conv
-from TFGENZOO.flows.metrics import Process
+from tensorflow.keras import Model
+
 from TFGENZOO.flows.actnorm import Actnorm
+from TFGENZOO.flows.affine_coupling import AffineCoupling
+from TFGENZOO.flows.factor_out import FactorOut
+from TFGENZOO.flows.flowbase import FactorOutBase, FlowModule
+from TFGENZOO.flows.inv1x1conv import Inv1x1Conv
+from TFGENZOO.flows.quantize import LogitifyImage
+from TFGENZOO.flows.squeeze import Squeezing
+from TFGENZOO.flows.utils import ResidualNet
 
 
-def gen_flowStep(n_hidden: List[int] = [64, 64], with_debug: bool = False):
-    flow_step = FlowList(flow_list=[
-        Actnorm(with_debug=with_debug), #  BatchNormalization(with_debug=with_debug),
-        Inv1x1Conv(with_debug=with_debug),
-        AffineCouplingHWC(n_hidden, with_debug=with_debug),
-    ], with_debug=with_debug)
-    return flow_step
+class SingleFlow(Model):
+    def __init__(self, K: int = 5, L: int = 1, resblk_kwargs: Dict = None):
+        super().__init__()
+        if resblk_kwargs is None:
+            resblk_kwargs = {
+                'num_block': 3,
+                'units_factor': 6
+            }
+        self.resblk_kwargs = resblk_kwargs
+        self.K = K
+        self.L = L
+        layers = []
+        layers.append(LogitifyImage())
+        for _ in range(3):
+            layers.append(Squeezing())
+            for _ in range(5):
+                layers.append(Actnorm())
+                layers.append(Inv1x1Conv())
+                layers.append(AffineCoupling(scale_shift_net=ResidualNet(
+                    **self.resblk_kwargs)))
+        self.flows = layers
 
-
-def gen_flowSteps(num_step: int = 2,
-                  n_hidden: List[int] = [64, 64],
-                  with_debug: bool = False):
-    flow_steps = [gen_flowStep(n_hidden=n_hidden, with_debug=with_debug)
-                  for _ in range(num_step)]
-    return FlowList(flow_list=flow_steps, with_debug=with_debug)
-
-
-def gen_MultiScaleFlow(
-        L=2,
-        K=16,
-        n_hidden=[64, 64],
-        with_debug: bool = False,
-        preprocess: bool = False
-):
-    """Multi-Scale-Architecture in RealNVP
-    ref:
-    https://github.com/MokkeMeguru/glow-realnvp-tutorial/blob/master/examples/img/multi-scale-arch.png
-    """
-    def _gen_MSF(level, num_step, n_hidden):
-        if level <= 0:
-            sHWC = SqueezeHWC(with_debug=with_debug)
-            usHWC = UnSqueezeHWC(with_debug=with_debug)
-            flow_steps = gen_flowSteps(num_step=num_step,
-                                       n_hidden=n_hidden,
-                                       with_debug=with_debug)
-            return FlowList([sHWC, flow_steps, usHWC])
+    def call(self, x, zaux=None, inverse=False, training=True):
+        if inverse:
+            return self.inverse(x, zaux, training)
         else:
-            ident = Identity(with_debug=with_debug)
-            flow_steps = gen_flowSteps(num_step=num_step,
-                                       n_hidden=n_hidden,
-                                       with_debug=with_debug)
-            msf = _gen_MSF(level-1, num_step, n_hidden)
-            block = FlowBlockHalf([ident, msf])
-            sHWC = SqueezeHWC(with_debug=with_debug)
-            usHWC = UnSqueezeHWC(with_debug=with_debug)
-            return FlowList([sHWC, flow_steps, block, usHWC])
-    if preprocess:
-        preprocess = Process(n_bins=256.0, with_debug=with_debug)
-        return FlowList([preprocess, _gen_MSF(L - 1, K, n_hidden)])
-    else:
-        return _gen_MSF(L - 1, K, n_hidden)
+            return self.forward(x, training)
 
-
-class Glow(tf.keras.Model):
-    def __init__(self, args, input_shape=[32, 32, 1]):
-        super(Glow, self).__init__(name='Glow')
-        self.glow = gen_MultiScaleFlow(
-            L=args['L'],
-            K=args['K'],
-            n_hidden=args['n_hidden'],
-            with_debug=False,
-            preprocess=True
-        )
-    def setStat(self, x, **kwargs):
-       tf.print("called set Stat")
-       self.glow.setStat(x)
-
-    def call(self, x, training=True,**kwargs):
-        z, log_det_jacobian = self.glow(x, training=training)
-        return z, log_det_jacobian
-
-    def inverse(self, z, training=False, **kwargs):
-        x, inverse_log_det_jacobian = self.glow.inverse(z, training=training)
+    def inverse(self, x, zaux, training):
+        inverse_log_det_jacobian = tf.zeros(tf.shape(x)[0:1])
+        for flow in reversed(self.flows):
+            if isinstance(flow, Squeezing):
+                if flow.with_zaux:
+                    x, zaux = flow(x, zaux=zaux, inverse=True)
+                else:
+                    x = flow(x, inverse=True)
+            elif isinstance(flow, FactorOutBase):
+                if flow.with_zaux:
+                    x, zaux = flow(x, zaux=zaux, inverse=True)
+                else:
+                    x = flow(x, zaux=zaux, inverse=True)
+            else:
+                x, ldj = flow(x, inverse=True, training=training)
+                inverse_log_det_jacobian += ldj
         return x, inverse_log_det_jacobian
 
+    def forward(self, x, training):
+        zaux = None
+        log_det_jacobian = tf.zeros(tf.shape(x)[0:1])
+        for flow in self.flows:
+            if isinstance(flow, Squeezing):
+                if flow.with_zaux:
+                    x, zaux = flow(x, zaux=zaux)
+                else:
+                    x = flow(x)
+            elif isinstance(flow, FactorOutBase):
+                x, zaux = flow(x, zaux)
+            else:
+                x, ldj = flow(x, training=training)
+                log_det_jacobian += ldj
+        return x, log_det_jacobian  # , zaux
 
-def test_MultiScaleFlow():
-    flow_step = gen_MultiScaleFlow(with_debug=True)
-    x = tf.keras.Input([32, 32, 1])
-    z, log_det_jacobian = flow_step(x)
-    model = tf.keras.Model(x, (z, log_det_jacobian))
+
+class BasicGlow(Model):
+    def __init__(self, K: int = 5, L: int = 3, resblk_kwargs: Dict = None):
+        super(BasicGlow, self).__init__()
+        if resblk_kwargs is None:
+            resblk_kwargs = {
+                'num_block': 3,
+                'units_factor': 6
+            }
+        self.resblk_kwargs = resblk_kwargs
+        self.K = K
+        self.L = L
+        layers = []
+        layers.append(LogitifyImage())
+        for l in range(self.L):
+            if l == 0:
+                layers.append(Squeezing(with_zaux=False))
+            else:
+                layers.append(Squeezing(with_zaux=True))
+            fml = []
+            for k in range(self.K):
+                fml.append(Actnorm())
+                fml.append(Inv1x1Conv())
+                fml.append(AffineCoupling(scale_shift_net=ResidualNet(
+                    **self.resblk_kwargs)))
+            layers.append(FlowModule(fml))
+            if l == 0:
+                layers.append(FactorOut())
+            elif l != self.L - 1:
+                layers.append(FactorOut(with_zaux=True))
+        self.flows = layers
+
+    def call(self, x, zaux=None, inverse=False, training=True):
+        if inverse:
+            return self.inverse(x, zaux, training)
+        else:
+            return self.forward(x, training)
+
+    def inverse(self, x, zaux, training):
+        inverse_log_det_jacobian = tf.zeros(tf.shape(x)[0:1])
+        for flow in reversed(self.flows):
+            if isinstance(flow, Squeezing):
+                if flow.with_zaux:
+                    x, zaux = flow(x, zaux=zaux, inverse=True)
+                else:
+                    x = flow(x, inverse=True)
+            elif isinstance(flow, FactorOutBase):
+                if flow.with_zaux:
+                    x, zaux = flow(x, zaux=zaux, inverse=True)
+                else:
+                    x = flow(x, zaux=zaux, inverse=True)
+            else:
+                x, ldj = flow(x, inverse=True, training=training)
+                inverse_log_det_jacobian += ldj
+        return x, inverse_log_det_jacobian
+
+    def forward(self, x, training):
+        zaux = None
+        log_det_jacobian = tf.zeros(tf.shape(x)[0:1])
+        for flow in self.flows:
+            if isinstance(flow, Squeezing):
+                if flow.with_zaux:
+                    x, zaux = flow(x, zaux=zaux)
+                else:
+                    x = flow(x)
+            elif isinstance(flow, FactorOutBase):
+                x, zaux = flow(x, zaux=zaux)
+            else:
+                x, ldj = flow(x, training=training)
+                log_det_jacobian += ldj
+        return x, log_det_jacobian, zaux
+
+
+def basic_glow_Test():
+    tf.debugging.enable_check_numerics()
+    x = tf.keras.Input([24, 24, 1])
+    model = BasicGlow()
+    model.build(x.shape)
+    z, ldj, zaux = model(x)
+    print(z.shape)
+    print(ldj.shape)
     model.summary()
-    tf.keras.utils.plot_model(
-        model,
-        to_file='rawglow.png',
-        show_shapes=True,
-        expand_nested=True,
-    )
-    # params = 7716(7708/8)
 
-    x = tf.random.normal([16, 32, 32, 1])
-    z, ldj = flow_step(x, training=False)
-    _x, ildj = flow_step.inverse(z)
-    print('diff: {}'.format(tf.reduce_mean(x - _x)))
-    print('sum: {}'.format(tf.reduce_sum(ldj + ildj)))
+    train, test = tf.keras.datasets.mnist.load_data()
+    train_image = train[0] / 255.0
+    train_image = train_image[..., tf.newaxis]
+    train_image = tf.compat.v1.image.resize_bilinear(
+        train_image, size=(24, 24))
+    # forward -> inverse
+    train_image = train_image[0:12]
+    forward, ldj, zaux = model(train_image, inverse=False)
+    print('max-min')
+    tf.print(tf.reduce_max(forward))
+    tf.print(tf.reduce_min(forward))
+    tf.print(tf.reduce_sum(tf.cast(tf.math.is_inf(forward), tf.float32)))
+    tf.print(tf.reduce_sum(tf.cast(tf.math.is_nan(forward), tf.float32)))
+    inverse, ildj = model(forward, zaux=zaux, inverse=True)
+    print(forward.shape)
+    print(zaux.shape)
+    print(ldj.shape)
+    print(ildj.shape)
+    print('diffs-ldj-rec')
+    tf.print(tf.reduce_mean(ldj + ildj))
+    tf.print(tf.reduce_mean(train_image - inverse))
+    train_image = inverse
+    print(train_image.shape)
+    import matplotlib.pyplot as plt
+    fig = plt.figure(figsize=(18, 18))
+    for i in range(9):
+        img = tf.squeeze(train_image[i])
+        fig.add_subplot(3, 3, i + 1)
+        plt.title(train[1][i])
+        plt.tick_params(bottom=False,
+                        left=False,
+                        labelbottom=False,
+                        labelleft=False)
+        plt.imshow(img, cmap='gray_r')
+    plt.show(block=True)
 
-    print('[debug] in training, batchnorm layer will return different value')
-    x = tf.random.normal([16, 32, 32, 1])
-    z, ldj = flow_step(x, training=True)
-    # print(tf.reduce_max(ldj))
-    # print(tf.reduce_min(ldj))
-    # print(tf.reduce_mean(ldj))
-    _x, ildj = flow_step.inverse(z)
-    print('diff: {}'.format(tf.reduce_mean(x - _x)))
-    print('sum: {}'.format(tf.reduce_sum(ldj + ildj)))
+    tf.debugging.disable_check_numerics()
+    # return model
 
-
-def test_flowStep():
-    sHWC = SqueezeHWC(with_debug=True)
-    flow_step = gen_flowStep(with_debug=True)
-    usHWC = UnSqueezeHWC(with_debug=True)
-    x = tf.keras.Input([32, 32, 1])
-    z, _ = sHWC(x)
-    z, log_det_jacobian = flow_step(z)
-    z, _ = usHWC(z)
-    model = tf.keras.Model(x, (z, log_det_jacobian))
-    model.summary()
-    # params = 7716(7708/8)
-
-    x = tf.random.normal([16, 32, 32, 1])
-    flowStep = FlowList([sHWC, flow_step, usHWC], with_debug=True)
-    z, ldj = flowStep(x, training=False)
-    _x, ildj = flowStep.inverse(z)
-    print('diff: {}'.format(tf.reduce_mean(x - _x)))
-    print('sum: {}'.format(tf.reduce_sum(ldj + ildj)))
-
-    print('[debug] in training, batchnorm layer will return different value')
-    x = tf.random.normal([16, 32, 32, 1])
-    z, ldj = flowStep(x, training=True)
-    _x, ildj = flowStep.inverse(z)
-    print('diff: {}'.format(tf.reduce_mean(x - _x)))
-    print('sum: {}'.format(tf.reduce_sum(ldj + ildj)))
+def main():
+    basic_glow_Test()
 
 
-def test_flowSteps():
-    flow_steps = gen_flowSteps(with_debug=True)
-    sHWC = SqueezeHWC(with_debug=True)
-    usHWC = UnSqueezeHWC(with_debug=True)
-    flow_steps = [sHWC] + [flow_steps] + [usHWC]
-    flow_steps = FlowList(flow_steps)
-    x = tf.keras.Input([32, 32, 1])
-    z, log_det_jacobian = flow_steps(x)
-    model = tf.keras.Model(x, (z, log_det_jacobian))
-    model.summary()
-
-    x = tf.random.normal([16, 32, 32, 1])
-    z, ldj = flow_steps(x, training=False)
-    _x, ildj = flow_steps.inverse(z)
-    print('diff: {}'.format(tf.reduce_mean(x - _x)))
-    print('sum: {}'.format(tf.reduce_sum(ldj + ildj)))
-
-    print('[debug] in training, batchnorm layer will return different value')
-    x = tf.random.normal([16, 32, 32, 1])
-    z, ldj = flow_steps(x, training=True)
-    _x, ildj = flow_steps.inverse(z)
-    print('diff: {}'.format(tf.reduce_mean(x - _x)))
-    print('sum: {}'.format(tf.reduce_sum(ldj + ildj)))
-
-
-def _test_flowStep():
-    with_debug = True
-    n_hidden = [64, 64]
-    x = tf.keras.Input([32, 32, 1])
-    sHWC = SqueezeHWC()
-    bn = BatchNormalization(with_debug=with_debug)
-    inv = Inv1x1Conv(with_debug=with_debug)
-    aff = AffineCouplingHWC(n_hidden, with_debug=with_debug)
-    uns = UnSqueezeHWC(with_debug=with_debug)
-    z = x
-    ldj = 0.0
-    z, log_det_jacobian = sHWC(z)
-    ldj += log_det_jacobian
-    z, log_det_jacobian = bn(z, training=True)
-    ldj += log_det_jacobian
-    z, log_det_jacobian = inv(z)
-    ldj += log_det_jacobian
-    z, log_det_jacobian = aff(z)
-    ldj += log_det_jacobian
-    z, log_det_jacobian = uns(z)
-    ldj += log_det_jacobian
-
-    model = tf.keras.Model(x, (z, ldj))
-    model.summary()
-    # params = 7716(7708/8)
+if __name__ == '__main__':
+    main()

@@ -350,6 +350,7 @@ def basic_flow_Test():
     print(z.shape)
     print(ldj.shape)
     model.summary()
+
     # x = tf.abs(tf.random.normal([16, 24, 24, 1]))
     # x = tf.clip_by_value(x, 0.0, 1.0)
     # z, ldj, zaux = model(x, inverse=False)

@@ -18,6 +18,8 @@ pandas = "*"
 tensorflow-datasets = "*"
 jupyterlab = "*"
 tensorflow = "==2.1.0"
+matplotlib = "*"
+
 
 [requires]
 python_version = "3.7"

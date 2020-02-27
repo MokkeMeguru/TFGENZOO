@@ -206,6 +206,12 @@ class Glow_trainer:
                 tf.summary.image("reference image", x['img'][:4],
                              max_outputs=4,
                              step=self.optimizer.iterations)
+                z, log_det_jacobian, zaux = self.glow(x['img'][:4],
+                                                      training=False)
+                x, ildj = self.glow.inverse(z, zaux, training=False)
+                tf.summary.image("reversed image", x,
+                             max_outputs=4,
+                             step=self.optimizer.iterations)
 
     def train(self, beta_z=0.2, beta_zaux=0.2):
         for epoch in range(self.args['epochs']):

@@ -180,7 +180,7 @@ class AffineCoupling(FlowComponent):
             log_scale = h[..., 1::2]
         scale = tf.nn.sigmoid(log_scale + 2.0) + 1e-10
         # scale = tf.exp(- tf.clip_by_value(log_scale, -15.0, 15.0))
-        x2 = (z2 * scale) - shift
+        x2 = (z2 / scale) - shift
         inverse_log_det_jacobian = - 1 * tf.reduce_sum(
             tf.math.log(scale), axis=self.reduce_axis)
         return tf.concat([x1, x2], axis=-1), inverse_log_det_jacobian

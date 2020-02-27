@@ -18,6 +18,7 @@ requirements
 - GPU > NVIDIA 1080
 - about 4 hours
 
+
 * What's this repository?
   This is a repository for some researcher to build some Generative models using Tensorflow 2.0.
 

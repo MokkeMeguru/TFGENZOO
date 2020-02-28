@@ -19,6 +19,13 @@ requirements
 - about 4 hours
 
 
+ 
+|-------+-------+------------+--------------|
+| data  |   NLL | epoch      | pretrained   |
+|-------+-------+------------+--------------|
+| MNIST | -6.44 | about 1800 | [[https://drive.google.com/open?id=156Ymq6ikjXPezybUn_eclgHvzt0eHVs3][google drive]] |
+|-------+-------+------------+--------------|
+
 * What's this repository?
   This is a repository for some researcher to build some Generative models using Tensorflow 2.0.
 

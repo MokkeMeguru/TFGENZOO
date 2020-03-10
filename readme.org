@@ -18,8 +18,6 @@ requirements
 - GPU > NVIDIA 1080
 - about 4 hours
 
-
- 
 |-------+-------+------------+--------------|
 | data  |   NLL | epoch      | pretrained   |
 |-------+-------+------------+--------------|

@@ -125,6 +125,7 @@ class FactorOutBase(FlowBase):
     def call(self, x: tf.Tensor,
              zaux: tf.Tensor = None,
              inverse=False,
+             temparature=1.0,
              **kwargs):
         if not self.initialized:
             if not inverse:
@@ -133,7 +134,7 @@ class FactorOutBase(FlowBase):
             else:
                 raise Exception('Invalid initialize')
         if inverse:
-            return self.inverse(x, zaux, **kwargs)
+            return self.inverse(x, zaux, temparature=temparature, **kwargs)
         else:
             return self.forward(x, zaux, **kwargs)
 
@@ -142,38 +143,6 @@ class FactorOutBase(FlowBase):
         pass
 
     @abstractmethod
-    def inverse(self, x: tf.Tensor, zaux: tf.Tensor, **kwargs):
-        pass
-
-
-class ConditionalFactorOutBase(FlowBase):
-    @abstractmethod
-    def __init__(self, **kwargs):
-        super(ConditionalFactorOutBase, self).__init__(**kwargs)
-
-    def build(self, input_shape: tf.TensorShape):
-        super(ConditionalFactorOutBase, self).build(input_shape)
-
-    def call(self, x: tf.Tensor,
-             zaux: tf.Tensor,
-             c: tf.Tensor,
-             inverse=False,
-             **kwargs):
-        if not self.initialized:
-            if not inverse:
-                self.initialize_parameter(x)
-                self.initialized.assign(True)
-            else:
-                raise Exception('Invalid initialize')
-        if inverse:
-            return self.inverse(x, zaux, c, **kwargs)
-        else:
-            return self.forward(x, zaux, c, **kwargs)
-
-    @abstractmethod
-    def forward(self, x: tf.Tensor, zaux: tf.Tensor, c: tf.Tensor, **kwargs):
-        pass
-
-    @abstractmethod
-    def inverse(self, x: tf.Tensor, zaux: tf.Tensor, c: tf.Tensor, **kwargs):
+    def inverse(self, x: tf.Tensor, zaux: tf.Tensor,
+                temparature: float, **kwargs):
         pass

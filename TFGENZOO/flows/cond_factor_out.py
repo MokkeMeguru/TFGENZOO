@@ -9,6 +9,7 @@ from TFGENZOO.flows.utils.util import split_feature
 class ConditionalFactorOut(FactorOutBase):
     def build(self, input_shape: tf.TensorShape):
         self.split_size = input_shape[-1] // 2
+        self.reduce_axis = list(range(1, len(input_shape)))
         super(ConditionalFactorOut, self).build(input_shape)
 
     def __init__(self, with_zaux=False):
@@ -25,6 +26,7 @@ class ConditionalFactorOut(FactorOutBase):
         x = x[..., self.split_size:]
         mean, logsd = self.split2d_prior(x)
         ll = gaussianize.gaussian_likelihood(mean, logsd, new_z)
+        ll = tf.reduce_sum(ll, axis=self.reduce_axis)
         if self.with_zaux:
             zaux = tf.concat([zaux, new_z], axis=-1)
         else:

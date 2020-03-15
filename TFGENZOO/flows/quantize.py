@@ -1,3 +1,4 @@
+import numpy as np
 import tensorflow as tf
 
 from TFGENZOO.flows.flowbase import FlowBase
@@ -22,6 +23,8 @@ class LogitifyImage(FlowBase):
         super(LogitifyImage, self).__init__()
         self.corruption_level = corruption_level
         self.alpha = alpha
+        self.pre_logit_scale = tf.constant(
+            np.log(self.alpha) - np.log(1.0 - self.alpha), dtype=tf.float32)
 
     def forward(self, x: tf.Tensor, **kwargs):
         z = x * 255.0
@@ -29,7 +32,12 @@ class LogitifyImage(FlowBase):
         z = z / (255.0 + self.corruption_level)
         z = z * (1 - self.alpha) + self.alpha * 0.5
         new_z = tf.math.log(z) - tf.math.log(1 - z)
-        logdet_jacobian = tf.reduce_sum(- tf.math.log(z) - tf.math.log(1 - z),
+
+        logdet_jacobian = (tf.math.softplus(new_z) + tf.math.softplus(- new_z)
+                           - tf.math.softplus(- self.pre_logit_scale))
+        # logdet_jacobian = tf.reduce_sum(- tf.math.log(z) - tf.math.log(1 - z),
+        #                                 self.reduce_axis)
+        logdet_jacobian = tf.reduce_sum(logdet_jacobian,
                                         self.reduce_axis)
         return new_z, logdet_jacobian
 

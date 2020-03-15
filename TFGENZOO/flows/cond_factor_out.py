@@ -25,6 +25,7 @@ class ConditionalFactorOut(FactorOutBase):
         x = x[..., self.split_size:]
         mean, logsd = self.split2d_prior(x)
         ll = gaussianize.gaussian_likelihood(mean, logsd, new_z)
+        tf.print(ll.shape)
         if self.with_zaux:
             zaux = tf.concat([zaux, new_z], axis=-1)
         else:

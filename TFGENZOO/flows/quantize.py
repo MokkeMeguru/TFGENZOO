@@ -24,6 +24,9 @@ class LogitifyImage(FlowBase):
         self.alpha = alpha
 
     def forward(self, x: tf.Tensor, **kwargs):
+        """
+        ref. https://github.com/taesungp/real-nvp/blob/master/real_nvp/model.py#L42-L54
+        """
         z = x * 255.0
         z = z + self.corruption_level * tf.random.uniform(tf.shape(x))
         z = z / (255.0 + self.corruption_level)

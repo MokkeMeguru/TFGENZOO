@@ -1,6 +1,8 @@
 [[https://github.com/MokkeMeguru/TFGENZOO/workflows/tensorflow%20test/badge.svg?branch=flow%2Fdevelop]]
 [[https://img.shields.io/badge/License-MIT-yellow.svg]]
 [[file:https://img.shields.io/badge/python-3.7-blue.svg]]
+* News [2020/3/15]
+  I try to update correct loss function (training is correct, but nll is something wrong...)
 * News [2020/2/28]
   I may implement normalizing flow.     
   You can try it with these commands in your shell.     
@@ -23,7 +25,7 @@ requirements
 |-------+-------+------------+--------------|
 | data  |   NLL | epoch      | pretrained   |
 |-------+-------+------------+--------------|
-| MNIST | -6.44 | about 1800 | [[https://drive.google.com/open?id=156Ymq6ikjXPezybUn_eclgHvzt0eHVs3][google drive]] |
+| MNIST | ~~-6.44~~ | about 1800 | [[https://drive.google.com/open?id=156Ymq6ikjXPezybUn_eclgHvzt0eHVs3][google drive]] |
 |-------+-------+------------+--------------|
 
 * What's this repository?

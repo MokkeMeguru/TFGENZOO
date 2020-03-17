@@ -236,4 +236,4 @@ class Glow_trainer:
 def main():
     args.args['resblk_kwargs'] = None
     trainer = Glow_trainer(args=args.args)
-    trainer.train()
+    trainer.train(beta_z=0.7, beta_zaux=0.7)

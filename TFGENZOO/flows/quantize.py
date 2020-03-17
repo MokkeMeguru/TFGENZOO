@@ -29,6 +29,11 @@ class LogitifyImage(FlowBase):
             np.log(self.alpha) - np.log(1.0 - self.alpha), dtype=tf.float32)
 
     def forward(self, x: tf.Tensor, **kwargs):
+        """
+        ref. https://github.com/taesungp/real-nvp/blob/master/real_nvp/model.py#L42-L54
+             https://github.com/taesungp/real-nvp/blob/master/real_nvp/model.py#L42-L54
+        """
+
         # 1. transform the domain of x from [0, 1] to [0, 255]
         z = x * 255.0
         

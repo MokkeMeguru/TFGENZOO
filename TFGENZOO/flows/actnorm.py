@@ -46,13 +46,20 @@ class Actnorm(FlowComponent):
         super(Actnorm, self).__init__(**kwargs)
 
     def build(self, input_shape: tf.TensorShape):
-        reduce_axis = list(range(len(input_shape)))
-        reduce_axis.pop(-1)
+        if len(input_shape) == 4:
+            reduce_axis = [0, 1, 2]
+        else:
+            raise NotImplementedError()
+        # reduce_axis = list(range(len(input_shape)))
+        # reduce_axis.pop(-1)
         self.reduce_axis = reduce_axis
-        self.logdet_factor = tf.constant(
-            reduce(lambda x, y: x*y,
-                   list(input_shape[1:-1])), tf.float32)
-        logs_shape = [1 for i in range(len(input_shape))]
+        
+        if len(input_shape) == 4:
+            b, h, w, c = list(input_shape)
+            self.logdet_factor = tf.constant(h * w, dtype=tf.float32)
+        else:
+            raise NotImplementedError()
+        logs_shape = [1 for _ in range(len(input_shape))]
         logs_shape[-1] = input_shape[-1]
         self.logs = self.add_weight(name='log_scale',
                                     shape=tuple(logs_shape),

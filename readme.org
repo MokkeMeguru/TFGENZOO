@@ -1,12 +1,16 @@
 [[https://github.com/MokkeMeguru/TFGENZOO/workflows/tensorflow%20test/badge.svg?branch=flow%2Fdevelop]]
 [[https://img.shields.io/badge/License-MIT-yellow.svg]]
 [[file:https://img.shields.io/badge/python-3.7-blue.svg]]
-* News [2020/3/15]
-  I try to update correct loss function (training is correct, but nll is something wrong...)
-* News [2020/2/28]
-  I may implement normalizing flow.     
-  You can try it with these commands in your shell.     
-  And also, You can check training process via tensorboard in ~TFGENZOO/glow_log~
+
+* News [2020/3/17]
+
+update loss function
+|-------+-------+------------+--------------|
+| data  |   NLL | epoch      | pretrained   |
+|-------+-------+------------+--------------|
+| MNIST | 1.56 | about 450 | --- |
+|-------+-------+------------+--------------|
+
 #+begin_src shell
 sh run_script.sh
 [docker]$ cd workspace/Github
@@ -20,11 +24,7 @@ requirements
 - GPU > NVIDIA 1080
 - about 4 hours
 
-|-------+-------+------------+--------------|
-| data  |   NLL | epoch      | pretrained   |
-|-------+-------+------------+--------------|
-| MNIST | 1.56 | about 450 | --- |
-|-------+-------+------------+--------------|
+
 
 * What's this repository?
   This is a repository for some researcher to build some Generative models using Tensorflow 2.0.
@@ -48,4 +48,19 @@ We should Implement correct codes with well-documented(tested).
     - [ ] i-ResNet Model Architecture (i-ResNet, i-RevNet)
     - [ ] GANs Model Architecture (GANs)
 
+
+* Backlog
+** News [2020/3/15]
+  I try to update correct loss function (training is correct, but nll is something wrong...)
+** News [2020/2/28]
+  I may implement normalizing flow.     
+  You can try it with these commands in your shell.     
+  And also, You can check training process via tensorboard in ~TFGENZOO/glow_log~
+#+begin_src shell
+sh run_script.sh
+[docker]$ cd workspace/Github
+[docker]$ python
+python 3.6 > from TFGENZOO.examples.glow_mnist import trainer
+python 3.6 > trainer.main()
+#+end_src
 

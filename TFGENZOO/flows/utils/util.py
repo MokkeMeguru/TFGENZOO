@@ -1,14 +1,39 @@
-from enum import Enum
-from typing import Callable, Dict, List, Union
+from typing import Callable, Dict, Union
 
 import tensorflow as tf
-from tensorflow.keras import Model, Sequential, layers, regularizers
+from tensorflow.keras import Model, layers
 
-from TFGENZOO.flows.actnorm import Actnorm
-from TFGENZOO.flows.flowbase import FlowComponent
+from TFGENZOO.flows.utils.conv import Conv2D
+from TFGENZOO.flows.utils.conv_zeros import Conv2DZeros
 
 Layer = layers.Layer
-Conv2D = layers.Conv2D
+
+
+def split_feature(x: tf.Tensor, type: str = "split"):
+    """type = [split, cross]
+    """
+    channel = x.shape[-1]
+    if type == "split":
+        return x[..., :channel//2], x[..., channel // 2:]
+    elif type == "cross":
+        return x[..., 0::2], x[..., 1::2]
+
+
+class ShallowResNet(Model):
+    """ResNet of OpenAI's Glow
+    """
+
+    def __init__(self, width: int = 512, out_scale: int = 2):
+        super(ShallowResNet, self).__init__()
+        self.width = width
+        self.conv1 = Conv2D(width=self.width)
+        self.conv2 = Conv2D(width=self.width, kernel_size=[1, 1])
+        self.conv_out = Conv2DZeros(width_scale=out_scale)
+
+    def call(self, x: tf.Tensor):
+        x = tf.nn.relu(self.conv1(x))
+        x = tf.nn.relu(self.conv2(x))
+        x = self.conv_out(x)
 
 
 class ResidualBlock(Model):
@@ -97,7 +122,7 @@ class ResidualNet(Model):
             filters=num_channels * 2,
             kernel_size=3, strides=(1, 1),
             padding='same',
-            activation=tf.nn.sigmoid) # None
+            activation=tf.nn.sigmoid)  # None
         super(ResidualNet, self).build(input_shape)
 
     def __init__(self,
@@ -128,8 +153,8 @@ def main():
     model.summary()
     x = tf.random.normal([16, 32, 32, 3])
     y = model(x)
-    print (tf.reduce_max (y))
-    print (tf.reduce_min (y))
+    print(tf.reduce_max(y))
+    print(tf.reduce_min(y))
     return model
 
 

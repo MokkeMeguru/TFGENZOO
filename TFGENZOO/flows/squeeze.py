@@ -20,7 +20,7 @@ class Squeezing(FlowBase):
 
     def inverse(self, z: tf.Tensor, zaux: tf.Tensor = None, **kwargs):
         z = tf.nn.depth_to_space(z, 2)
-        if self.with_zaux:
+        if self.with_zaux and zaux is not None:
             zaux = tf.nn.depth_to_space(zaux, 2)
             return z, zaux
         return z

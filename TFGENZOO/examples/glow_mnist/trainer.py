@@ -59,36 +59,34 @@ def bits_x(log_likelihood: tf.Tensor,
     _bits_x = nobj / (np.log(2.) * pixels)
     return _bits_x
 
-# def bits_per_dims(log_prob, pixels):
-#     return ((log_prob / pixels) - np.log(128.)) / np.log(2.)
-
 
 class Glow_trainer:
     def __init__(self, args=args.args, training=True):
         self.args = args
-
         print(self.args)
+        self.conditional = self.args['conditional']
 
         # build model
         self.glow = model.BasicGlow(
             K=self.args['K'], L=self.args['L'],
-            resblk_kwargs=self.args['resblk_kwargs'])
+            resblk_kwargs=self.args['resblk_kwargs'],
+            conditional=self.args['conditional'])
 
         # determin input data size
         x = tf.keras.Input(self.args['input_shape'])
         self.pixels = np.prod(self.args['input_shape'])
         self.glow.build(x.shape)
-        z, ldj, zaux = self.glow(x)
+        z, ldj, zaux, ll = self.glow(x)
+
         self.z_shape = list(z.shape[1:])
         self.zaux_shape = list(zaux.shape[1:])
-        print ("z",  self.z_shape)
-        print ("z",  self.zaux_shape)
+
         self.z_dims = np.prod(z.shape[1:])
         self.zaux_dims = np.prod(zaux.shape[1:])
 
-        print("z_f's shape: ", z.shape)
+        print("z_f's shape: ", self.z_shape)
         print("log det jacobian's shape: ", ldj.shape)
-        print("z_aux's shape: ", zaux.shape)
+        print("z_aux's shape: ", self.zaux_shape)
 
         # show the model's summary
         self.glow.summary()
@@ -154,12 +152,12 @@ class Glow_trainer:
     @tf.function
     def val_step(self, x):
         tf.debugging.enable_check_numerics()
-        z, log_det_jacobian, zaux = self.glow(x, training=False)
+        z, log_det_jacobian, zaux, ll = self.glow(x, training=False)
         z = tf.reshape(z, [-1, self.z_dims])
         zaux = tf.reshape(zaux, [-1, self.zaux_dims])
         lp = self.target_distribution[0].log_prob(z)
-        lpaux = self.target_distribution[1].log_prob(zaux)
-        loss = bits_x(lp + lpaux, log_det_jacobian, self.pixels)
+        # lpaux = self.target_distribution[1].log_prob(zaux)
+        loss = bits_x(lp + ll, log_det_jacobian, self.pixels)
         self.valid_loss(loss)
         self.valid_log_det_jacobian(log_det_jacobian)
         tf.debugging.disable_check_numerics()
@@ -168,12 +166,12 @@ class Glow_trainer:
     @tf.function
     def train_step(self, x):
         with tf.GradientTape() as tape:
-            z, log_det_jacobian, zaux = self.glow(x, training=True)
+            z, log_det_jacobian, zaux, ll = self.glow(x, training=True)
             z = tf.reshape(z, [-1, self.z_dims])
             zaux = tf.reshape(zaux, [-1, self.zaux_dims])
             lp = self.target_distribution[0].log_prob(z)
-            lpaux = self.target_distribution[1].log_prob(zaux)
-            loss = bits_x(lp + lpaux, log_det_jacobian, self.pixels)
+            # lpaux = self.target_distribution[1].log_prob(zaux)
+            loss = bits_x(lp + ll, log_det_jacobian, self.pixels)
 
         variables = tape.watched_variables()
         grads = tape.gradient(loss, variables)
@@ -186,14 +184,10 @@ class Glow_trainer:
     def generate_image(self, beta_z: float = 0.2, beta_zaux: float = 0.2):
         z_distribution = tfp.distributions.MultivariateNormalDiag(
             tf.zeros([self.z_dims]), tf.broadcast_to(beta_z, [self.z_dims]))
-        zaux_distribution = tfp.distributions.MultivariateNormalDiag(
-            tf.zeros([self.zaux_dims]),
-            tf.broadcast_to(beta_zaux, [self.zaux_dims]))
         z = z_distribution.sample(4)
         z = tf.reshape(z, [-1] + self.z_shape)
-        zaux = zaux_distribution.sample(4)
-        zaux = tf.reshape(zaux, [-1] + self.zaux_shape)
-        x, ildj = self.glow.inverse(z, zaux, training=False)
+        x, ildj = self.glow.inverse(z, None, training=False,
+                                    temparature=beta_zaux)
         with self.writer.as_default():
             print("mean", tf.reduce_mean(x),
                   "std", tf.math.reduce_std(x),
@@ -204,14 +198,14 @@ class Glow_trainer:
                              step=self.optimizer.iterations)
             for x in self.test_dataset.take(1):
                 tf.summary.image("reference image", x['img'][:4],
-                             max_outputs=4,
-                             step=self.optimizer.iterations)
-                z, log_det_jacobian, zaux = self.glow(x['img'][:4],
-                                                      training=False)
+                                 max_outputs=4,
+                                 step=self.optimizer.iterations)
+                z, log_det_jacobian, zaux, ll = self.glow(x['img'][:4],
+                                                          training=False)
                 x, ildj = self.glow.inverse(z, zaux, training=False)
                 tf.summary.image("reversed image", x,
-                             max_outputs=4,
-                             step=self.optimizer.iterations)
+                                 max_outputs=4,
+                                 step=self.optimizer.iterations)
 
     def train(self, beta_z=0.2, beta_zaux=0.2):
         for epoch in range(self.args['epochs']):

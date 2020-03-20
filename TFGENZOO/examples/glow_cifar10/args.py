@@ -5,5 +5,5 @@ args = {
     'K': 24,
     'resblk_kwargs': None,
     'batch_size': 256,
-    'epochs': 10000,
+    'epochs': 2000,
 }

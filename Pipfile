@@ -9,6 +9,7 @@ ipython = "*"
 matplotlib = "*"
 ptvsd = "*"
 yapf = "*"
+pytest = "*"
 
 [packages]
 tensorflow-probability = "*"

@@ -8,7 +8,7 @@ Layer = layers.Layer
 
 class Conv2DZeros(Layer):
     """Convolution layer for NHWC image with zero initialization
-    Note:
+    Notes:
         this layer's kernel is initialized by zeros
     """
 
@@ -18,9 +18,8 @@ class Conv2DZeros(Layer):
                  kernel_size: Tuple[int, int] = (3, 3),
                  stride: Tuple[int, int] = (1, 1),
                  padding: str = "SAME",
-                 logscale_factor: float = 3.0,
-                 ):
-        super(Conv2DZeros, self).__init__()
+                 logscale_factor: float = 3.0):
+        super().__init__()
         self.width = width
         self.width_scale = width_scale
         self.kernel_size = list(kernel_size)
@@ -50,21 +49,5 @@ class Conv2DZeros(Layer):
         x = tf.nn.conv2d(
             x, filters=self.kernel, strides=self.stride, padding=self.padding)
         x += self.bias
-        # WARN: this operation will cause Inf
         x *= tf.exp(self.logs * self.logscale_factor)
         return x
-
-
-def main():
-    x = tf.keras.Input([16, 16, 2])
-    conv = Conv2DZeros(width_scale=2)
-    y = conv(x)
-    model = tf.keras.Model(x, y)
-    model.summary()
-    x = tf.random.normal([32, 16, 16, 2])
-    y = conv(x)
-    print(y.shape)
-
-
-if __name__ == '__main__':
-    main()

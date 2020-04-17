@@ -17,10 +17,10 @@ sentencepiece = "*"
 pandas = "*"
 tensorflow-datasets = "*"
 jupyterlab = "*"
-tensorflow = "==2.1.0"
+tensorflow = "==2.2.0rc3"
 matplotlib = "*"
 tensorflow-addons = "*"
-tensorflow-gpu = "==2.1.0"
+tensorflow-gpu = "==2.2.0rc3"
 
 [requires]
 python_version = "3.7"

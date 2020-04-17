@@ -9,8 +9,13 @@ from TFGENZOO.flows.flowbase import FlowComponent
 def regular_matrix_init(
         shape: Tuple[int, int], dtype=tf.float32):
     """initialize with orthogonal matrix
-    args:
-    - shape: Tuple
+    Args:
+        shape: generated matrix's shape [C, C]
+        dtype:
+    Returns:
+        w_init: orthogonal matrix [C, C]
+    Source:
+        https://github.com/openai/glow/blob/master/model.py#L445-L451
     """
     assert len(shape) == 2, 'this initialization for 2D matrix'
     assert shape[0] == shape[1], (
@@ -23,21 +28,26 @@ def regular_matrix_init(
 
 class Inv1x1Conv(FlowComponent):
     """Invertible 1x1 Convolution Layer
-    ref. Glow https://arxiv.org/pdf/1807.03039.pdf
+    Sources:
+        https://arxiv.org/pdf/1807.03039.pdf
 
-    notes:
+    Notes:
     - forward formula
-    => forall i, j: z_{i, j} = W x_{i, j}
-    => log_det_jacobian = H * W * log|det(W)|
-    where
-    x_{i, j}, y_{i, j} in [C, C]
-    W in [C, C]
+
+        forall i, j: z_{i, j} = W x_{i, j}
+        LogDetJacobian = H W log|det(W)|
+
+        where
+            x_{i, j}, y_{i, j} in [C, C]
+            W in [C, C]
     - inverse formula
-    => forall i, j: x_{i, j} = W^{-1} z_{i, j}
-    => inverse_log_det_jacobian = - 1 * H * W * log|det(W)|
-    where
-    x_{i, j}, y_{i, j} in [C, C]
-    W in [C, C]
+
+        forall i, j: x_{i, j} = W^{-1} z_{i, j}
+        InverseLogDetJacobian = - H W log|det(W)|
+
+         where
+             x_{i, j}, y_{i, j} in [C, C]
+             W in [C, C]
     """
 
     def build(self, input_shape: tf.TensorShape):
@@ -49,12 +59,18 @@ class Inv1x1Conv(FlowComponent):
             name='W',
             shape=(c, c),
             regularizer=tf.keras.regularizers.l2(0.01),
-            initializer=regular_matrix_init
-        )
-        super(Inv1x1Conv, self).build(input_shape)
+            initializer=regular_matrix_init)
+        super().build(input_shape)
 
     def __init__(self, **kwargs):
-        super(Inv1x1Conv, self).__init__()
+        super().__init__()
+        
+
+
+
+
+
+
 
     def forward(self, x: tf.Tensor, **kwargs):
         _W = tf.reshape(self.W, [1, 1, self.c, self.c])

@@ -9,7 +9,7 @@ class LogitifyImage(FlowBase):
     image in terms of logits
     Sources:
         https://github.com/taesungp/real-nvp/blob/master/real_nvp/model.p
-    
+
     Notes:
     - forward formula
 

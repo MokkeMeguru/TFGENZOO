@@ -8,8 +8,20 @@ Layer = layers.Layer
 
 
 class FlowBase(Layer, metaclass=ABCMeta):
+    """Flow-based model's abstruct class
+    Examples:
+
+        >>> layer = FlowBase()
+        >>> z = layer(x, inverse=False) # forward method
+        >>> x_hat = layer(z, inverse=True) # inverse method
+        >>> assert tf.reduce_sum((x - x_hat)^2) << 1e-3
+
+    Notes:
+
+        If you need data-dependent initialization (e.g. ActNorm),
+        You can write it at #initialize_parameter.
     """
-    """
+
     @abstractmethod
     def __init__(self, **kwargs):
         super(FlowBase, self).__init__(kwargs)
@@ -51,7 +63,6 @@ class FlowBase(Layer, metaclass=ABCMeta):
 class FlowComponent(FlowBase):
     @abstractmethod
     def __init__(self, **kwargs):
-        "docstring"
         super(FlowComponent, self).__init__(**kwargs)
 
     @abstractmethod
@@ -87,6 +98,16 @@ class FlowComponent(FlowBase):
 
 
 class FlowModule(FlowBase):
+    """Sequential Layer for FlowBase's Layer
+    Examples:
+
+         >>> layers = [FlowBase() for _ in range(10)]
+         >>> module = FlowModule(layers)
+         >>> z = module(x, inverse=False)
+         >>> x_hat = module(z, inverse=True)
+         >>> assert ((x - x_hat)^2) << 1e-3
+    """
+
     def build(self, input_shape: tf.TensorShape):
         super(FlowModule, self).build(
             input_shape=input_shape)
@@ -115,9 +136,22 @@ class FlowModule(FlowBase):
 
 
 class FactorOutBase(FlowBase):
+    """Factor Out Layer in Flow-based Model
+
+    Examples:
+
+        >>> fo = FactorOutBase(with_zaux=False)
+        >>> z, zaux = fo(x, zaux=None, inverse=False)
+        >>> x = fo(z, zaux=zaux, inverse=True)
+
+        >>> fo = FactorOutBase(with_zaux=True)
+        >>> z, zaux = fo(x, zaux=zaux, inverse=False)
+        >>> x, zaux = fo(z, zaux=zaux, inverse=True)
+    """
     @abstractmethod
-    def __init__(self, **kwargs):
+    def __init__(self, with_zaux: bool = False, **kwargs):
         super(FactorOutBase, self).__init__(**kwargs)
+        self.with_zaux = with_zaux
 
     def build(self, input_shape: tf.TensorShape):
         super(FactorOutBase, self).build(input_shape)
@@ -125,7 +159,6 @@ class FactorOutBase(FlowBase):
     def call(self, x: tf.Tensor,
              zaux: tf.Tensor = None,
              inverse=False,
-             temparature=1.0,
              **kwargs):
         if not self.initialized:
             if not inverse:
@@ -134,7 +167,7 @@ class FactorOutBase(FlowBase):
             else:
                 raise Exception('Invalid initialize')
         if inverse:
-            return self.inverse(x, zaux, temparature=temparature, **kwargs)
+            return self.inverse(x, zaux, **kwargs)
         else:
             return self.forward(x, zaux, **kwargs)
 
@@ -143,6 +176,5 @@ class FactorOutBase(FlowBase):
         pass
 
     @abstractmethod
-    def inverse(self, x: tf.Tensor, zaux: tf.Tensor,
-                temparature: float, **kwargs):
+    def inverse(self, x: tf.Tensor, zaux: tf.Tensor, **kwargs):
         pass

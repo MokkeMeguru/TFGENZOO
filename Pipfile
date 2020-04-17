@@ -16,10 +16,9 @@ tensorflow-probability = "*"
 sentencepiece = "*"
 pandas = "*"
 jupyterlab = "*"
-tensorflow = "==2.1.0"
 matplotlib = "*"
-tensorflow-gpu = "==2.1.0"
 tensorflow-addons = "*"
+tensorflow = "*"
 
 [requires]
 python_version = "3.7"

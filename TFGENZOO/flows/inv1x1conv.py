@@ -7,7 +7,7 @@ from TFGENZOO.flows.flowbase import FlowComponent
 
 
 def regular_matrix_init(
-        shape: Tuple[int, int], dtype=tf.float32):
+        shape: Tuple[int, int], dtype=None):
     """initialize with orthogonal matrix
     Args:
         shape: generated matrix's shape [C, C]
@@ -52,7 +52,7 @@ class Inv1x1Conv(FlowComponent):
     """
 
     def build(self, input_shape: tf.TensorShape):
-        h, w, c = input_shape[1:]
+        _, h, w, c = input_shape
         self.h = h
         self.w = w
         self.c = c
@@ -60,7 +60,8 @@ class Inv1x1Conv(FlowComponent):
             name='W',
             shape=(c, c),
             regularizer=tf.keras.regularizers.l2(0.01),
-            initializer=regular_matrix_init)
+            initializer=regular_matrix_init
+        )
         super().build(input_shape)
 
     def __init__(self, **kwargs):

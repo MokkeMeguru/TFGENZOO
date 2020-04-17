@@ -47,9 +47,9 @@ class Actnorm(FlowComponent):
                  scale: float = 1.0,
                  logscale_factor: float = 3.0,
                  **kwargs):
+        super(Actnorm, self).__init__(**kwargs)
         self.scale = scale
         self.logscale_factor = logscale_factor
-        super(Actnorm, self).__init__(**kwargs)
 
     def build(self, input_shape: tf.TensorShape):
         if len(input_shape) == 4:
@@ -65,7 +65,7 @@ class Actnorm(FlowComponent):
         logs_shape = [1 for _ in range(len(input_shape))]
         logs_shape[-1] = input_shape[-1]
 
-        self.logs = self.add_weight(name='log_scale',
+        self.logs = self.add_weight(name='logscale',
                                     shape=tuple(logs_shape),
                                     initializer='zeros',
                                     trainable=True)
@@ -74,7 +74,7 @@ class Actnorm(FlowComponent):
                                     initializer='zeros',
                                     trainable=True)
 
-        super(Actnorm, self).build(input_shape)
+        super().build(input_shape)
 
     def initialize_parameter(self, x: tf.Tensor):
         tf.print('[Info] initialize parameter at {}'.format(self.name))
@@ -90,13 +90,13 @@ class Actnorm(FlowComponent):
         # var(x) = x^2 - mean(x)^2
         x_var = x_mean_sq - tf.square(x_mean)
         logs = (tf.math.log(self.scale * tf.math.rsqrt(x_var + 1e-6))
-                / self.log_scale_factor)
+                / self.logscale_factor)
 
         self.bias.assign(- x_mean)
         self.logs.assign(logs)
 
     def forward(self, x: tf.Tensor, **kwargs):
-        logs = self.logs * self.log_scale_factor
+        logs = self.logs * self.logscale_factor
 
         # centering
         z = x + self.bias
@@ -109,7 +109,7 @@ class Actnorm(FlowComponent):
         return z, log_det_jacobian
 
     def inverse(self, z: tf.Tensor, **kwargs):
-        logs = self.logs * self.log_scale_factor
+        logs = self.logs * self.logscale_factor
 
         # scaling
         x = z * tf.exp(- 1 * logs)

@@ -5,6 +5,7 @@ from tensorflow.keras import Model, Sequential, layers, regularizers
 
 from TFGENZOO.flows.actnorm import Actnorm
 from TFGENZOO.flows.flowbase import FlowComponent
+from TFGENZOO.flows.utils.actnorm_activation import ActnormActivation
 
 Layer = layers.Layer
 Conv2D = layers.Conv2D
@@ -17,7 +18,6 @@ class LogScale(Layer):
             name='log_scale',
             shape=tuple(shape),
             initializer='zeros',
-            # regularizer=tf.keras.regularizers.l2(0.01),
             trainable=True)
 
     def __init__(self, log_scale_factor: float = 3.0, **kwargs):
@@ -42,22 +42,22 @@ class GlowNN(Layer):
             res_block.add(
                 layers.Conv2D(filters=filters, kernel_size=3,
                               strides=(1, 1),
-                              padding='same',
+                              padding='SAME',
                               use_bias=False,
                               activation=None))
             res_block.add(
-                Actnorm(calc_ldj=False))
+                ActnormActivation())
             res_block.add(
                 layers.ReLU())
         res_block.add(
             layers.Conv2D(filters=filters * 2, kernel_size=3,
                           strides=(1, 1),
-                          padding='same',
+                          padding='SAME',
                           kernel_initializer='zeros',
                           bias_initializer='zeros',
                           use_bias=True,
-                          activation=None)
-        )
+                          activation=None))
+
         res_block.add(LogScale())
         self.res_block = res_block
         super(GlowNN, self).build(input_shape)
@@ -67,7 +67,8 @@ class GlowNN(Layer):
         self.depth = depth
 
     def call(self, x: tf.Tensor, **kwargs):
-        return self.res_block(x, **kwargs)
+        return self.res_block(
+            x, training=True if kwargs.get("training", True) else False)
 
 
 class AffineCouplingMask(Enum):

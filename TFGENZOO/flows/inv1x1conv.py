@@ -85,6 +85,7 @@ class Inv1x1Conv(FlowComponent):
         inverse_log_det_jacobian = tf.cast(
             -1 * tf.linalg.slogdet(tf.cast(self.W, tf.float64))[1]
             * self.h * self.w, tf.float32)
+
         inverse_log_det_jacobian = tf.broadcast_to(
             inverse_log_det_jacobian, tf.shape(z)[0:1])
         return x, inverse_log_det_jacobian

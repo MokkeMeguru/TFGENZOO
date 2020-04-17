@@ -1,5 +1,3 @@
-from functools import reduce
-
 import tensorflow as tf
 
 from TFGENZOO.flows.flowbase import FlowComponent
@@ -40,7 +38,6 @@ class Actnorm(FlowComponent):
             initialize batch's variance scaling
         logscale_factor: float
             barrier log value to - Inf
-
     """
 
     def __init__(self,
@@ -51,6 +48,7 @@ class Actnorm(FlowComponent):
         self.scale = scale
         self.logscale_factor = logscale_factor
 
+    # pylint: disable=attribute-defined-outside-init
     def build(self, input_shape: tf.TensorShape):
         if len(input_shape) == 4:
             reduce_axis = [0, 1, 2]
@@ -111,9 +109,9 @@ class Actnorm(FlowComponent):
     def inverse(self, z: tf.Tensor, **kwargs):
         logs = self.logs * self.logscale_factor
 
-        # scaling
+        # inverse scaling
         x = z * tf.exp(- 1 * logs)
-        # scaling
+        # inverse centering
         x = x - self.bias
 
         inverse_log_det_jacobian = (

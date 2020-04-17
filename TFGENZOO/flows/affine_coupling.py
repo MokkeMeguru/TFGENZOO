@@ -28,44 +28,6 @@ class LogScale(Layer):
         return x * tf.exp(self.logs * self.log_scale_factor)
 
 
-class SequentialWithKwargs(Sequential):
-    def __init__(self, layers=None, name=None):
-        super(SequentialWithKwargs, self).__init__(
-            layers=layers, name=name)
-
-    def call(self,
-             inputs, training=None, mask=None):
-        if self._is_graph_network:
-            if not self.built:
-                self._init_graph_network(
-                    self.inputs, self.outputs, name=self.name)
-            return super(SequentialWithKwargs, self).call(
-                inputs, training=training, mask=mask)
-
-        outputs = inputs  # handle the corner case where self.layers is empty
-        for layer in self.layers:
-            # During each iteration,
-            # `inputs` are the inputs to `layer`, and `outputs`
-            # are the outputs of `layer`
-            # applied to `inputs`. At the end of each
-            # iteration `inputs` is set to `outputs`
-            # to prepare for the next layer.
-            kwargs = {}
-            argspec = self._layer_call_argspecs[layer].args
-            if 'mask' in argspec:
-                kwargs['mask'] = mask
-            if 'training' in argspec:
-                kwargs['training'] = training
-
-            outputs = layer(inputs, **kwargs)
-
-            # `outputs` will be the inputs to the next layer.
-            inputs = outputs
-            mask = outputs._keras_mask
-
-        return outputs
-
-
 class GlowNN(Layer):
     """
     attributes:
@@ -74,7 +36,7 @@ class GlowNN(Layer):
     """
 
     def build(self, input_shape: tf.TensorShape):
-        res_block = SequentialWithKwargs()
+        res_block = Sequential()
         filters = int(input_shape[-1])
         for i in range(self.depth):
             res_block.add(
@@ -114,32 +76,34 @@ class AffineCouplingMask(Enum):
 
 class AffineCoupling(FlowComponent):
     """Affine Coupling Layer
+    Sources:
+        https://github.com/masa-su/pixyz/blob/master/pixyz/flows/coupling.py
 
-    refs: pixyz
-    https://github.com/masa-su/pixyz/blob/master/pixyz/flows/coupling.py
-
-    notes:
+    Notes:
     - forward formula
-    [x1, x2] = split(x)
-    log_scale, shift = NN(x1)
-    scale = sigmoid(log_scale + 2.0)
-    z1 = x1
-    z2 = (x2 + shift) * scale
-    => z = concat([z1, z2])
-    => log_det_jacobian = sum(log(scale))
+
+        [x1, x2] = split(x)
+        log_scale, shift = NN(x1)
+        scale = sigmoid(log_scale + 2.0)
+        z1 = x1
+        z2 = (x2 + shift) * scale
+        z = concat([z1, z2])
+        LogDetJacobian = sum(log(scale))
 
     - inverse formula
-    [z1, z2] = split(x)
-    log_scale, shift = NN(z1)
-    scale = sigmoid(log_scale + 2.0)
-    x1 = z1
-    x2 = z2 / scale - shift
-    => z = concat([x1, x2])
-    => inverse_log_det_jacobian = - sum(log(scale))
 
-    notes:
-    in Glow's Paper, scale is calculated by exp(log_scale),
-    but IN IMPLEMENTATION, scale is done by sigmoid(log_scale + 2.0)
+        [z1, z2] = split(x)
+        log_scale, shift = NN(z1)
+        scale = sigmoid(log_scale + 2.0)
+        x1 = z1
+        x2 = z2 / scale - shift
+        z = concat([x1, x2])
+        InverseLogDetJacobian = - sum(log(scale))
+
+    - implementation notes
+
+       in Glow's Paper, scale is calculated by exp(log_scale),
+       but IN IMPLEMENTATION, scale is done by sigmoid(log_scale + 2.0)
     """
 
     def __init__(self,
@@ -164,12 +128,18 @@ class AffineCoupling(FlowComponent):
         if self.mask_type == AffineCouplingMask.ChannelWise:
             shift = h[..., 0::2]
             log_scale = h[..., 1::2]
-        scale = tf.nn.sigmoid(log_scale + 2.0) + 1e-10
-        # scale = tf.exp(tf.clip_by_value(log_scale, -15.0, 15.0))
-        z2 = (x2 + shift) * scale
-        log_det_jacobian = tf.reduce_sum(
-            tf.math.log(scale), axis=self.reduce_axis)
-        return tf.concat([z1, z2], axis=-1), log_det_jacobian
+
+            scale = tf.nn.sigmoid(log_scale + 2.0) + 1e-10
+            # scale = tf.exp(tf.clip_by_value(log_scale, -15.0, 15.0))
+            z2 = (x2 + shift) * scale
+
+            # scale's shape is [B, H, W, C]
+            # log_det_jacobian's hape is [B]
+            log_det_jacobian = tf.reduce_sum(
+                tf.math.log(scale), axis=self.reduce_axis)
+            return tf.concat([z1, z2], axis=-1), log_det_jacobian
+        else:
+            raise NotImplementedError()
 
     def inverse(self, z: tf.Tensor, **kwargs):
         z1, z2 = tf.split(z, 2, axis=-1)
@@ -178,9 +148,14 @@ class AffineCoupling(FlowComponent):
         if self.mask_type == AffineCouplingMask.ChannelWise:
             shift = h[..., 0::2]
             log_scale = h[..., 1::2]
-        scale = tf.nn.sigmoid(log_scale + 2.0) + 1e-10
-        # scale = tf.exp(- tf.clip_by_value(log_scale, -15.0, 15.0))
-        x2 = (z2 / scale) - shift
-        inverse_log_det_jacobian = - 1 * tf.reduce_sum(
-            tf.math.log(scale), axis=self.reduce_axis)
-        return tf.concat([x1, x2], axis=-1), inverse_log_det_jacobian
+            scale = tf.nn.sigmoid(log_scale + 2.0) + 1e-10
+            # scale = tf.exp(- tf.clip_by_value(log_scale, -15.0, 15.0))
+            x2 = (z2 / scale) - shift
+
+            # scale's shape is [B, H, W, C]
+            # inverse_log_det_jacobian's hape is [B]
+            inverse_log_det_jacobian = - 1 * tf.reduce_sum(
+                tf.math.log(scale), axis=self.reduce_axis)
+            return tf.concat([x1, x2], axis=-1), inverse_log_det_jacobian
+        else:
+            raise NotImplementedError()

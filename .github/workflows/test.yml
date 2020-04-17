@@ -12,17 +12,17 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: cache pipenv
-      uses: actions/cache@v1
-      env:
-        cache-name: cache-pipenv
-        with:
-          path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/Pipfile') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
+    # - name: cache pipenv
+    #   uses: actions/cache@v1
+    #   env:
+    #     cache-name: cache-pipenv
+    #   with:
+    #     path: /home/runner/.local/share/virtualenvs
+    #     key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('Pipfile') }}
+    #     restore-keys: |
+    #       ${{ runner.os }}-build-${{ env.cache-name }}-
+    #       ${{ runner.os }}-build-
+    #       ${{ runner.os }}-
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v1
       with:
@@ -32,7 +32,6 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install pipenv
         python -m pipenv install
-      # pip install -r requirements.txt
     - name: Lint with flake8
       run: |
         pip install flake8

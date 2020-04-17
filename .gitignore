@@ -12,3 +12,4 @@
 /build/
 /dist/
 /cifar10/
+Pipfile.lock

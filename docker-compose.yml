@@ -4,8 +4,6 @@ services:
     build: .
     volumes:
       - .:/workspace
-    ports:
-      - 8788:8888
     runtime: nvidia
     tty: true
     command: /bin/bash

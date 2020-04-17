@@ -18,7 +18,7 @@ jobs:
         cache-name: cache-pipenv
         with:
           path: ~/.local/share/virtualenvs
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/Pipfile') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('Pipfile') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-

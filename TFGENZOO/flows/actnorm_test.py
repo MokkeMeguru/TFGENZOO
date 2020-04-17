@@ -39,19 +39,6 @@ class ActnormTest(tf.test.TestCase):
                             tf.zeros([1, 1, 1, 4]), rtol=1e-8, atol=1e-1)
 
 
-class ActnormWithOutLDJTest (tf.test.TestCase):
-    def setUp(self):
-        super(ActnormWithOutLDJTest, self).setUp()
-        self.actnorm = Actnorm(calc_ldj=False)
-        self.actnorm.build((None, 16, 16, 4))
-
-    def testActnormInitializeOutputShape(self):
-        x = tf.random.normal([1024, 16, 16, 4])
-        z = self.actnorm(x)
-        self.assertShapeEqual(
-            np.zeros(x.shape), z)
-
-
 class ActnormScaleTest(tf.test.TestCase):
     def setUp(self):
         super(ActnormScaleTest, self).setUp()

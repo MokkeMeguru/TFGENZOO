@@ -1,5 +1,3 @@
-from functools import reduce
-
 import tensorflow as tf
 
 from TFGENZOO.flows.flowbase import FlowComponent
@@ -7,71 +5,74 @@ from TFGENZOO.flows.flowbase import FlowComponent
 
 class Actnorm(FlowComponent):
     """Actnorm Layer
-    attributes:
-    - calc_ldj: bool
-    flag of calculate log det jacobian
-    - scale: float
-    initialize batch's variance scaling
-    - logscale_factor: float
-    barrier log value to - Inf
+    Sources:
 
-    notes:
+        https://github.com/openai/glow/blob/master/tfops.py#L71-L163
+
+    Notes:
     - initialize
-    mean = mean(first_batch)
-    var = variance(first_batch)
-    logs = log(scale / sqrt(var) / log_scale_factor)
-    bias = - mean
+
+        mean = mean(first_batch)
+        var = variance(first_batch)
+        logs = log(scale / sqrt(var) / log_scale_factor)
+        bias = - mean
 
     - forward formula
-    logs = logs * log_scale_factor
-    scale = exp(logs)
-    z = (x + bias) * scale
-    log_det_jacobain = sum(logs) * H * W
+
+        logs = logs * log_scale_factor
+        scale = exp(logs)
+        z = (x + bias) * scale
+        log_det_jacobain = sum(logs) * H * W
 
     - inverse
-    logs = logs * log_scale_factor
-    inv_scale = exp(-logs)
-    z = x * inv_scale - bias
-    inverse_log_det_jacobian = sum(- logs) * H * W
+
+        logs = logs * log_scale_factor
+        inv_scale = exp(-logs)
+        z = x * inv_scale - bias
+        inverse_log_det_jacobian = sum(- logs) * H * W
+
+    Attributes:
+        calc_ldj: bool
+            flag of calculate log det jacobian
+        scale: float
+            initialize batch's variance scaling
+        logscale_factor: float
+            barrier log value to - Inf
     """
 
     def __init__(self,
-                 calc_ldj: bool = True,
                  scale: float = 1.0,
                  logscale_factor: float = 3.0,
                  **kwargs):
-        self.calc_ldj = calc_ldj
+        super(Actnorm, self).__init__(**kwargs)
         self.scale = scale
         self.logscale_factor = logscale_factor
-        super(Actnorm, self).__init__(**kwargs)
 
+    # pylint: disable=attribute-defined-outside-init
     def build(self, input_shape: tf.TensorShape):
         if len(input_shape) == 4:
             reduce_axis = [0, 1, 2]
-        else:
-            raise NotImplementedError()
-        # reduce_axis = list(range(len(input_shape)))
-        # reduce_axis.pop(-1)
-        self.reduce_axis = reduce_axis
-        
-        if len(input_shape) == 4:
             b, h, w, c = list(input_shape)
             self.logdet_factor = tf.constant(h * w, dtype=tf.float32)
         else:
             raise NotImplementedError()
+
+        self.reduce_axis = reduce_axis
+
+        # logs_shape = [1, 1, 1, C] if input_shape == [B, H, W, C]
         logs_shape = [1 for _ in range(len(input_shape))]
         logs_shape[-1] = input_shape[-1]
-        self.logs = self.add_weight(name='log_scale',
+
+        self.logs = self.add_weight(name='logscale',
                                     shape=tuple(logs_shape),
                                     initializer='zeros',
-                                    # regularizer=tf.keras.regularizers.l2(0.01),
                                     trainable=True)
         self.bias = self.add_weight(name='bias',
                                     shape=tuple(logs_shape),
                                     initializer='zeros',
-                                    # regularizer=tf.keras.regularizers.l2(0.02),
                                     trainable=True)
-        super(Actnorm, self).build(input_shape)
+
+        super().build(input_shape)
 
     def initialize_parameter(self, x: tf.Tensor):
         tf.print('[Info] initialize parameter at {}'.format(self.name))
@@ -82,35 +83,39 @@ class Actnorm(FlowComponent):
             [tf.reduce_mean(
                 x, axis=self.reduce_axis, keepdims=True) / n,
              tf.reduce_mean(
-                 tf.square(x), axis=self.reduce_axis, keepdims=True) / n]
-        )
+                 tf.square(x), axis=self.reduce_axis, keepdims=True) / n])
+
+        # var(x) = x^2 - mean(x)^2
         x_var = x_mean_sq - tf.square(x_mean)
-        logs = tf.math.log(self.scale * tf.math.rsqrt(x_var + 1e-6))
-        # logs = tf.math.log(
-        #  self.scale * tf.math.rsqrt(x_var + 1e-6) / self.log_scale_factor)
-        #  * self.log_scale_factor
-        self.add_update(self.bias.assign(- x_mean))
-        self.add_update(self.logs.assign(logs))
+        logs = (tf.math.log(self.scale * tf.math.rsqrt(x_var + 1e-6))
+                / self.logscale_factor)
+
+        self.bias.assign(- x_mean)
+        self.logs.assign(logs)
 
     def forward(self, x: tf.Tensor, **kwargs):
+        logs = self.logs * self.logscale_factor
+
+        # centering
         z = x + self.bias
-        z = z * tf.exp(self.logs)
-        if self.calc_ldj:
-            log_det_jacobian = tf.reduce_sum(self.logs) * self.logdet_factor
-            log_det_jacobian = tf.broadcast_to(
-                log_det_jacobian, tf.shape(x)[0:1])
-            return z, log_det_jacobian
-        else:
-            return z
+        # scaling
+        z = z * tf.exp(logs)
+
+        log_det_jacobian = tf.reduce_sum(logs) * self.logdet_factor
+        log_det_jacobian = tf.broadcast_to(
+            log_det_jacobian, tf.shape(x)[0:1])
+        return z, log_det_jacobian
 
     def inverse(self, z: tf.Tensor, **kwargs):
-        x = z * tf.exp(- 1 * self.logs)
+        logs = self.logs * self.logscale_factor
+
+        # inverse scaling
+        x = z * tf.exp(- 1 * logs)
+        # inverse centering
         x = x - self.bias
-        if self.calc_ldj:
-            inverse_log_det_jacobian = (
-                -1 * tf.reduce_sum(self.logs) * self.logdet_factor)
-            inverse_log_det_jacobian = tf.broadcast_to(
-                inverse_log_det_jacobian, tf.shape(x)[0:1])
-            return x, inverse_log_det_jacobian
-        else:
-            return x
+
+        inverse_log_det_jacobian = (
+            -1 * tf.reduce_sum(logs) * self.logdet_factor)
+        inverse_log_det_jacobian = tf.broadcast_to(
+            inverse_log_det_jacobian, tf.shape(x)[0:1])
+        return x, inverse_log_det_jacobian

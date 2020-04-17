@@ -1,12 +1,11 @@
 version: '2.3'
 services:
-  tensorflow:
-    # image: tensorflow/tensorflow:2.0.0rc0-gpu-py3
-    build:
-      context: .
-      dockerfile: ./dockerfile
-    ports:
-      - 8889:8888
+  tensorflow-meguru:
+    build: .
     volumes:
-      - ./:/workspace/Github
+      - .:/workspace
     runtime: nvidia
+    tty: true
+    command: /bin/bash
+    environment:
+      - CUDA_VISIBLE_DEVICES

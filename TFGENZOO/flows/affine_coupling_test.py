@@ -26,10 +26,10 @@ class AffineCouplingTest(tf.test.TestCase):
         self.affine_coupling.build((None, 16, 16, 4))
 
     def testAffineCouplingInitialize(self):
-        assert self.affine_coupling.initialized == False
+        assert not self.affine_coupling.initialized
         x = tf.random.uniform((1024, 16, 16, 4))
         self.affine_coupling(x)
-        assert self.affine_coupling.initialized == True
+        assert self.affine_coupling.initialized
         for i in self.affine_coupling.scale_shift_net.res_block.layers:
             if isinstance(i, FlowComponent):
                 self.assertTrue(i.initialized)

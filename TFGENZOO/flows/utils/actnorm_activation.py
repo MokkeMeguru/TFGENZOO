@@ -5,7 +5,7 @@ Layer = layers.Layer
 
 
 class ActnormActivation(Layer):
-    """
+    """Actnorm
     Attributes:
         scale (float)          : scaling
         logscale_factor (float): logscale_factor
@@ -24,7 +24,12 @@ class ActnormActivation(Layer):
         self._init_critical_section = tf.CriticalSection(name='init_mutex')
 
     def build(self, input_shape: tf.TensorShape):
-        self.reduce_axis = list(range(len(input_shape) - 1))
+        if len(input_shape) == 4:
+            reduce_axis = [0, 1, 2]
+        else:
+            raise NotImplementedError()
+
+        self.reduce_axis = reduce_axis
         bias_shape = [1 for i in range(len(input_shape))]
         bias_shape[-1] = input_shape[-1]
         self.bias = self.add_weight(name="bias",

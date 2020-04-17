@@ -19,6 +19,7 @@ jupyterlab = "*"
 tensorflow = "==2.1.0"
 matplotlib = "*"
 tensorflow-gpu = "==2.1.0"
+tensorflow-addons = "*"
 
 [requires]
 python_version = "3.7"

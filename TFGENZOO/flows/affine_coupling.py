@@ -152,7 +152,7 @@ class AffineCoupling(FlowComponent):
             # scale = tf.exp(- tf.clip_by_value(log_scale, -15.0, 15.0))
             x2 = (z2 / scale) - shift
 
-            # scale's shape is [B, H, W, C]
+            # scale's shape is [B, H, W, C // 2]
             # inverse_log_det_jacobian's hape is [B]
             inverse_log_det_jacobian = - 1 * tf.reduce_sum(
                 tf.math.log(scale), axis=self.reduce_axis)

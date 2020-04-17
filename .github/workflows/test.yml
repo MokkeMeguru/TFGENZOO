@@ -16,13 +16,13 @@ jobs:
       uses: actions/cache@v1
       env:
         cache-name: cache-pipenv
-        with:
-          path: ~/.cache/pipenv
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('Pipfile') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
+      with:
+        path: ~/.cache/pipenv
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('Pipfile') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}-
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v1
       with:

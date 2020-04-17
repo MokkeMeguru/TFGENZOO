@@ -12,17 +12,17 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: cache pipenv
-      uses: actions/cache@v1
-      env:
-        cache-name: cache-pipenv
-      with:
-        path: ~/.cache/pipenv
-        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('Pipfile') }}
-        restore-keys: |
-          ${{ runner.os }}-build-${{ env.cache-name }}-
-          ${{ runner.os }}-build-
-          ${{ runner.os }}-
+    # - name: cache pipenv
+    #   uses: actions/cache@v1
+    #   env:
+    #     cache-name: cache-pipenv
+    #   with:
+    #     path: /home/runner/.local/share/virtualenvs
+    #     key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('Pipfile') }}
+    #     restore-keys: |
+    #       ${{ runner.os }}-build-${{ env.cache-name }}-
+    #       ${{ runner.os }}-build-
+    #       ${{ runner.os }}-
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v1
       with:

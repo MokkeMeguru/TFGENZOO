@@ -15,7 +15,6 @@
   pip install git+https://github.com/MokkeMeguru/TFGENZOO.git@v1.0-alpha#egg=TFGENZOO
   #+end_src
 
-
 * What's this repository?
   This is a repository for some researcher to build some Generative models using Tensorflow 2.0.
 

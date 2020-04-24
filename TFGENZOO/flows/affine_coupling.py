@@ -130,7 +130,7 @@ class AffineCoupling(FlowComponent):
             shift = h[..., 0::2]
             log_scale = h[..., 1::2]
 
-            scale = tf.nn.sigmoid(log_scale + 2.0) + 1e-10
+            scale = tf.nn.sigmoid(log_scale + 2.0)
             # scale = tf.exp(tf.clip_by_value(log_scale, -15.0, 15.0))
             z2 = (x2 + shift) * scale
 

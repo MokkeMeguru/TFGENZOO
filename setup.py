@@ -3,7 +3,9 @@ import setuptools
 setuptools.setup(
     name='TFGENZOO',
     packages=setuptools.find_packages(),
-    install_requires=['tensorflow>=2.1.0', 'tensorflow_probability>=0.9.0'],
+    install_requires=['tensorflow>=2.1.0',
+                      'tensorflow_probability>=0.9.0',
+                      'pandas'],
     version='0.1.0alpha',
     author='MokkeMeguru',
     author_email='meguru.mokke@gmail.com',

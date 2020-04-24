@@ -46,9 +46,7 @@ class ShallowResNet(Model):
     """
 
     def build(self, input_shape: tf.TensorShape):
-        out_shape = input_shape
-        out_shape[-1] *= 2
-        self.conv_out = Conv2DZeros(width=out_shape)
+        self.conv_out = Conv2DZeros(width=input_shape[-1] * 2)
         self.built = True
 
     def __init__(self, width: int = 512, out_scale: int = 2):

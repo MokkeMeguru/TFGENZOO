@@ -56,6 +56,7 @@ class ShallowResNet(Model):
         x = tf.nn.relu(self.conv1(x))
         x = tf.nn.relu(self.conv2(x))
         x = self.conv_out(x)
+        return x
 
 
 class ResidualBlock(Model):

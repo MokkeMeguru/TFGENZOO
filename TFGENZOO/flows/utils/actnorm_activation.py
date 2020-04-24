@@ -5,13 +5,29 @@ Layer = layers.Layer
 
 
 class ActnormActivation(Layer):
-    """Actnorm
+    """Actnorm Layer without inverse function
+    Sources:
+
+        https://github.com/openai/glow/blob/master/tfops.py#L71-L163
+
+
     Attributes:
         scale (float)          : scaling
         logscale_factor (float): logscale_factor
-    Note:
-        y = (x + bias) * exp(logs)
-        bias ans logs is initialized by first batch
+
+    Notes:
+    - initialize
+
+        mean = mean(first_batch)
+        var = variance(first_batch)
+        logs = log(scale / sqrt(var)) / log_scale_factor
+        bias = -mean
+
+    - forward formula (forward only)
+
+        logs = logs * log_scale_factor
+        scale = exp(logs)
+        z = (x + bias) * scale
     """
 
     def __init__(self,

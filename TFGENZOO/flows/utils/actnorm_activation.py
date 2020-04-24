@@ -73,7 +73,9 @@ class ActnormActivation(Layer):
             tf.distribute.ReduceOp.SUM,
             [tf.reduce_mean(
                 x, axis=self.reduce_axis, keepdims=True) / n,
-             tf.reduce_mean(tf.square(x), axis=self.reduce_axis, keepdims=True) / n])
+             tf.reduce_mean(
+                 tf.square(x),
+                 axis=self.reduce_axis, keepdims=True) / n])
 
         # var(x) = x^2 - mean(x)^2
         x_var = x_mean_sq - tf.square(x_mean)

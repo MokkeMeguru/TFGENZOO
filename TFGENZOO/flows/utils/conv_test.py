@@ -19,7 +19,7 @@ class Conv2DTest(tf.test.TestCase):
         self.assertShapeEqual(
             np.zeros(x.shape), z)
 
-    def testConv2DOutputShape(self):
+    def testConv2DOutputTwiceShape(self):
         x = tf.random.normal([512, 16, 16, 4])
         z_shape = list(tf.shape(x))
         z_shape[-1] = z_shape[-1] * 2

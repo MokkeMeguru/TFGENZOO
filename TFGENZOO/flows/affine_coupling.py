@@ -149,7 +149,7 @@ class AffineCoupling(FlowComponent):
         if self.mask_type == AffineCouplingMask.ChannelWise:
             shift = h[..., 0::2]
             log_scale = h[..., 1::2]
-            scale = tf.nn.sigmoid(log_scale + 2.0) + 1e-10
+            scale = tf.nn.sigmoid(log_scale + 2.0)
             # scale = tf.exp(- tf.clip_by_value(log_scale, -15.0, 15.0))
             x2 = (z2 / scale) - shift
 

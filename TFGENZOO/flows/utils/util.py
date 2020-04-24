@@ -45,12 +45,17 @@ class ShallowResNet(Model):
     """ResNet of OpenAI's Glow
     """
 
+    def build(self, input_shape: tf.TensorShape):
+        out_shape = input_shape
+        out_shape[-1] *= 2
+        self.conv_out = Conv2DZeros(width=out_shape)
+        self.built = True
+
     def __init__(self, width: int = 512, out_scale: int = 2):
         super(ShallowResNet, self).__init__()
         self.width = width
         self.conv1 = Conv2D(width=self.width)
         self.conv2 = Conv2D(width=self.width, kernel_size=[1, 1])
-        self.conv_out = Conv2DZeros(width_scale=out_scale)
 
     def call(self, x: tf.Tensor):
         x = tf.nn.relu(self.conv1(x))

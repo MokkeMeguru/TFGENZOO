@@ -14,7 +14,7 @@ class Actnorm(FlowComponent):
 
         mean = mean(first_batch)
         var = variance(first_batch)
-        logs = log(scale / sqrt(var) / log_scale_factor)
+        logs = log(scale / sqrt(var)) / log_scale_factor
         bias = - mean
 
     - forward formula

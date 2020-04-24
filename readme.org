@@ -12,6 +12,7 @@ update loss function
 |-------+-------+------------+--------------|
 
 #+begin_src shell
+docker-compose build
 sh run_script.sh
 [docker]$ cd workspace/Github
 [docker]$ python

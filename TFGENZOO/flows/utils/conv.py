@@ -10,10 +10,17 @@ Layer = layers.Layer
 
 class Conv2D(Layer):
     """Convolution layer for NHWC image
+    Sources:
+
+        https://github.com/openai/glow/blob/master/tfops.py#L235-L264
+
     Note:
         this layer applies
         - data-dependent normalization (actnorm, openai's Glow)
         - weight normalization for stable training
+        this layer not implemented.
+        - function add_edge_padding
+           ref. https://github.com/openai/glow/blob/master/tfops.py#L203-L232
     """
 
     def __init__(self,
@@ -23,8 +30,7 @@ class Conv2D(Layer):
                  stride: Tuple[int, int] = (1, 1),
                  padding: str = "SAME",
                  do_actnorm: bool = True,
-                 do_weightnorm: bool = False,
-                 weight_std: float = 0.05):
+                 do_weightnorm: bool = False):
         super(Conv2D, self).__init__()
         self.width = width
         self.width_scale = width_scale
@@ -33,7 +39,6 @@ class Conv2D(Layer):
         self.padding = padding
         self.do_actnorm = do_actnorm
         self.do_weightnorm = do_weightnorm
-        self.weight_std = weight_std
         if self.do_actnorm:
             self.activation = ActnormActivation()
 
@@ -65,18 +70,3 @@ class Conv2D(Layer):
         else:
             x += self.bias
         return x
-
-
-def main():
-    x = tf.keras.Input([16, 16, 2])
-    conv = Conv2D(width_scale=2)
-    y = conv(x)
-    model = tf.keras.Model(x, y)
-    model.summary()
-    x = tf.random.normal([32, 16, 16, 2])
-    y = conv(x)
-    print(y.shape)
-
-
-if __name__ == '__main__':
-    main()

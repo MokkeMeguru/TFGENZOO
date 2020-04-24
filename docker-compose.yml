@@ -1,6 +1,6 @@
 version: '2.3'
 services:
-  tensorflow-meguru:
+  tfgenzoo:
     build: .
     volumes:
       - .:/workspace

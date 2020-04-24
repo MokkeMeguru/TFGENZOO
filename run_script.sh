@@ -1,3 +1,4 @@
 #!/bin/sh
 
-docker-compose run --rm --service-port tensorflow  /bin/bash
+docker-compose up -d
+docker-compose exec tfgenzoo /bin/zsh

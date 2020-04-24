@@ -5,99 +5,94 @@ Layer = layers.Layer
 
 
 class ActnormActivation(Layer):
-    """Actnorm
+    """Actnorm Layer without inverse function
+    Sources:
+
+        https://github.com/openai/glow/blob/master/tfops.py#L71-L163
+
+
     Attributes:
         scale (float)          : scaling
         logscale_factor (float): logscale_factor
-    Note:
-        y = (x + bias) * exp(logs)
-        bias ans logs is initialized by first batch
+
+    Notes:
+    - initialize
+
+        mean = mean(first_batch)
+        var = variance(first_batch)
+        logs = log(scale / sqrt(var)) / log_scale_factor
+        bias = -mean
+
+    - forward formula (forward only)
+
+        logs = logs * log_scale_factor
+        scale = exp(logs)
+        z = (x + bias) * scale
     """
 
     def __init__(self,
                  scale: float = 1.0,
-                 batch_variance: bool = False,
-                 logscale_factor=3.0):
+                 logscale_factor=3.0,
+                 **kwargs):
         super(ActnormActivation, self).__init__()
         self.scale = scale
         self.logscale_factor = logscale_factor
-        self._init_critical_section = tf.CriticalSection(name='init_mutex')
 
     def build(self, input_shape: tf.TensorShape):
         if len(input_shape) == 4:
             reduce_axis = [0, 1, 2]
+            b, h, w, c = list(input_shape)
         else:
             raise NotImplementedError()
 
         self.reduce_axis = reduce_axis
-        bias_shape = [1 for i in range(len(input_shape))]
-        bias_shape[-1] = input_shape[-1]
-        self.bias = self.add_weight(name="bias",
-                                    shape=tuple(bias_shape))
-        self.logs = self.add_weight(name="logs",
-                                    shape=tuple(bias_shape))
-        self._initialized = self.add_weight(name="initialized",
-                                            initializer="zeros",
-                                            dtype=tf.bool,
-                                            shape=None,
-                                            trainable=False)
-        self.built = True
+
+        logs_shape = [1 for _ in range(len(input_shape))]
+        logs_shape[-1] = input_shape[-1]
+
+        self.logs = self.add_weight(name='logscale',
+                                    shape=tuple(logs_shape),
+                                    initializer='zeros',
+                                    trainable=True)
+        self.bias = self.add_weight(name='bias',
+                                    shape=tuple(logs_shape),
+                                    initializer='zeros',
+                                    trainable=True)
+        self.initialized = self.add_weight(
+            name='initialized',
+            dtype=tf.bool,
+            trainable=False)
+        self.initialized.assign(False)
+        self.build = True
 
     def initialize_parameter(self, x: tf.Tensor):
-        with tf.control_dependencies([
-                tf.debugging.assert_equal(
-                    self._initialized,
-                    False,
-                    message="The layer has been initialized")
-        ]):
-            tf.print("layer initialization {}".format(self.name))
-            # ref.
-            # https://github.com/tensorflow/tensorflow/issues/18222#issuecomment-579303485
-            ctx = tf.distribute.get_replica_context()
-            n = ctx.num_replicas_in_sync
+        tf.print('[Info] initialize parameter at {}'.format(self.name))
+        ctx = tf.distribute.get_replica_context()
+        n = ctx.num_replicas_in_sync
+        x_mean, x_mean_sq = ctx.all_reduce(
+            tf.distribute.ReduceOp.SUM,
+            [tf.reduce_mean(
+                x, axis=self.reduce_axis, keepdims=True) / n,
+             tf.reduce_mean(
+                 tf.square(x),
+                 axis=self.reduce_axis, keepdims=True) / n])
 
-            mean = tf.reduce_mean(x, axis=self.reduce_axis, keepdims=True)
-            mean_square = tf.reduce_mean(
-                tf.square(x), axis=self.reduce_axis, keepdims=True)
-            mean, mean_square = ctx.all_reduce(
-                tf.distribute.ReduceOp.SUM, [mean, mean_square])
-            mean = mean / n
-            mean_square = mean_square / n
+        # var(x) = x^2 - mean(x)^2
+        x_var = x_mean_sq - tf.square(x_mean)
+        logs = (tf.math.log(self.scale * tf.math.rsqrt(x_var + 1e-6))
+                / self.logscale_factor)
+        self.logs.assign(logs)
+        self.bias.assign(- x_mean)
 
-            x_var = mean_square - tf.square(mean)
-            x_mean = mean
+    def call(self, x: tf.Tensor):
+        if not self.initialized:
+            self.initialize_parameter(x)
+            self.initialized.assign(True)
 
-            # WARN: this formula leads to raise NaN error
-            logs = (tf.math.log(self.scale /
-                                (tf.math.sqrt(x_var) + 1e-6) /
-                                self.logscale_factor)
-                    * self.logscale_factor)
-            # logs = tf.math.log(self.scale * tf.math.rsqrt(x_var + 1e-6))
-
-            # WARN: Tensorflow says this operation hasn't been required,
-            # self.add_update(self.bias.assign(- x_mean))
-            # self.add_update(self.logs.assign(logs))
-            # self.add_update(self._initialized.assign(True))
-            assign_tensors = [self.bias.assign(- x_mean),
-                              self.logs.assign(logs),
-                              self._initialized.assign(True)]
-            return assign_tensors
-
-    def call(self, inputs: tf.Tensor):
-        def _do_nothing():
-            return self.logs, self.bias
-
-        def _do_update():
-            with tf.control_dependencies(
-                    self.initialize_parameter(inputs)):
-                return self.logs, self.bias
-        logs, bias = self._init_critical_section.execute(
-            lambda: tf.cond(self._initialized,
-                            _do_nothing,
-                            _do_update))
-        inputs = inputs + bias
-        inputs = inputs * tf.exp(logs)
-        return inputs
+        logs = self.logs * self.logscale_factor
+        x = x + self.bias
+        x = x * tf.exp(logs)
+        return x
 
 
 def main():

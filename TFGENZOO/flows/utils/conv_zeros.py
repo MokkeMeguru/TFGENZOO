@@ -8,8 +8,14 @@ Layer = layers.Layer
 
 class Conv2DZeros(Layer):
     """Convolution layer for NHWC image with zero initialization
+    Sources:
+
+        https://github.com/openai/glow/blob/master/tfops.py#L292-L313
+
     Notes:
-        this layer's kernel is initialized by zeros
+        this layer not implemented.
+        - function add_edge_padding
+           ref. https://github.com/openai/glow/blob/master/tfops.py#L203-L232
     """
 
     def __init__(self,

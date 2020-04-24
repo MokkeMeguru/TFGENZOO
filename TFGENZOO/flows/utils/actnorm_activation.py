@@ -87,8 +87,8 @@ class ActnormActivation(Layer):
             self.initialize_parameter(x)
             self.initialized.assign(True)
 
-        logs = self.logs  * self.logscale_factor
-        x = x + bias
+        logs = self.logs * self.logscale_factor
+        x = x + self.bias
         x = x * tf.exp(logs)
         return x
 

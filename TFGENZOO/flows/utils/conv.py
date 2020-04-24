@@ -10,6 +10,10 @@ Layer = layers.Layer
 
 class Conv2D(Layer):
     """Convolution layer for NHWC image
+    Sources:
+
+        https://github.com/openai/glow/blob/master/tfops.py#L235-L264
+
     Note:
         this layer applies
         - data-dependent normalization (actnorm, openai's Glow)
@@ -66,18 +70,3 @@ class Conv2D(Layer):
         else:
             x += self.bias
         return x
-
-
-def main():
-    x = tf.keras.Input([16, 16, 2])
-    conv = Conv2D(width_scale=2)
-    y = conv(x)
-    model = tf.keras.Model(x, y)
-    model.summary()
-    x = tf.random.normal([32, 16, 16, 2])
-    y = conv(x)
-    print(y.shape)
-
-
-if __name__ == '__main__':
-    main()

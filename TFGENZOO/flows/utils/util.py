@@ -1,13 +1,5 @@
-from typing import Callable, Dict, Union
-
 import numpy as np
 import tensorflow as tf
-from tensorflow.keras import Model, layers
-
-from TFGENZOO.flows.utils.conv import Conv2D
-from TFGENZOO.flows.utils.conv_zeros import Conv2DZeros
-
-Layer = layers.Layer
 
 
 def bits_x(log_likelihood: tf.Tensor,

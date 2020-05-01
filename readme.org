@@ -72,11 +72,11 @@ python 3.6 > trainer.main()
   
  - pipenv
    #+begin_src
-   pipenv install git+https://github.com/MokkeMeguru/TFGENZOO.git@v1.0-alpha#egg=TFGENZOO
+   pipenv install git+https://github.com/MokkeMeguru/TFGENZOO.git@v1.0-beta0#egg=TFGENZOO
    #+end_src
   
  - pip
    #+begin_src
-   pip install git+https://github.com/MokkeMeguru/TFGENZOO.git@v1.0-alpha#egg=TFGENZOO
+   pip install git+https://github.com/MokkeMeguru/TFGENZOO.git@v1.0-beta0#egg=TFGENZOO
    #+end_src
 

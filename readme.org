@@ -2,19 +2,9 @@
 [[https://img.shields.io/badge/License-MIT-yellow.svg]]
 [[file:https://img.shields.io/badge/python-3.7-blue.svg]]
 
-* News [2020/4/24]
-  publish installable alpha-version!!!
-  
-- pipenv
-  #+begin_src
-  pipenv install git+https://github.com/MokkeMeguru/TFGENZOO.git@v1.0-alpha#egg=TFGENZOO
-  #+end_src
-  
-- pip
-  #+begin_src
-  pip install git+https://github.com/MokkeMeguru/TFGENZOO.git@v1.0-alpha#egg=TFGENZOO
-  #+end_src
-
+* News [2020/5/1]
+  Move example code to the [[https://github.com/MokkeMeguru/TFGENZOO_EXAMPLE][TFGENZOO_EXAMPLE]].    
+  Too easy to see how to implement flow-based model e.g. OpenAI's Glow
 * What's this repository?
   This is a repository for some researcher to build some Generative models using Tensorflow 2.0.
 
@@ -75,4 +65,17 @@ python 3.6 > trainer.main()
  - Nvidia-Docker
  - GPU > NVIDIA 1080
  - about 4 hours
+
+** News [2020/4/24]
+   publish installable alpha-version!!!
+  
+ - pipenv
+   #+begin_src
+   pipenv install git+https://github.com/MokkeMeguru/TFGENZOO.git@v1.0-alpha#egg=TFGENZOO
+   #+end_src
+  
+ - pip
+   #+begin_src
+   pip install git+https://github.com/MokkeMeguru/TFGENZOO.git@v1.0-alpha#egg=TFGENZOO
+   #+end_src
 

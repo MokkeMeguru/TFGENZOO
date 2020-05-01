@@ -10,10 +10,9 @@ import numpy as np
 import tensorflow as tf
 import tensorflow_probability as tfp
 from tensorflow.keras import metrics, optimizers
-from tqdm import tqdm
-
 from TFGENZOO.examples.glow_mnist import args, model
 from TFGENZOO.examples.utils import load_mnist
+from tqdm import tqdm
 
 Mean = metrics.Mean
 Adam = optimizers.Adam

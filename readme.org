@@ -3,8 +3,9 @@
 [[file:https://img.shields.io/badge/python-3.7-blue.svg]]
 
 * News [2020/5/1]
-  Move example code to the [[https://github.com/MokkeMeguru/TFGENZOO_EXAMPLE][TFGENZOO_EXAMPLE]].    
-  Too easy to see how to implement flow-based model e.g. OpenAI's Glow
+  Move example code to the [[https://github.com/MokkeMeguru/TFGENZOO_EXAMPLE][TFGENZOO_EXAMPLE]]. 
+  
+  Easy to understand how to implement flow-based model e.g. OpenAI's Glow
 * What's this repository?
   This is a repository for some researcher to build some Generative models using Tensorflow 2.0.
 

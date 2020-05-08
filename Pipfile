@@ -19,6 +19,7 @@ jupyterlab = "*"
 matplotlib = "*"
 tensorflow-addons = "*"
 tensorflow = "==2.1.0"
+blank = "*"
 
 [requires]
 python_version = "3.7"

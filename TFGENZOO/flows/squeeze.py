@@ -61,6 +61,7 @@ class Squeezing(FlowBase):
             return z, zaux
         return z
 
+
 # TODO: move to squeeze_test.py
 def main():
     layer = Squeezing()

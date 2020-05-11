@@ -18,8 +18,7 @@ class Conv2DTest(tf.test.TestCase):
         x = tf.random.normal([512, 16, 16, 4])
         z = self.conv2d(x)
         self.assertTrue(self.conv2d.activation.initialized)
-        self.assertShapeEqual(
-            np.zeros(x.shape), z)
+        self.assertShapeEqual(np.zeros(x.shape), z)
 
     def testConv2DOutputTwiceShape(self):
         x = tf.random.normal([512, 16, 16, 4])
@@ -27,8 +26,8 @@ class Conv2DTest(tf.test.TestCase):
         z_shape[-1] = z_shape[-1] * 2
         z = self.conv2d_twice(x)
         self.assertTrue(self.conv2d_twice.activation.initialized)
-        self.assertShapeEqual(
-            np.zeros(z_shape), z)
+        self.assertShapeEqual(np.zeros(z_shape), z)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     tf.test.main(argv=None)

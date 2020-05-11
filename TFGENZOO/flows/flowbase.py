@@ -31,21 +31,18 @@ class FlowBase(Layer, metaclass=ABCMeta):
 
     def build(self, input_shape: tf.TensorShape):
         self.initialized = self.add_weight(
-            name='initialized',
-            dtype=tf.bool,
-            trainable=False)
+            name="initialized", dtype=tf.bool, trainable=False
+        )
         self.initialized.assign(False)
         self.built = True
 
-    def call(self, x: tf.Tensor,
-             inverse=False,
-             **kwargs):
+    def call(self, x: tf.Tensor, inverse=False, **kwargs):
         if not self.initialized:
             if not inverse:
                 self.initialize_parameter(x)
                 self.initialized.assign(True)
             else:
-                raise Exception('Invalid initialize')
+                raise Exception("Invalid initialize")
         if inverse:
             return self.inverse(x, **kwargs)
         else:
@@ -93,8 +90,7 @@ class FlowComponent(FlowBase):
         # => Error
         """
         if self.with_debug:
-            tf.debugging.assert_shapes(
-                [(log_det_jacobian, (None, ))])
+            tf.debugging.assert_shapes([(log_det_jacobian, (None,))])
 
 
 class FlowModule(FlowBase):
@@ -109,8 +105,7 @@ class FlowModule(FlowBase):
     """
 
     def build(self, input_shape: tf.TensorShape):
-        super(FlowModule, self).build(
-            input_shape=input_shape)
+        super(FlowModule, self).build(input_shape=input_shape)
 
     def __init__(self, components: List[FlowComponent]):
         super(FlowModule, self).__init__()
@@ -148,6 +143,7 @@ class FactorOutBase(FlowBase):
         >>> z, zaux = fo(x, zaux=zaux, inverse=False)
         >>> x, zaux = fo(z, zaux=zaux, inverse=True)
     """
+
     @abstractmethod
     def __init__(self, with_zaux: bool = False, **kwargs):
         super(FactorOutBase, self).__init__(**kwargs)
@@ -156,16 +152,13 @@ class FactorOutBase(FlowBase):
     def build(self, input_shape: tf.TensorShape):
         super(FactorOutBase, self).build(input_shape)
 
-    def call(self, x: tf.Tensor,
-             zaux: tf.Tensor = None,
-             inverse=False,
-             **kwargs):
+    def call(self, x: tf.Tensor, zaux: tf.Tensor = None, inverse=False, **kwargs):
         if not self.initialized:
             if not inverse:
                 self.initialize_parameter(x)
                 self.initialized.assign(True)
             else:
-                raise Exception('Invalid initialize')
+                raise Exception("Invalid initialize")
         if inverse:
             return self.inverse(x, zaux, **kwargs)
         else:

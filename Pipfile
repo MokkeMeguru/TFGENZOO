@@ -11,6 +11,7 @@ ptvsd = "*"
 yapf = "*"
 pytest = "*"
 
+
 [packages]
 tensorflow-probability = "*"
 sentencepiece = "*"
@@ -19,7 +20,7 @@ jupyterlab = "*"
 matplotlib = "*"
 tensorflow-addons = "*"
 tensorflow = "==2.1.0"
-blank = "*"
+ipython = "*"
 
 [requires]
 python_version = "3.7"

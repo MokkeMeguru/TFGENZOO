@@ -15,8 +15,7 @@ class GlowNNTest(tf.test.TestCase):
         x = tf.random.normal([1024, 16, 16, 4])
         self.nn(x)
         y = self.nn(x)
-        self.assertShapeEqual(
-            np.zeros([1024, 16, 16, 8]), y)
+        self.assertShapeEqual(np.zeros([1024, 16, 16, 8]), y)
 
 
 class AffineCouplingTest(tf.test.TestCase):
@@ -38,18 +37,14 @@ class AffineCouplingTest(tf.test.TestCase):
         x = tf.random.normal((1024, 16, 16, 4))
         self.affine_coupling(x)
         x = tf.random.normal((1024, 16, 16, 4))
-        z,  ldj = self.affine_coupling(x)
+        z, ldj = self.affine_coupling(x)
         rev_x, ildj = self.affine_coupling(x, inverse=True)
         # print(tf.reduce_max((x - rev_x) ** 2))
-        self.assertShapeEqual(
-            np.zeros([1024, 16, 16, 4]), z)
-        self.assertShapeEqual(
-            np.zeros([1024]), ldj)
-        self.assertAllClose(x, rev_x,
-                            rtol=1e-8, atol=1)
-        self.assertAllClose(ldj + ildj,
-                            tf.zeros([1024]), rtol=1e-1, atol=1e-1)
+        self.assertShapeEqual(np.zeros([1024, 16, 16, 4]), z)
+        self.assertShapeEqual(np.zeros([1024]), ldj)
+        self.assertAllClose(x, rev_x, rtol=1e-8, atol=1)
+        self.assertAllClose(ldj + ildj, tf.zeros([1024]), rtol=1e-1, atol=1e-1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     tf.test.main(argv=None)

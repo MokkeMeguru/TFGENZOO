@@ -19,13 +19,11 @@ def gaussian_likelihood(mean: tf.Tensor, logsd: tf.Tensor, x: tf.Tensor):
             var is a variance = exp(2. * logsd)
     """
     c = np.log(2 * np.pi)
-    ll = - 0.5 * (c + 2. * logsd +
-                  ((x - mean) ** 2) / tf.math.exp(2. * logsd))
+    ll = -0.5 * (c + 2.0 * logsd + ((x - mean) ** 2) / tf.math.exp(2.0 * logsd))
     return ll
 
 
-def gaussian_sample(mean: tf.Tensor, logsd: tf.Tensor,
-                    temparature: float = 1.0):
+def gaussian_sample(mean: tf.Tensor, logsd: tf.Tensor, temparature: float = 1.0):
     """sampling from mean / logsd * temparature
     Args:
         mean (tf.Tensor[B, ...]): mean
@@ -37,5 +35,4 @@ def gaussian_sample(mean: tf.Tensor, logsd: tf.Tensor,
         I cann't gurantee it's correctness.
         Please open the tensorflow probability's Issue.
     """
-    return tfp.distributions.Normal(
-        mean, tf.math.exp(logsd) * temparature).sample()
+    return tfp.distributions.Normal(mean, tf.math.exp(logsd) * temparature).sample()

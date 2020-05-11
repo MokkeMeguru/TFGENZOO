@@ -17,11 +17,12 @@ class ShallowResNet(Model):
     """
 
     def build(self, input_shape: tf.TensorShape):
-        self.conv_out = Conv2DZeros(width=input_shape[-1] * 2)
+        self.conv_out = Conv2DZeros(width=input_shape[-1] * self.out_scale)
         self.built = True
 
     def __init__(self, width: int = 512, out_scale: int = 2):
         super().__init__()
+        self.out_scale = out_scale
         self.width = width
         self.conv1 = Conv2D(width=self.width)
         self.conv2 = Conv2D(width=self.width, kernel_size=[1, 1])
@@ -43,11 +44,12 @@ class ShallowConnectedResNet(Model):
     """
 
     def build(self, input_shape: tf.TensorShape):
-        self.conv_out = Conv2DZeros(width=input_shape[-1] * 2)
+        self.conv_out = Conv2DZeros(width=input_shape[-1] * self.out_scale)
         self.built = True
 
     def __init__(self, width: int = 512, out_scale: int = 2):
         super().__init__()
+        self.out_scale = out_scale
         self.width = width
         self.conv1 = Conv2D(width=self.width)
         self.conv2 = Conv2D(width=self.width, kernel_size=[1, 1])

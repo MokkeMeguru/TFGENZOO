@@ -60,8 +60,7 @@ class WeightNormalization(tf.keras.layers.Wrapper):
     def build(self, input_shape):
         """Build `Layer`"""
         input_shape = tf.TensorShape(input_shape)
-        self.input_spec = tf.keras.layers.InputSpec(
-            shape=[None] + input_shape[1:])
+        self.input_spec = tf.keras.layers.InputSpec(shape=[None] + input_shape[1:])
 
         if not self.layer.built:
             self.layer.build(input_shape)
@@ -105,8 +104,7 @@ class WeightNormalization(tf.keras.layers.Wrapper):
             with tf.name_scope("data_dep_init"):
                 layer_config = tf.keras.layers.serialize(self.layer)
                 layer_config["config"]["trainable"] = False
-                self._naked_clone_layer = tf.keras.layers.deserialize(
-                    layer_config)
+                self._naked_clone_layer = tf.keras.layers.deserialize(layer_config)
                 self._naked_clone_layer.build(input_shape)
                 self._naked_clone_layer.set_weights(self.layer.get_weights())
                 if not self.is_rnn:
@@ -185,14 +183,12 @@ class WeightNormalization(tf.keras.layers.Wrapper):
         if replica_ctx:
             # define each GPU's variables
             local_sum = tf.reduce_sum(y, axis=axes, keepdims=True)
-            local_squared_sum = tf.reduce_sum(
-                tf.math.square(y), axes, keepdims=True)
+            local_squared_sum = tf.reduce_sum(tf.math.square(y), axes, keepdims=True)
             batch_size = tf.cast(tf.shape(y)[0], tf.float32)
 
             # reduce all GPUs' variables
             y_sum, y_squared_sum, global_batch_size = replica_ctx.all_reduce(
-                tf.distribute.ReduceOp.SUM, [
-                    local_sum, local_squared_sum, batch_size]
+                tf.distribute.ReduceOp.SUM, [local_sum, local_squared_sum, batch_size]
             )
 
             axes_vals = [(tf.shape(y))[i] for i in range(1, len(axes))]

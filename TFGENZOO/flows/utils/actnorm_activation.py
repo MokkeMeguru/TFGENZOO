@@ -30,10 +30,7 @@ class ActnormActivation(Layer):
         z = (x + bias) * scale
     """
 
-    def __init__(self,
-                 scale: float = 1.0,
-                 logscale_factor=3.0,
-                 **kwargs):
+    def __init__(self, scale: float = 1.0, logscale_factor=3.0, **kwargs):
         super(ActnormActivation, self).__init__()
         self.scale = scale
         self.logscale_factor = logscale_factor
@@ -50,39 +47,40 @@ class ActnormActivation(Layer):
         logs_shape = [1 for _ in range(len(input_shape))]
         logs_shape[-1] = input_shape[-1]
 
-        self.logs = self.add_weight(name='logscale',
-                                    shape=tuple(logs_shape),
-                                    initializer='zeros',
-                                    trainable=True)
-        self.bias = self.add_weight(name='bias',
-                                    shape=tuple(logs_shape),
-                                    initializer='zeros',
-                                    trainable=True)
+        self.logs = self.add_weight(
+            name="logscale",
+            shape=tuple(logs_shape),
+            initializer="zeros",
+            trainable=True,
+        )
+        self.bias = self.add_weight(
+            name="bias", shape=tuple(logs_shape), initializer="zeros", trainable=True
+        )
         self.initialized = self.add_weight(
-            name='initialized',
-            dtype=tf.bool,
-            trainable=False)
+            name="initialized", dtype=tf.bool, trainable=False
+        )
         self.initialized.assign(False)
         self.build = True
 
     def initialize_parameter(self, x: tf.Tensor):
-        tf.print('[Info] initialize parameter at {}'.format(self.name))
+        tf.print("[Info] initialize parameter at {}".format(self.name))
         ctx = tf.distribute.get_replica_context()
         n = ctx.num_replicas_in_sync
         x_mean, x_mean_sq = ctx.all_reduce(
             tf.distribute.ReduceOp.SUM,
-            [tf.reduce_mean(
-                x, axis=self.reduce_axis, keepdims=True) / n,
-             tf.reduce_mean(
-                 tf.square(x),
-                 axis=self.reduce_axis, keepdims=True) / n])
+            [
+                tf.reduce_mean(x, axis=self.reduce_axis, keepdims=True) / n,
+                tf.reduce_mean(tf.square(x), axis=self.reduce_axis, keepdims=True) / n,
+            ],
+        )
 
         # var(x) = x^2 - mean(x)^2
         x_var = x_mean_sq - tf.square(x_mean)
-        logs = (tf.math.log(self.scale * tf.math.rsqrt(x_var + 1e-6))
-                / self.logscale_factor)
+        logs = (
+            tf.math.log(self.scale * tf.math.rsqrt(x_var + 1e-6)) / self.logscale_factor
+        )
         self.logs.assign(logs)
-        self.bias.assign(- x_mean)
+        self.bias.assign(-x_mean)
 
     def call(self, x: tf.Tensor):
         if not self.initialized:

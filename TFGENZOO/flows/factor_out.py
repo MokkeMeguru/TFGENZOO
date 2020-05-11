@@ -11,9 +11,7 @@ class FactorOut(FactorOutBase):
         self.split_size = input_shape[-1] // 2
         super(FactorOut, self).build(input_shape)
 
-    def __init__(self,
-                 with_zaux: bool = False,
-                 conditional: bool = False):
+    def __init__(self, with_zaux: bool = False, conditional: bool = False):
         super(FactorOut, self).__init__()
         self.with_zaux = with_zaux
         self.conditional = conditional
@@ -30,14 +28,14 @@ class FactorOut(FactorOutBase):
             ll = gaussianize.gaussian_likelihood(mean, logsd, z2)
         else:
             ll = gaussianize.gaussian_likelihood(
-                tf.zeros(tf.shape(z2)),
-                tf.zeros(tf.shape(z2)), z2)
+                tf.zeros(tf.shape(z2)), tf.zeros(tf.shape(z2)), z2
+            )
         ll = tf.reduce_sum(ll, axis=list(range(1, len(z2.shape))))
         return ll
 
     def forward(self, x: tf.Tensor, zaux: tf.Tensor = None, **kwargs):
-        new_z = x[..., :self.split_size]
-        x = x[..., self.split_size:]
+        new_z = x[..., : self.split_size]
+        x = x[..., self.split_size :]
 
         ll = self.calc_ll(x, new_z)
 
@@ -47,11 +45,12 @@ class FactorOut(FactorOutBase):
             zaux = new_z
         return x, zaux, ll
 
-    def inverse(self, z: tf.Tensor, zaux: tf.Tensor = None,
-                temparature: float = 0.2, **kwargs):
+    def inverse(
+        self, z: tf.Tensor, zaux: tf.Tensor = None, temparature: float = 0.2, **kwargs
+    ):
         if zaux is not None:
-            new_z = zaux[..., -self.split_size:]
-            zaux = zaux[..., :-self.split_size]
+            new_z = zaux[..., -self.split_size :]
+            zaux = zaux[..., : -self.split_size]
         else:
             # TODO: sampling test
             mean, logsd = self.split2d_prior(z)

@@ -19,10 +19,7 @@ class SingleFlow(Model):
     def __init__(self, K: int = 5, L: int = 1, resblk_kwargs: Dict = None):
         super().__init__()
         if resblk_kwargs is None:
-            resblk_kwargs = {
-                'num_block': 3,
-                'units_factor': 6
-            }
+            resblk_kwargs = {"num_block": 3, "units_factor": 6}
         self.resblk_kwargs = resblk_kwargs
         self.K = K
         self.L = L
@@ -33,8 +30,9 @@ class SingleFlow(Model):
             for _ in range(5):
                 layers.append(Actnorm())
                 layers.append(Inv1x1Conv())
-                layers.append(AffineCoupling(scale_shift_net=ResidualNet(
-                    **self.resblk_kwargs)))
+                layers.append(
+                    AffineCoupling(scale_shift_net=ResidualNet(**self.resblk_kwargs))
+                )
         self.flows = layers
 
     def call(self, x, zaux=None, inverse=False, training=True):
@@ -85,15 +83,16 @@ class BasicGlow(Model):
     # def build(self, input_shape: tf.TensorShape):
     #     super(BasicGlow, self).build(input_shape)
     # 5, 3
-    def __init__(self,
-                 K: int = 5, L: int = 3, resblk_kwargs: Dict = None,
-                 conditional: bool = False):
+    def __init__(
+        self,
+        K: int = 5,
+        L: int = 3,
+        resblk_kwargs: Dict = None,
+        conditional: bool = False,
+    ):
         super(BasicGlow, self).__init__()
         if resblk_kwargs is None:
-            resblk_kwargs = {
-                'num_block': 3,
-                'units_factor': 6
-            }
+            resblk_kwargs = {"num_block": 3, "units_factor": 6}
         self.resblk_kwargs = resblk_kwargs
         self.K = K
         self.L = L
@@ -108,14 +107,14 @@ class BasicGlow(Model):
             for k in range(self.K):
                 fml.append(Actnorm())
                 fml.append(Inv1x1Conv())
-                fml.append(AffineCoupling(scale_shift_net=ResidualNet(
-                    **self.resblk_kwargs)))
+                fml.append(
+                    AffineCoupling(scale_shift_net=ResidualNet(**self.resblk_kwargs))
+                )
             layers.append(FlowModule(fml))
             if l == 0:
                 layers.append(FactorOut(conditional=conditional))
             elif l != self.L - 1:
-                layers.append(FactorOut(
-                    with_zaux=True, conditional=conditional))
+                layers.append(FactorOut(with_zaux=True, conditional=conditional))
         self.flows = layers
 
     def call(self, x, zaux=None, inverse=False, training=True):
@@ -171,7 +170,7 @@ class SqueezeFactorOut(Model):
             Squeezing(with_zaux=True),
             FactorOut(with_zaux=True),
             Squeezing(with_zaux=True),
-            FactorOut(with_zaux=True)
+            FactorOut(with_zaux=True),
         ]
 
     def call(self, x, zaux=None, inverse=False):
@@ -254,12 +253,11 @@ def basic_glow_Test():
     train, test = tf.keras.datasets.mnist.load_data()
     train_image = train[0] / 255.0
     train_image = train_image[..., tf.newaxis]
-    train_image = tf.compat.v1.image.resize_bilinear(
-        train_image, size=(24, 24))
+    train_image = tf.compat.v1.image.resize_bilinear(train_image, size=(24, 24))
     # forward -> inverse
     train_image = train_image[0:12]
     forward, ldj, zaux, ll = model(train_image, inverse=False)
-    print('max-min')
+    print("max-min")
     tf.print(tf.reduce_max(forward))
     tf.print(tf.reduce_min(forward))
     tf.print(tf.reduce_sum(tf.cast(tf.math.is_inf(forward), tf.float32)))
@@ -269,22 +267,20 @@ def basic_glow_Test():
     print(zaux.shape)
     print(ldj.shape)
     print(ildj.shape)
-    print('diffs-ldj-rec')
+    print("diffs-ldj-rec")
     tf.print(tf.reduce_mean(ldj + ildj))
     tf.print(tf.reduce_mean(train_image - inverse))
     train_image = inverse
     print(train_image.shape)
     import matplotlib.pyplot as plt
+
     fig = plt.figure(figsize=(18, 18))
     for i in range(9):
         img = tf.squeeze(train_image[i])
         fig.add_subplot(3, 3, i + 1)
         plt.title(train[1][i])
-        plt.tick_params(bottom=False,
-                        left=False,
-                        labelbottom=False,
-                        labelleft=False)
-        plt.imshow(img, cmap='gray_r')
+        plt.tick_params(bottom=False, left=False, labelbottom=False, labelleft=False)
+        plt.imshow(img, cmap="gray_r")
     plt.show(block=True)
 
     tf.debugging.disable_check_numerics()
@@ -306,12 +302,11 @@ def basic_flow_Test():
     train, test = tf.keras.datasets.mnist.load_data()
     train_image = train[0] / 255.0
     train_image = train_image[..., tf.newaxis]
-    train_image = tf.compat.v1.image.resize_bilinear(
-        train_image, size=(24, 24))
+    train_image = tf.compat.v1.image.resize_bilinear(train_image, size=(24, 24))
     # forward -> inverse
     train_image = train_image[0:12]
     forward, ldj = model(train_image, inverse=False)
-    print('max-min')
+    print("max-min")
     tf.print(tf.reduce_max(forward))
     tf.print(tf.reduce_min(forward))
     tf.print(tf.reduce_sum(tf.cast(tf.math.is_inf(forward), tf.float32)))
@@ -320,22 +315,20 @@ def basic_flow_Test():
     print(forward.shape)
     print(ldj.shape)
     print(ildj.shape)
-    print('diffs')
+    print("diffs")
     tf.print(tf.reduce_sum(ldj + ildj))
     tf.print(tf.reduce_mean(train_image - inverse))
     train_image = inverse
     print(train_image.shape)
     import matplotlib.pyplot as plt
+
     fig = plt.figure(figsize=(18, 18))
     for i in range(9):
         img = tf.squeeze(train_image[i])
         fig.add_subplot(3, 3, i + 1)
         plt.title(train[1][i])
-        plt.tick_params(bottom=False,
-                        left=False,
-                        labelbottom=False,
-                        labelleft=False)
-        plt.imshow(img, cmap='gray_r')
+        plt.tick_params(bottom=False, left=False, labelbottom=False, labelleft=False)
+        plt.imshow(img, cmap="gray_r")
     plt.show(block=True)
 
     tf.debugging.disable_check_numerics()

@@ -17,17 +17,15 @@ class Conv2DTest(tf.test.TestCase):
     def testConv2DOutputShape(self):
         x = tf.random.normal([512, 16, 16, 4])
         z = self.conv2d(x)
-        self.assertShapeEqual(
-            np.zeros(x.shape), z)
+        self.assertShapeEqual(np.zeros(x.shape), z)
 
     def testConv2DOutputTwiceShape(self):
         x = tf.random.normal([512, 16, 16, 4])
         z_shape = list(tf.shape(x))
         z_shape[-1] = z_shape[-1] * 2
         z = self.conv2d_twice(x)
-        self.assertShapeEqual(
-            np.zeros(z_shape), z)
+        self.assertShapeEqual(np.zeros(z_shape), z)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     tf.test.main(argv=None)

@@ -6,8 +6,7 @@ import tensorflow as tf
 from TFGENZOO.flows.flowbase import FlowComponent
 
 
-def regular_matrix_init(
-        shape: Tuple[int, int], dtype=None):
+def regular_matrix_init(shape: Tuple[int, int], dtype=None):
     """initialize with orthogonal matrix
     Args:
         shape: generated matrix's shape [C, C]
@@ -17,10 +16,8 @@ def regular_matrix_init(
     Source:
         https://github.com/openai/glow/blob/master/model.py#L445-L451
     """
-    assert len(shape) == 2, 'this initialization for 2D matrix'
-    assert shape[0] == shape[1], (
-        'this initialization for 2D matrix, C \times C'
-    )
+    assert len(shape) == 2, "this initialization for 2D matrix"
+    assert shape[0] == shape[1], "this initialization for 2D matrix, C \times C"
     c = shape[0]
     w_init = np.linalg.qr(np.random.randn(c, c))[0].astype("float32")
     return w_init
@@ -57,10 +54,10 @@ class Inv1x1Conv(FlowComponent):
         self.w = w
         self.c = c
         self.W = self.add_weight(
-            name='W',
+            name="W",
             shape=(c, c),
             regularizer=tf.keras.regularizers.l2(0.01),
-            initializer=regular_matrix_init
+            initializer=regular_matrix_init,
         )
         super().build(input_shape)
 
@@ -72,8 +69,9 @@ class Inv1x1Conv(FlowComponent):
         z = tf.nn.conv2d(x, _W, [1, 1, 1, 1], "SAME")
         # scalar
         log_det_jacobian = tf.cast(
-            tf.linalg.slogdet(tf.cast(self.W, tf.float64))[1]
-            * self.h * self.w, tf.float32)
+            tf.linalg.slogdet(tf.cast(self.W, tf.float64))[1] * self.h * self.w,
+            tf.float32,
+        )
         # expand as batch
         log_det_jacobian = tf.broadcast_to(log_det_jacobian, tf.shape(x)[0:1])
         return z, log_det_jacobian
@@ -83,9 +81,11 @@ class Inv1x1Conv(FlowComponent):
         x = tf.nn.conv2d(z, _W, [1, 1, 1, 1], "SAME")
 
         inverse_log_det_jacobian = tf.cast(
-            -1 * tf.linalg.slogdet(tf.cast(self.W, tf.float64))[1]
-            * self.h * self.w, tf.float32)
+            -1 * tf.linalg.slogdet(tf.cast(self.W, tf.float64))[1] * self.h * self.w,
+            tf.float32,
+        )
 
         inverse_log_det_jacobian = tf.broadcast_to(
-            inverse_log_det_jacobian, tf.shape(z)[0:1])
+            inverse_log_det_jacobian, tf.shape(z)[0:1]
+        )
         return x, inverse_log_det_jacobian

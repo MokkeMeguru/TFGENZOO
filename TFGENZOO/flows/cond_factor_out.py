@@ -22,8 +22,8 @@ class ConditionalFactorOut(FactorOutBase):
         return split_feature(h, "cross")
 
     def forward(self, x: tf.Tensor, zaux: tf.Tensor = None, **kwargs):
-        new_z = x[..., :self.split_size]
-        x = x[..., self.split_size:]
+        new_z = x[..., : self.split_size]
+        x = x[..., self.split_size :]
         mean, logsd = self.split2d_prior(x)
         ll = gaussianize.gaussian_likelihood(mean, logsd, new_z)
         ll = tf.reduce_sum(ll, axis=self.reduce_axis)
@@ -35,8 +35,8 @@ class ConditionalFactorOut(FactorOutBase):
 
     def inverse(self, z: tf.Tensor, zaux: tf.Tensor = None, **kwargs):
         if zaux is not None:
-            new_z = zaux[..., -self.split_size:]
-            zaux = zaux[..., :-self.split_size]
+            new_z = zaux[..., -self.split_size :]
+            zaux = zaux[..., : -self.split_size]
             z = tf.concat([new_z, z], axis=-1)
             if self.with_zaux:
                 return z, zaux

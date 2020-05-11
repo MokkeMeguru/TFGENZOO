@@ -15,10 +15,8 @@ class LogScale(Layer):
     def build(self, input_shape: tf.TensorShape):
         shape = [1, input_shape[-1]]
         self.logs = self.add_weight(
-            name='log_scale',
-            shape=tuple(shape),
-            initializer='zeros',
-            trainable=True)
+            name="log_scale", shape=tuple(shape), initializer="zeros", trainable=True
+        )
 
     def __init__(self, log_scale_factor: float = 3.0, **kwargs):
         super(LogScale, self).__init__(**kwargs)
@@ -40,23 +38,29 @@ class GlowNN(Layer):
         filters = int(input_shape[-1])
         for i in range(self.depth):
             res_block.add(
-                layers.Conv2D(filters=filters, kernel_size=3,
-                              strides=(1, 1),
-                              padding='SAME',
-                              use_bias=False,
-                              activation=None))
-            res_block.add(
-                ActnormActivation())
-            res_block.add(
-                layers.ReLU())
+                layers.Conv2D(
+                    filters=filters,
+                    kernel_size=3,
+                    strides=(1, 1),
+                    padding="SAME",
+                    use_bias=False,
+                    activation=None,
+                )
+            )
+            res_block.add(ActnormActivation())
+            res_block.add(layers.ReLU())
         res_block.add(
-            layers.Conv2D(filters=filters * 2, kernel_size=3,
-                          strides=(1, 1),
-                          padding='SAME',
-                          kernel_initializer='zeros',
-                          bias_initializer='zeros',
-                          use_bias=True,
-                          activation=None))
+            layers.Conv2D(
+                filters=filters * 2,
+                kernel_size=3,
+                strides=(1, 1),
+                padding="SAME",
+                kernel_initializer="zeros",
+                bias_initializer="zeros",
+                use_bias=True,
+                activation=None,
+            )
+        )
 
         res_block.add(LogScale())
         self.res_block = res_block
@@ -68,7 +72,8 @@ class GlowNN(Layer):
 
     def call(self, x: tf.Tensor, **kwargs):
         return self.res_block(
-            x, training=True if kwargs.get("training", True) else False)
+            x, training=True if kwargs.get("training", True) else False
+        )
 
 
 class AffineCouplingMask(Enum):
@@ -107,11 +112,12 @@ class AffineCoupling(FlowComponent):
        but IN IMPLEMENTATION, scale is done by sigmoid(log_scale + 2.0)
     """
 
-    def __init__(self,
-                 mask_type: AffineCouplingMask =
-                 AffineCouplingMask.ChannelWise,
-                 scale_shift_net: Layer = None,
-                 **kwargs):
+    def __init__(
+        self,
+        mask_type: AffineCouplingMask = AffineCouplingMask.ChannelWise,
+        scale_shift_net: Layer = None,
+        **kwargs
+    ):
         super(AffineCoupling, self).__init__(**kwargs)
         if not scale_shift_net:
             raise ValueError
@@ -136,8 +142,7 @@ class AffineCoupling(FlowComponent):
 
             # scale's shape is [B, H, W, C]
             # log_det_jacobian's hape is [B]
-            log_det_jacobian = tf.reduce_sum(
-                tf.math.log(scale), axis=self.reduce_axis)
+            log_det_jacobian = tf.reduce_sum(tf.math.log(scale), axis=self.reduce_axis)
             return tf.concat([z1, z2], axis=-1), log_det_jacobian
         else:
             raise NotImplementedError()
@@ -155,8 +160,9 @@ class AffineCoupling(FlowComponent):
 
             # scale's shape is [B, H, W, C // 2]
             # inverse_log_det_jacobian's hape is [B]
-            inverse_log_det_jacobian = - 1 * tf.reduce_sum(
-                tf.math.log(scale), axis=self.reduce_axis)
+            inverse_log_det_jacobian = -1 * tf.reduce_sum(
+                tf.math.log(scale), axis=self.reduce_axis
+            )
             return tf.concat([x1, x2], axis=-1), inverse_log_det_jacobian
         else:
             raise NotImplementedError()

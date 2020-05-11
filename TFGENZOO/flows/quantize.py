@@ -41,7 +41,8 @@ class LogitifyImage(FlowBase):
 
         # ref. https://github.com/masa-su/pixyz/blob/master/pixyz/flows/operations.py#L254
         self.pre_logit_scale = tf.constant(
-            np.log(self.alpha) - np.log(1.0 - self.alpha), dtype=tf.float32)
+            np.log(self.alpha) - np.log(1.0 - self.alpha), dtype=tf.float32
+        )
 
     def forward(self, x: tf.Tensor, **kwargs):
         """
@@ -61,13 +62,15 @@ class LogitifyImage(FlowBase):
         z = z * (1 - self.alpha) + self.alpha * 0.5
 
         # 2-3. apply the logit function ((0, 1)->(-inf, inf)).
-        new_z = tf.math.log(z) - tf.math.log(1. - z)
+        new_z = tf.math.log(z) - tf.math.log(1.0 - z)
 
-        logdet_jacobian = (tf.math.softplus(new_z) + tf.math.softplus(- new_z)
-                           - tf.math.softplus(self.pre_logit_scale))
+        logdet_jacobian = (
+            tf.math.softplus(new_z)
+            + tf.math.softplus(-new_z)
+            - tf.math.softplus(self.pre_logit_scale)
+        )
 
-        logdet_jacobian = tf.reduce_sum(logdet_jacobian,
-                                        self.reduce_axis)
+        logdet_jacobian = tf.reduce_sum(logdet_jacobian, self.reduce_axis)
         return new_z, logdet_jacobian
 
     def inverse(self, z: tf.Tensor, **kwargs):
@@ -78,9 +81,10 @@ class LogitifyImage(FlowBase):
         x = 1 / denominator
 
         inverse_log_det_jacobian = tf.reduce_sum(
-            -2 * tf.math.log(denominator) - z,
-            self.reduce_axis)
+            -2 * tf.math.log(denominator) - z, self.reduce_axis
+        )
         return x, inverse_log_det_jacobian
+
 
 # TODO: move to quantize_test.py
 def _main():
@@ -104,16 +108,14 @@ def _main():
     train_image = inverse
     print(train_image.shape)
     import matplotlib.pyplot as plt
+
     fig = plt.figure(figsize=(18, 18))
     for i in range(9):
         img = tf.squeeze(train_image[i])
         fig.add_subplot(3, 3, i + 1)
         plt.title(train[1][i])
-        plt.tick_params(bottom=False,
-                        left=False,
-                        labelbottom=False,
-                        labelleft=False)
-        plt.imshow(img, cmap='gray_r')
+        plt.tick_params(bottom=False, left=False, labelbottom=False, labelleft=False)
+        plt.imshow(img, cmap="gray_r")
     plt.show(block=True)
 
     model.summary()

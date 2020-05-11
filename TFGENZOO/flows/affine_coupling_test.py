@@ -17,9 +17,6 @@ class AffineCouplingTest(tf.test.TestCase):
         x = tf.random.uniform((1024, 16, 16, 4))
         self.affine_coupling(x)
         assert self.affine_coupling.initialized
-        for i in self.affine_coupling.scale_shift_net.res_block.layers:
-            if isinstance(i, FlowComponent):
-                self.assertTrue(i.initialized)
 
     def testAffineCouplingInv(self):
         x = tf.random.normal((1024, 16, 16, 4))

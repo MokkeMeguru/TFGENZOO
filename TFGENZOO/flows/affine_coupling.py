@@ -31,34 +31,32 @@ class AffineCouplingMask(Enum):
 
 class AffineCoupling(FlowComponent):
     """Affine Coupling Layer
+
     Sources:
         https://github.com/masa-su/pixyz/blob/master/pixyz/flows/coupling.py
 
-    Notes:
-    - forward formula
+    Note:
+        * forward formula
+            | [x1, x2] = split(x)
+            | log_scale, shift = NN(x1)
+            | scale = sigmoid(log_scale + 2.0)
+            | z1 = x1
+            | z2 = (x2 + shift) * scale
+            | z = concat([z1, z2])
+            | LogDetJacobian = sum(log(scale))
 
-        [x1, x2] = split(x)
-        log_scale, shift = NN(x1)
-        scale = sigmoid(log_scale + 2.0)
-        z1 = x1
-        z2 = (x2 + shift) * scale
-        z = concat([z1, z2])
-        LogDetJacobian = sum(log(scale))
+        * inverse formula
+            | [z1, z2] = split(x)
+            | log_scale, shift = NN(z1)
+            | scale = sigmoid(log_scale + 2.0)
+            | x1 = z1
+            | x2 = z2 / scale - shift
+            | z = concat([x1, x2])
+            | InverseLogDetJacobian = - sum(log(scale))
 
-    - inverse formula
-
-        [z1, z2] = split(x)
-        log_scale, shift = NN(z1)
-        scale = sigmoid(log_scale + 2.0)
-        x1 = z1
-        x2 = z2 / scale - shift
-        z = concat([x1, x2])
-        InverseLogDetJacobian = - sum(log(scale))
-
-    - implementation notes
-
-       in Glow's Paper, scale is calculated by exp(log_scale),
-       but IN IMPLEMENTATION, scale is done by sigmoid(log_scale + 2.0)
+        * implementation notes
+           | in Glow's Paper, scale is calculated by exp(log_scale),
+           | but IN IMPLEMENTATION, scale is done by sigmoid(log_scale + 2.0)
     """
 
     def __init__(

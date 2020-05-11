@@ -33,7 +33,6 @@ class ShallowResNet(Model):
         x = self.conv_out(x)
         return x
 
-
 class ShallowConnectedResNet(Model):
     """ResNet of OpenAI's Glow + Skip Connection
     Sources:

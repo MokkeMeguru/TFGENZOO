@@ -11,6 +11,9 @@ ptvsd = "*"
 yapf = "*"
 pytest = "*"
 sphinx = "*"
+sphinx-rtd-theme = "*"
+sphinx-autobuild = "*"
+sphinxemoji = "*"
 
 [packages]
 tensorflow-probability = "*"
@@ -21,6 +24,8 @@ matplotlib = "*"
 tensorflow-addons = "*"
 tensorflow = "==2.1.0"
 ipython = "*"
+recommonmark = "*"
+sphinx-autobuild = "*"
 
 [requires]
 python_version = "3.7"

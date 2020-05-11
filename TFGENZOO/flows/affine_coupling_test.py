@@ -1,27 +1,15 @@
 import numpy as np
 import tensorflow as tf
 
-from TFGENZOO.flows.affine_coupling import AffineCoupling, GlowNN
+from TFGENZOO.flows.affine_coupling import AffineCoupling
 from TFGENZOO.flows.flowbase import FlowComponent
-
-
-class GlowNNTest(tf.test.TestCase):
-    def setUp(self):
-        super(GlowNNTest, self).setUp()
-        self.nn = GlowNN(depth=2)
-        self.nn.build((None, 16, 16, 4))
-
-    def testGlowNN(self):
-        x = tf.random.normal([1024, 16, 16, 4])
-        self.nn(x)
-        y = self.nn(x)
-        self.assertShapeEqual(np.zeros([1024, 16, 16, 8]), y)
+from TFGENZOO.layers.resnet import ShallowResNet
 
 
 class AffineCouplingTest(tf.test.TestCase):
     def setUp(self):
         super(AffineCouplingTest, self).setUp()
-        self.affine_coupling = AffineCoupling(scale_shift_net=GlowNN(depth=2))
+        self.affine_coupling = AffineCoupling(scale_shift_net=ShallowResNet(width=64))
         self.affine_coupling.build((None, 16, 16, 4))
 
     def testAffineCouplingInitialize(self):

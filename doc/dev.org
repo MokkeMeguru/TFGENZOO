@@ -1,5 +1,0 @@
-* How to build?
-#+begin_src shell
-python3 setup.py sdist
-python3 setup.py sdist bdist_wheel
-#+end_src

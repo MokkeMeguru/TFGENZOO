@@ -10,7 +10,7 @@ matplotlib = "*"
 ptvsd = "*"
 yapf = "*"
 pytest = "*"
-
+sphinx = "*"
 
 [packages]
 tensorflow-probability = "*"

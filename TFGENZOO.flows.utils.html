@@ -1,0 +1,632 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>TFGENZOO.flows.utils package &mdash; TFGENZOO 1.0-beta1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js"></script>
+        <script src="_static/twemoji.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="_static/twemoji.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="TFGENZOO.gans package" href="TFGENZOO.gans.html" />
+    <link rel="prev" title="TFGENZOO.flows package" href="TFGENZOO.flows.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> TFGENZOO
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="news/index.html">News</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage/quickstart.html">Simple Tutorial</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="TFGENZOO.html">TFGENZOO package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="TFGENZOO.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="TFGENZOO.flows.html">TFGENZOO.flows package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="TFGENZOO.flows.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.actnorm">TFGENZOO.flows.actnorm module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.actnorm_test">TFGENZOO.flows.actnorm_test module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.affine_coupling">TFGENZOO.flows.affine_coupling module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.affine_coupling_test">TFGENZOO.flows.affine_coupling_test module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.cond_factor_out">TFGENZOO.flows.cond_factor_out module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.factor_out">TFGENZOO.flows.factor_out module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.flowbase">TFGENZOO.flows.flowbase module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#tfgenzoo-flows-flowmodel-module">TFGENZOO.flows.flowmodel module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.inv1x1conv">TFGENZOO.flows.inv1x1conv module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.inv1x1conv_test">TFGENZOO.flows.inv1x1conv_test module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.quantize">TFGENZOO.flows.quantize module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.squeeze">TFGENZOO.flows.squeeze module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="TFGENZOO.gans.html">TFGENZOO.gans package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="TFGENZOO.layers.html">TFGENZOO.layers package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="TFGENZOO.optimizers.html">TFGENZOO.optimizers package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="TFGENZOO.html#module-TFGENZOO">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">TFGENZOO</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="TFGENZOO.html">TFGENZOO package</a> &raquo;</li>
+        
+          <li><a href="TFGENZOO.flows.html">TFGENZOO.flows package</a> &raquo;</li>
+        
+      <li>TFGENZOO.flows.utils package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/TFGENZOO.flows.utils.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="tfgenzoo-flows-utils-package">
+<h1>TFGENZOO.flows.utils package<a class="headerlink" href="#tfgenzoo-flows-utils-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-TFGENZOO.flows.utils.actnorm_activation">
+<span id="tfgenzoo-flows-utils-actnorm-activation-module"></span><h2>TFGENZOO.flows.utils.actnorm_activation module<a class="headerlink" href="#module-TFGENZOO.flows.utils.actnorm_activation" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="TFGENZOO.flows.utils.actnorm_activation.ActnormActivation">
+<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.utils.actnorm_activation.</code><code class="sig-name descname">ActnormActivation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">scale</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">logscale_factor</span><span class="o">=</span><span class="default_value">3.0</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.utils.actnorm_activation.ActnormActivation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tensorflow.python.keras.engine.base_layer.Layer</span></code></p>
+<p>Actnorm Layer without inverse function</p>
+<p>Sources:</p>
+<blockquote>
+<div><p><a class="reference external" href="https://github.com/openai/glow/blob/master/tfops.py#L71-L163">https://github.com/openai/glow/blob/master/tfops.py#L71-L163</a></p>
+</div></blockquote>
+<dl class="py attribute">
+<dt id="TFGENZOO.flows.utils.actnorm_activation.ActnormActivation.scale">
+<code class="sig-name descname">scale</code><a class="headerlink" href="#TFGENZOO.flows.utils.actnorm_activation.ActnormActivation.scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>scaling</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="TFGENZOO.flows.utils.actnorm_activation.ActnormActivation.logscale_factor">
+<code class="sig-name descname">logscale_factor</code><a class="headerlink" href="#TFGENZOO.flows.utils.actnorm_activation.ActnormActivation.logscale_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>logscale_factor</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul>
+<li><dl>
+<dt>initialize</dt><dd><div class="line-block">
+<div class="line">mean = mean(first_batch)</div>
+<div class="line">var = variance(first-batch)</div>
+<div class="line">logs = log(scale / sqrt(var)) / log-scale-factor</div>
+<div class="line">bias = -mean</div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>forward formula (forward only)</dt><dd><div class="line-block">
+<div class="line">logs = logs * log_scale_factor</div>
+<div class="line">scale = exp(logs)</div>
+<div class="line">z = (x + bias) * scale</div>
+</div>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<dl class="py method">
+<dt id="TFGENZOO.flows.utils.actnorm_activation.ActnormActivation.build">
+<code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_shape</span><span class="p">:</span> <span class="n">tensorflow.python.framework.tensor_shape.TensorShape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.utils.actnorm_activation.ActnormActivation.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates the variables of the layer (optional, for subclass implementers).</p>
+<p>This is a method that implementers of subclasses of <cite>Layer</cite> or <cite>Model</cite>
+can override if they need a state-creation step in-between
+layer instantiation and layer call.</p>
+<p>This is typically used to create the weights of <cite>Layer</cite> subclasses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>input_shape</strong> – Instance of <cite>TensorShape</cite>, or list of instances of
+<cite>TensorShape</cite> if the layer expects a list of inputs
+(one instance per input).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.utils.actnorm_activation.ActnormActivation.call">
+<code class="sig-name descname">call</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.utils.actnorm_activation.ActnormActivation.call" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is where the layer’s logic lives.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> – Input tensor, or list/tuple of input tensors.</p></li>
+<li><p><strong>**kwargs</strong> – Additional keyword arguments.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A tensor or list/tuple of tensors.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.utils.actnorm_activation.ActnormActivation.initialize_parameter">
+<code class="sig-name descname">initialize_parameter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.utils.actnorm_activation.ActnormActivation.initialize_parameter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="TFGENZOO.flows.utils.actnorm_activation.main">
+<code class="sig-prename descclassname">TFGENZOO.flows.utils.actnorm_activation.</code><code class="sig-name descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.utils.actnorm_activation.main" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-TFGENZOO.flows.utils.conv">
+<span id="tfgenzoo-flows-utils-conv-module"></span><h2>TFGENZOO.flows.utils.conv module<a class="headerlink" href="#module-TFGENZOO.flows.utils.conv" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="TFGENZOO.flows.utils.conv.Conv2D">
+<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.utils.conv.</code><code class="sig-name descname">Conv2D</code><span class="sig-paren">(</span><em class="sig-param">width: int = None</em>, <em class="sig-param">width_scale: int = 1</em>, <em class="sig-param">kernel_size: Tuple[int</em>, <em class="sig-param">int] = (3</em>, <em class="sig-param">3)</em>, <em class="sig-param">stride: Tuple[int</em>, <em class="sig-param">int] = (1</em>, <em class="sig-param">1)</em>, <em class="sig-param">padding: str = 'SAME'</em>, <em class="sig-param">do_actnorm: bool = True</em>, <em class="sig-param">do_weightnorm: bool = False</em>, <em class="sig-param">initializer: tensorflow.python.ops.init_ops_v2.Initializer = &lt;tensorflow.python.ops.init_ops_v2.RandomNormal object&gt;</em>, <em class="sig-param">bias_initializer: tensorflow.python.ops.init_ops_v2.Initializer = 'zeros'</em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.utils.conv.Conv2D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tensorflow.python.keras.engine.base_layer.Layer</span></code></p>
+<p>Convolution layer for NHWC image</p>
+<p>Sources:</p>
+<blockquote>
+<div><p><a class="reference external" href="https://github.com/openai/glow/blob/master/tfops.py#L235-L264">https://github.com/openai/glow/blob/master/tfops.py#L235-L264</a></p>
+</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>this layer applies</p>
+<ul class="simple">
+<li><p>data-dependent normalization (actnorm, openai’s Glow)</p></li>
+<li><p>weight normalization for stable training</p></li>
+</ul>
+<p>this layer not implemented.</p>
+<ul class="simple">
+<li><p>function add_edge_padding</p></li>
+</ul>
+<p>ref. <a class="reference external" href="https://github.com/openai/glow/blob/master/tfops.py#L203-L232">https://github.com/openai/glow/blob/master/tfops.py#L203-L232</a></p>
+</div>
+<dl class="py method">
+<dt id="TFGENZOO.flows.utils.conv.Conv2D.build">
+<code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_shape</span><span class="p">:</span> <span class="n">tensorflow.python.framework.tensor_shape.TensorShape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.utils.conv.Conv2D.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates the variables of the layer (optional, for subclass implementers).</p>
+<p>This is a method that implementers of subclasses of <cite>Layer</cite> or <cite>Model</cite>
+can override if they need a state-creation step in-between
+layer instantiation and layer call.</p>
+<p>This is typically used to create the weights of <cite>Layer</cite> subclasses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>input_shape</strong> – Instance of <cite>TensorShape</cite>, or list of instances of
+<cite>TensorShape</cite> if the layer expects a list of inputs
+(one instance per input).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.utils.conv.Conv2D.call">
+<code class="sig-name descname">call</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.utils.conv.Conv2D.call" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is where the layer’s logic lives.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> – Input tensor, or list/tuple of input tensors.</p></li>
+<li><p><strong>**kwargs</strong> – Additional keyword arguments.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A tensor or list/tuple of tensors.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-TFGENZOO.flows.utils.conv_test">
+<span id="tfgenzoo-flows-utils-conv-test-module"></span><h2>TFGENZOO.flows.utils.conv_test module<a class="headerlink" href="#module-TFGENZOO.flows.utils.conv_test" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="TFGENZOO.flows.utils.conv_test.Conv2DTest">
+<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.utils.conv_test.</code><code class="sig-name descname">Conv2DTest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">methodName</span><span class="o">=</span><span class="default_value">'runTest'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.utils.conv_test.Conv2DTest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tensorflow.python.framework.test_util.TensorFlowTestCase</span></code></p>
+<dl class="py method">
+<dt id="TFGENZOO.flows.utils.conv_test.Conv2DTest.setUp">
+<code class="sig-name descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.utils.conv_test.Conv2DTest.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hook method for setting up the test fixture before exercising it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.utils.conv_test.Conv2DTest.testConv2DOutputShape">
+<code class="sig-name descname">testConv2DOutputShape</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.utils.conv_test.Conv2DTest.testConv2DOutputShape" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.utils.conv_test.Conv2DTest.testConv2DOutputTwiceShape">
+<code class="sig-name descname">testConv2DOutputTwiceShape</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.utils.conv_test.Conv2DTest.testConv2DOutputTwiceShape" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-TFGENZOO.flows.utils.conv_zeros">
+<span id="tfgenzoo-flows-utils-conv-zeros-module"></span><h2>TFGENZOO.flows.utils.conv_zeros module<a class="headerlink" href="#module-TFGENZOO.flows.utils.conv_zeros" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="TFGENZOO.flows.utils.conv_zeros.Conv2DZeros">
+<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.utils.conv_zeros.</code><code class="sig-name descname">Conv2DZeros</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">width</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">width_scale</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">kernel_size</span><span class="p">:</span> <span class="n">Tuple<span class="p">[</span>int<span class="p">, </span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">3, 3</span></em>, <em class="sig-param"><span class="n">stride</span><span class="p">:</span> <span class="n">Tuple<span class="p">[</span>int<span class="p">, </span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">1, 1</span></em>, <em class="sig-param"><span class="n">padding</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'SAME'</span></em>, <em class="sig-param"><span class="n">logscale_factor</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">3.0</span></em>, <em class="sig-param"><span class="n">initializer</span><span class="p">:</span> <span class="n">tensorflow.python.ops.init_ops_v2.Initializer</span> <span class="o">=</span> <span class="default_value">'zeros'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.utils.conv_zeros.Conv2DZeros" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tensorflow.python.keras.engine.base_layer.Layer</span></code></p>
+<p>Convolution layer for NHWC image with zero initialization</p>
+<p>Sources:</p>
+<blockquote>
+<div><p><a class="reference external" href="https://github.com/openai/glow/blob/master/tfops.py#L292-L313">https://github.com/openai/glow/blob/master/tfops.py#L292-L313</a></p>
+</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>this layer not implemented.
+* function add_edge_padding</p>
+<blockquote>
+<div><p>ref. <a class="reference external" href="https://github.com/openai/glow/blob/master/tfops.py#L203-L232">https://github.com/openai/glow/blob/master/tfops.py#L203-L232</a></p>
+</div></blockquote>
+<p>Xavier Initialize is better than other initializer</p>
+<blockquote>
+<div><p>ref. <a class="reference external" href="https://arxiv.org/pdf/1907.02392.pdf">https://arxiv.org/pdf/1907.02392.pdf</a></p>
+<p>code.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://www.tensorflow.org/api_docs/python/tf/keras/initializers/GlorotNormal">https://www.tensorflow.org/api_docs/python/tf/keras/initializers/GlorotNormal</a></p></li>
+<li><p><a class="reference external" href="https://www.tensorflow.org/api_docs/python/tf/keras/initializers/GlorotUniform?version=nightly">https://www.tensorflow.org/api_docs/python/tf/keras/initializers/GlorotUniform?version=nightly</a></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</div>
+<dl class="py method">
+<dt id="TFGENZOO.flows.utils.conv_zeros.Conv2DZeros.build">
+<code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_shape</span><span class="p">:</span> <span class="n">tensorflow.python.framework.tensor_shape.TensorShape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.utils.conv_zeros.Conv2DZeros.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates the variables of the layer (optional, for subclass implementers).</p>
+<p>This is a method that implementers of subclasses of <cite>Layer</cite> or <cite>Model</cite>
+can override if they need a state-creation step in-between
+layer instantiation and layer call.</p>
+<p>This is typically used to create the weights of <cite>Layer</cite> subclasses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>input_shape</strong> – Instance of <cite>TensorShape</cite>, or list of instances of
+<cite>TensorShape</cite> if the layer expects a list of inputs
+(one instance per input).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.utils.conv_zeros.Conv2DZeros.call">
+<code class="sig-name descname">call</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.utils.conv_zeros.Conv2DZeros.call" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is where the layer’s logic lives.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> – Input tensor, or list/tuple of input tensors.</p></li>
+<li><p><strong>**kwargs</strong> – Additional keyword arguments.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A tensor or list/tuple of tensors.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-TFGENZOO.flows.utils.conv_zeros_test">
+<span id="tfgenzoo-flows-utils-conv-zeros-test-module"></span><h2>TFGENZOO.flows.utils.conv_zeros_test module<a class="headerlink" href="#module-TFGENZOO.flows.utils.conv_zeros_test" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="TFGENZOO.flows.utils.conv_zeros_test.Conv2DTest">
+<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.utils.conv_zeros_test.</code><code class="sig-name descname">Conv2DTest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">methodName</span><span class="o">=</span><span class="default_value">'runTest'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.utils.conv_zeros_test.Conv2DTest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tensorflow.python.framework.test_util.TensorFlowTestCase</span></code></p>
+<dl class="py method">
+<dt id="TFGENZOO.flows.utils.conv_zeros_test.Conv2DTest.setUp">
+<code class="sig-name descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.utils.conv_zeros_test.Conv2DTest.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hook method for setting up the test fixture before exercising it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.utils.conv_zeros_test.Conv2DTest.testConv2DOutputShape">
+<code class="sig-name descname">testConv2DOutputShape</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.utils.conv_zeros_test.Conv2DTest.testConv2DOutputShape" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.utils.conv_zeros_test.Conv2DTest.testConv2DOutputTwiceShape">
+<code class="sig-name descname">testConv2DOutputTwiceShape</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.utils.conv_zeros_test.Conv2DTest.testConv2DOutputTwiceShape" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-TFGENZOO.flows.utils.gaussianize">
+<span id="tfgenzoo-flows-utils-gaussianize-module"></span><h2>TFGENZOO.flows.utils.gaussianize module<a class="headerlink" href="#module-TFGENZOO.flows.utils.gaussianize" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="TFGENZOO.flows.utils.gaussianize.gaussian_likelihood">
+<code class="sig-prename descclassname">TFGENZOO.flows.utils.gaussianize.</code><code class="sig-name descname">gaussian_likelihood</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mean</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="n">logsd</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.utils.gaussianize.gaussian_likelihood" title="Permalink to this definition">¶</a></dt>
+<dd><p>calculate negative log likelihood of Gaussian Distribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mean</strong> (<em>tf.Tensor</em>) – mean [B, …]</p></li>
+<li><p><strong>logsd</strong> (<em>tf.Tensor</em>) – log standard deviation [B, …]</p></li>
+<li><p><strong>x</strong> (<em>tf.Tensor</em>) – tensor [B, …]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>log likelihood [B, …]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>ll    (tf.Tensor)</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="math notranslate nohighlight">
+\begin{align}
+ll &amp;= - \cfrac{1}{2} (k\log(2 \pi) + \log |Var| \\
+   &amp;+ (x - Mu)^T (Var ^ {-1}) (x - Mu))\\
+,\ where &amp; \\
+     &amp; k = 1\ (Independent)\\
+     &amp; Var\ is\ a\ variance = exp(2 logsd)
+\end{align}</div></div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="TFGENZOO.flows.utils.gaussianize.gaussian_sample">
+<code class="sig-prename descclassname">TFGENZOO.flows.utils.gaussianize.</code><code class="sig-name descname">gaussian_sample</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mean</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="n">logsd</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="n">temparature</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">1.0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.utils.gaussianize.gaussian_sample" title="Permalink to this definition">¶</a></dt>
+<dd><p>sampling from mean, logsd * temparature</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mean</strong> (<em>tf.Tensor</em>) – mean [B, …]</p></li>
+<li><p><strong>logsd</strong> (<em>tf.Tensor</em>) – log standard deviation [B, …]</p></li>
+<li><p><strong>temparature</strong> (<em>float</em>) – temparature</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>sampled latent variable [B, …]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>new_z(tf.Tensor)</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Noto:</dt><dd><p>I cann’t gurantee it’s correctness.
+Please open the tensorflow probability’s Issue.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-TFGENZOO.flows.utils.util">
+<span id="tfgenzoo-flows-utils-util-module"></span><h2>TFGENZOO.flows.utils.util module<a class="headerlink" href="#module-TFGENZOO.flows.utils.util" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="TFGENZOO.flows.utils.util.bits_x">
+<code class="sig-prename descclassname">TFGENZOO.flows.utils.util.</code><code class="sig-name descname">bits_x</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">log_likelihood</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="n">log_det_jacobian</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="n">pixels</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">n_bits</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">8</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.utils.util.bits_x" title="Permalink to this definition">¶</a></dt>
+<dd><p>bits/dims</p>
+<p>Sources:</p>
+<blockquote>
+<div><p><a class="reference external" href="https://github.com/openai/glow/blob/master/model.py#L165-L186">https://github.com/openai/glow/blob/master/model.py#L165-L186</a></p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>log_likelihood</strong> (<em>tf.Tensor</em>) – shape is [batch_size,]</p></li>
+<li><p><strong>log_det_jacobian</strong> (<em>tf.Tensor</em>) – shape is [batch_size,]</p></li>
+<li><p><strong>pixels</strong> (<em>int</em>) – e.g. HWC image =&gt; H * W * C</p></li>
+<li><p><strong>n_bits</strong> (<em>int</em>) – e.g [0 255] image =&gt; 8 = log(256)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>shape is [batch_size,]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bits_x</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>formula</p>
+<div class="math notranslate nohighlight">
+\[bits\_x = - \cfrac{(log\_likelihood + log\_det\_jacobian)}
+{pixels \log{2}} + n\_bits\]</div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="TFGENZOO.flows.utils.util.split_feature">
+<code class="sig-prename descclassname">TFGENZOO.flows.utils.util.</code><code class="sig-name descname">split_feature</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="n">type</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'split'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.utils.util.split_feature" title="Permalink to this definition">¶</a></dt>
+<dd><p>type = [split, cross]</p>
+<p>TODO: implement Haar downsampling</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-TFGENZOO.flows.utils">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-TFGENZOO.flows.utils" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="TFGENZOO.gans.html" class="btn btn-neutral float-right" title="TFGENZOO.gans package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="TFGENZOO.flows.html" class="btn btn-neutral float-left" title="TFGENZOO.flows package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, MokkeMeguru
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

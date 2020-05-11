@@ -1,0 +1,488 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>TFGENZOO.layers package &mdash; TFGENZOO 1.0-beta1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js"></script>
+        <script src="_static/twemoji.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="_static/twemoji.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="TFGENZOO.optimizers package" href="TFGENZOO.optimizers.html" />
+    <link rel="prev" title="TFGENZOO.gans package" href="TFGENZOO.gans.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> TFGENZOO
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="news/index.html">News</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage/quickstart.html">Simple Tutorial</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="TFGENZOO.html">TFGENZOO package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="TFGENZOO.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="TFGENZOO.flows.html">TFGENZOO.flows package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="TFGENZOO.gans.html">TFGENZOO.gans package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">TFGENZOO.layers package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-TFGENZOO.layers.resnet">TFGENZOO.layers.resnet module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-TFGENZOO.layers.weight_norm">TFGENZOO.layers.weight_norm module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-TFGENZOO.layers">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="TFGENZOO.optimizers.html">TFGENZOO.optimizers package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="TFGENZOO.html#module-TFGENZOO">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">TFGENZOO</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="TFGENZOO.html">TFGENZOO package</a> &raquo;</li>
+        
+      <li>TFGENZOO.layers package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/TFGENZOO.layers.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="tfgenzoo-layers-package">
+<h1>TFGENZOO.layers package<a class="headerlink" href="#tfgenzoo-layers-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-TFGENZOO.layers.resnet">
+<span id="tfgenzoo-layers-resnet-module"></span><h2>TFGENZOO.layers.resnet module<a class="headerlink" href="#module-TFGENZOO.layers.resnet" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="TFGENZOO.layers.resnet.ShallowConnectedResNet">
+<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.layers.resnet.</code><code class="sig-name descname">ShallowConnectedResNet</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">width</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">512</span></em>, <em class="sig-param"><span class="n">out_scale</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.layers.resnet.ShallowConnectedResNet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tensorflow.python.keras.engine.training.Model</span></code></p>
+<p>ResNet of OpenAI’s Glow + Skip Connection
+Sources:</p>
+<blockquote>
+<div><p><a class="reference external" href="https://github.com/openai/glow/blob/master/model.py#L420-L426">https://github.com/openai/glow/blob/master/model.py#L420-L426</a></p>
+</div></blockquote>
+<p class="rubric">Notes</p>
+<p>This layer is not Residual Network
+because this layer does not have shortcut connection</p>
+<dl class="py method">
+<dt id="TFGENZOO.layers.resnet.ShallowConnectedResNet.build">
+<code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_shape</span><span class="p">:</span> <span class="n">tensorflow.python.framework.tensor_shape.TensorShape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.layers.resnet.ShallowConnectedResNet.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builds the model based on input shapes received.</p>
+<p>This is to be used for subclassed models, which do not know at instantiation
+time what their inputs look like.</p>
+<p>This method only exists for users who want to call <cite>model.build()</cite> in a
+standalone way (as a substitute for calling the model on real data to
+build it). It will never be called by the framework (and thus it will
+never throw unexpected errors in an unrelated workflow).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>input_shape</strong> – Single tuple, TensorShape, or list of shapes, where shapes
+are tuples, integers, or TensorShapes.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – <ol class="arabic simple">
+<li><p>In case of invalid user-provided data (not of type tuple,
+       list, or TensorShape).
+    2. If the model requires call arguments that are agnostic
+       to the input shapes (positional or kwarg in call signature).
+    3. If not all layers were properly built.
+    4. If float type inputs are not supported within the layers.</p></li>
+</ol>
+</p></li>
+<li><p><strong>In each of these cases</strong><strong>, </strong><strong>the user should build their model by calling it</strong> – </p></li>
+<li><p><strong>on real tensor data.</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.layers.resnet.ShallowConnectedResNet.call">
+<code class="sig-name descname">call</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.layers.resnet.ShallowConnectedResNet.call" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calls the model on new inputs.</p>
+<p>In this case <cite>call</cite> just reapplies
+all ops in the graph to the new inputs
+(e.g. build a new computational graph from the provided inputs).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> – A tensor or list of tensors.</p></li>
+<li><p><strong>training</strong> – Boolean or boolean scalar tensor, indicating whether to run
+the <cite>Network</cite> in training mode or inference mode.</p></li>
+<li><p><strong>mask</strong> – A mask or list of masks. A mask can be
+either a tensor or None (no mask).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A tensor if there is a single output, or
+a list of tensors if there are more than one outputs.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="TFGENZOO.layers.resnet.ShallowResNet">
+<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.layers.resnet.</code><code class="sig-name descname">ShallowResNet</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">width</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">512</span></em>, <em class="sig-param"><span class="n">out_scale</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.layers.resnet.ShallowResNet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tensorflow.python.keras.engine.training.Model</span></code></p>
+<p>ResNet of OpenAI’s Glow
+Sources:</p>
+<blockquote>
+<div><p><a class="reference external" href="https://github.com/openai/glow/blob/master/model.py#L420-L426">https://github.com/openai/glow/blob/master/model.py#L420-L426</a></p>
+</div></blockquote>
+<p class="rubric">Notes</p>
+<p>This layer is not Residual Network
+because this layer does not have Skip connection</p>
+<dl class="py method">
+<dt id="TFGENZOO.layers.resnet.ShallowResNet.build">
+<code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_shape</span><span class="p">:</span> <span class="n">tensorflow.python.framework.tensor_shape.TensorShape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.layers.resnet.ShallowResNet.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builds the model based on input shapes received.</p>
+<p>This is to be used for subclassed models, which do not know at instantiation
+time what their inputs look like.</p>
+<p>This method only exists for users who want to call <cite>model.build()</cite> in a
+standalone way (as a substitute for calling the model on real data to
+build it). It will never be called by the framework (and thus it will
+never throw unexpected errors in an unrelated workflow).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>input_shape</strong> – Single tuple, TensorShape, or list of shapes, where shapes
+are tuples, integers, or TensorShapes.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – <ol class="arabic simple">
+<li><p>In case of invalid user-provided data (not of type tuple,
+       list, or TensorShape).
+    2. If the model requires call arguments that are agnostic
+       to the input shapes (positional or kwarg in call signature).
+    3. If not all layers were properly built.
+    4. If float type inputs are not supported within the layers.</p></li>
+</ol>
+</p></li>
+<li><p><strong>In each of these cases</strong><strong>, </strong><strong>the user should build their model by calling it</strong> – </p></li>
+<li><p><strong>on real tensor data.</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.layers.resnet.ShallowResNet.call">
+<code class="sig-name descname">call</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.layers.resnet.ShallowResNet.call" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calls the model on new inputs.</p>
+<p>In this case <cite>call</cite> just reapplies
+all ops in the graph to the new inputs
+(e.g. build a new computational graph from the provided inputs).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> – A tensor or list of tensors.</p></li>
+<li><p><strong>training</strong> – Boolean or boolean scalar tensor, indicating whether to run
+the <cite>Network</cite> in training mode or inference mode.</p></li>
+<li><p><strong>mask</strong> – A mask or list of masks. A mask can be
+either a tensor or None (no mask).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A tensor if there is a single output, or
+a list of tensors if there are more than one outputs.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-TFGENZOO.layers.weight_norm">
+<span id="tfgenzoo-layers-weight-norm-module"></span><h2>TFGENZOO.layers.weight_norm module<a class="headerlink" href="#module-TFGENZOO.layers.weight_norm" title="Permalink to this headline">¶</a></h2>
+<p>weight normalization layer from tensorflow addons
+code is hightly borrowed from
+<a class="reference external" href="https://github.com/tensorflow/addons/blob/v0.7.1/tensorflow_addons/layers/wrappers.py">https://github.com/tensorflow/addons/blob/v0.7.1/tensorflow_addons/layers/wrappers.py</a></p>
+<dl class="simple">
+<dt>Differences:</dt><dd><p>initialization between multi gpu</p>
+</dd>
+</dl>
+<dl class="py class">
+<dt id="TFGENZOO.layers.weight_norm.WeightNormalization">
+<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.layers.weight_norm.</code><code class="sig-name descname">WeightNormalization</code><span class="sig-paren">(</span><em class="sig-param">layer: &lt;module 'tensorflow_core.keras.layers' from '/home/meguru/.local/share/virtualenvs/TFGENZOO-Jj0AW4-a-/home/meguru/.pyenv/shims/python/lib/python3.7/site-packages/tensorflow_core/python/keras/api/_v2/keras/layers/__init__.py'&gt;</em>, <em class="sig-param">data_init: bool = True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.layers.weight_norm.WeightNormalization" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tensorflow.python.keras.layers.wrappers.Wrapper</span></code></p>
+<p>This wrapper reparameterizes a layer by decoupling the weight’s
+magnitude and direction.
+This speeds up convergence by improving the
+conditioning of the optimization problem.
+Weight Normalization: A Simple Reparameterization to Accelerate
+Training of Deep Neural Networks: <a class="reference external" href="https://arxiv.org/abs/1602.07868">https://arxiv.org/abs/1602.07868</a>
+Tim Salimans, Diederik P. Kingma (2016)
+WeightNormalization wrapper works for keras and tf layers.
+<a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a>python</p>
+<blockquote>
+<div><dl class="simple">
+<dt>net = WeightNormalization(</dt><dd><p>tf.keras.layers.Conv2D(2, 2, activation=’relu’),
+input_shape=(32, 32, 3),
+data_init=True)(x)</p>
+</dd>
+<dt>net = WeightNormalization(</dt><dd><p>tf.keras.layers.Conv2D(16, 5, activation=’relu’),
+data_init=True)(net)</p>
+</dd>
+<dt>net = WeightNormalization(</dt><dd><p>tf.keras.layers.Dense(120, activation=’relu’),
+data_init=True)(net)</p>
+</dd>
+<dt>net = WeightNormalization(</dt><dd><p>tf.keras.layers.Dense(n_classes),
+data_init=True)(net)</p>
+</dd>
+</dl>
+</div></blockquote>
+<p><a href="#id5"><span class="problematic" id="id6">``</span></a>`
+:param layer: a layer instance.
+:param data_init: If <cite>True</cite> use data dependent variable initialization</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ValueError</strong> – If not initialized with a <cite>Layer</cite> instance.</p></li>
+<li><p><strong>ValueError</strong> – If <cite>Layer</cite> does not contain a <cite>kernel</cite> of weights</p></li>
+<li><p><strong>NotImplementedError</strong> – If <cite>data_init</cite> is True and running graph execution</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="TFGENZOO.layers.weight_norm.WeightNormalization.build">
+<code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_shape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.layers.weight_norm.WeightNormalization.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build <cite>Layer</cite></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.layers.weight_norm.WeightNormalization.call">
+<code class="sig-name descname">call</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inputs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.layers.weight_norm.WeightNormalization.call" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call <cite>Layer</cite></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.layers.weight_norm.WeightNormalization.compute_output_shape">
+<code class="sig-name descname">compute_output_shape</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_shape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.layers.weight_norm.WeightNormalization.compute_output_shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the output shape of the layer.</p>
+<p>If the layer has not been built, this method will call <cite>build</cite> on the
+layer. This assumes that the layer will later be used with inputs that
+match the input shape provided here.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>input_shape</strong> – Shape tuple (tuple of integers)
+or list of shape tuples (one per output tensor of the layer).
+Shape tuples can include None for free dimensions,
+instead of an integer.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An input shape tuple.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.layers.weight_norm.WeightNormalization.get_config">
+<code class="sig-name descname">get_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.layers.weight_norm.WeightNormalization.get_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the config of the layer.</p>
+<p>A layer config is a Python dictionary (serializable)
+containing the configuration of a layer.
+The same layer can be reinstantiated later
+(without its trained weights) from this configuration.</p>
+<p>The config of a layer does not include connectivity
+information, nor the layer class name. These are handled
+by <cite>Network</cite> (one layer of abstraction above).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Python dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.layers.weight_norm.WeightNormalization.remove">
+<code class="sig-name descname">remove</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.layers.weight_norm.WeightNormalization.remove" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-TFGENZOO.layers">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-TFGENZOO.layers" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="TFGENZOO.optimizers.html" class="btn btn-neutral float-right" title="TFGENZOO.optimizers package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="TFGENZOO.gans.html" class="btn btn-neutral float-left" title="TFGENZOO.gans package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, MokkeMeguru
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

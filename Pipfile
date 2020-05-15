@@ -14,7 +14,7 @@ jupyterlab = "*"
 
 [packages]
 tensorflow = "==2.2.0"
-tensorflow-probability = "0.10.0"
+tensorflow-probability = "==0.10.0"
 pandas = "*"
 matplotlib = "*"
 

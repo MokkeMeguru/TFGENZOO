@@ -11,6 +11,7 @@ ptvsd = "*"
 yapf = "*"
 pytest = "*"
 jupyterlab = "*"
+jedi = "==0.17.0"
 
 [packages]
 tensorflow = "==2.2.0"
@@ -19,4 +20,4 @@ pandas = "*"
 matplotlib = "*"
 
 [requires]
-python_version = "3.6"
+python_version = "3.7"

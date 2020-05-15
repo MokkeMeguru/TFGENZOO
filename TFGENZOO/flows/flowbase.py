@@ -134,6 +134,44 @@ class FlowModule(FlowBase):
         return x, inverse_log_det_jacobian
 
 
+class ConditionalFlowModule(FlowBase):
+    """Sequential Layer for FlowBase's Layer
+
+    Examples:
+
+         >>> layers = [FlowBase() for _ in range(10)]
+         >>> module = FlowModule(layers)
+         >>> z = module(x, inverse=False)
+         >>> x_hat = module(z, inverse=True)
+         >>> assert ((x - x_hat)^2) << 1e-3
+    """
+
+    def build(self, input_shape: tf.TensorShape):
+        super(FlowModule, self).build(input_shape=input_shape)
+
+    def __init__(self, components: List[FlowComponent]):
+        super(FlowModule, self).__init__()
+        self.components = components
+
+    def forward(self, x, **kwargs):
+        z = x
+        log_det_jacobian = []
+        for component in self.components:
+            z, ldj = component(z, inverse=False, **kwargs)
+            log_det_jacobian.append(ldj)
+        log_det_jacobian = sum(log_det_jacobian)
+        return z, log_det_jacobian
+
+    def inverse(self, z, **kwargs):
+        x = z
+        inverse_log_det_jacobian = []
+        for component in reversed(self.components):
+            x, ildj = component(x, inverse=True, **kwargs)
+            inverse_log_det_jacobian.append(ildj)
+        inverse_log_det_jacobian = sum(inverse_log_det_jacobian)
+        return x, inverse_log_det_jacobian
+
+
 class FactorOutBase(FlowBase):
     """Factor Out Layer in Flow-based Model
 

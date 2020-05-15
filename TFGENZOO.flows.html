@@ -1032,14 +1032,13 @@ layer instantiation and layer call.</p>
 <span id="tfgenzoo-flows-quantize-module"></span><h2>TFGENZOO.flows.quantize module<a class="headerlink" href="#module-TFGENZOO.flows.quantize" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt id="TFGENZOO.flows.quantize.LogitifyImage">
-<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.quantize.</code><code class="sig-name descname">LogitifyImage</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">corruption_level</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">alpha</span><span class="o">=</span><span class="default_value">1e-05</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.quantize.LogitifyImage" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.quantize.</code><code class="sig-name descname">LogitifyImage</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">corruption_level</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">alpha</span><span class="o">=</span><span class="default_value">0.05</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.quantize.LogitifyImage" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#TFGENZOO.flows.flowbase.FlowBase" title="TFGENZOO.flows.flowbase.FlowBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">TFGENZOO.flows.flowbase.FlowBase</span></code></a></p>
-<p>Apply Tapani Raiko’s dequantization and express
-image in terms of logits
-Sources:</p>
-<blockquote>
-<div><p><a class="reference external" href="https://github.com/taesungp/real-nvp/blob/master/real_nvp/model.p">https://github.com/taesungp/real-nvp/blob/master/real_nvp/model.p</a></p>
-</div></blockquote>
+<p>Apply Tapani Raiko’s dequantization and express image in terms of logits</p>
+<dl class="simple">
+<dt>Sources:</dt><dd><p><a class="reference external" href="https://github.com/taesungp/real-nvp/blob/master/real_nvp/model.py">https://github.com/taesungp/real-nvp/blob/master/real_nvp/model.py</a></p>
+</dd>
+</dl>
 <p>Notes:
 - forward formula</p>
 <blockquote>
@@ -1078,7 +1077,10 @@ layer instantiation and layer call.</p>
 <dl class="py method">
 <dt id="TFGENZOO.flows.quantize.LogitifyImage.forward">
 <code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.quantize.LogitifyImage.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>ref. <a class="reference external" href="https://github.com/taesungp/real-nvp/blob/master/real_nvp/model.py#L42-L54">https://github.com/taesungp/real-nvp/blob/master/real_nvp/model.py#L42-L54</a></p>
+<dd><p>ref. <a class="reference external" href="https://github.com/taesungp/real-nvp/blob/master/real_nvp/model.py#L42-L54">https://github.com/taesungp/real-nvp/blob/master/real_nvp/model.py#L42-L54</a>
+ref. <a class="reference external" href="https://github.com/tensorflow/models/blob/fe4e6b653141a197779d752b422419493e5d9128/research/real_nvp/real_nvp_multiscale_dataset.py#L1073-L1077">https://github.com/tensorflow/models/blob/fe4e6b653141a197779d752b422419493e5d9128/research/real_nvp/real_nvp_multiscale_dataset.py#L1073-L1077</a>
+ref. <a class="reference external" href="https://github.com/masa-su/pixyz/blob/master/pixyz/flows/operations.py#L253-L254">https://github.com/masa-su/pixyz/blob/master/pixyz/flows/operations.py#L253-L254</a>
+ref. <a class="reference external" href="https://github.com/fmu2/realNVP/blob/8d36691df215af3678440ccb7c01a13d2b441a4a/data_utils.py#L112-L119">https://github.com/fmu2/realNVP/blob/8d36691df215af3678440ccb7c01a13d2b441a4a/data_utils.py#L112-L119</a></p>
 </dd></dl>
 
 <dl class="py method">

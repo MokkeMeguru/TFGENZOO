@@ -5,4 +5,3 @@ TFGENZOO
    :maxdepth: 4
 
    TFGENZOO
-   setup

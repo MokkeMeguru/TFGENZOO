@@ -536,6 +536,46 @@ layer instantiation and layer call.</p>
 <dt id="TFGENZOO.flows.cond_factor_out.ConditionalFactorOut">
 <em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.cond_factor_out.</code><code class="sig-name descname">ConditionalFactorOut</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">with_zaux</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.cond_factor_out.ConditionalFactorOut" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#TFGENZOO.flows.flowbase.FactorOutBase" title="TFGENZOO.flows.flowbase.FactorOutBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">TFGENZOO.flows.flowbase.FactorOutBase</span></code></a></p>
+<p>Conditional Factor Out Layer</p>
+<p>This layer keeps factor-outed Tensor z_i
+for analysis and manipulate
+But if z_i is not supplied, this layer generates z_i
+like TFGENZOO.flows.FactorOut</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul>
+<li><dl>
+<dt>forward procedure</dt><dd><div class="line-block">
+<div class="line">input  : h_{i-1}</div>
+<div class="line">output : h_{i}, loss, z_i</div>
+<div class="line"><br /></div>
+<div class="line">[z_i, h_i] = split(h_{i-1})</div>
+<div class="line"><br /></div>
+<div class="line">loss =</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">z_i sim N(0, 1) if conditional is False</div>
+<div class="line">z_i sim N(mu, sigma) if conditional is True</div>
+</div>
+<div class="line">,where</div>
+</div>
+<div class="line">mu, sigma = Conv(h)</div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>inverse procedure</dt><dd><div class="line-block">
+<div class="line">input  : h_{i}</div>
+<div class="line">output : h_{i-1}, z_i</div>
+<div class="line"><br /></div>
+<div class="line">h_{i-1} = [z_i, h_i]</div>
+</div>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
 <dl class="py method">
 <dt id="TFGENZOO.flows.cond_factor_out.ConditionalFactorOut.build">
 <code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_shape</span><span class="p">:</span> <span class="n">tensorflow.python.framework.tensor_shape.TensorShape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.cond_factor_out.ConditionalFactorOut.build" title="Permalink to this definition">¶</a></dt>
@@ -582,6 +622,44 @@ layer instantiation and layer call.</p>
 <dt id="TFGENZOO.flows.factor_out.FactorOut">
 <em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.factor_out.</code><code class="sig-name descname">FactorOut</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">with_zaux</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">conditional</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.factor_out.FactorOut" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#TFGENZOO.flows.flowbase.FactorOutBase" title="TFGENZOO.flows.flowbase.FactorOutBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">TFGENZOO.flows.flowbase.FactorOutBase</span></code></a></p>
+<p>Basic Factor Out Layer</p>
+<p>This layer drops factor-outed Tensor z_i</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul>
+<li><dl>
+<dt>forward procedure</dt><dd><div class="line-block">
+<div class="line">input  : h_{i-1}</div>
+<div class="line">output : h_{i}, loss</div>
+<div class="line"><br /></div>
+<div class="line">[z_i, h_i] = split(h_{i-1})</div>
+<div class="line"><br /></div>
+<div class="line">loss =</div>
+<div class="line-block">
+<div class="line-block">
+<div class="line">z_i sim N(0, 1) if conditional is False</div>
+<div class="line">z_i sim N(mu, sigma) if conditional is True</div>
+</div>
+<div class="line">,where</div>
+</div>
+<div class="line">mu, sigma = Conv(h)</div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>inverse procedure</dt><dd><div class="line-block">
+<div class="line">input  : h_{i}</div>
+<div class="line">output : h_{i-1}</div>
+<div class="line"><br /></div>
+<div class="line">sample z_i from N(0, 1) or N(mu, sigma) by conditional</div>
+<div class="line">h_{i-1} = [z_i, h_i]</div>
+</div>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
 <dl class="py method">
 <dt id="TFGENZOO.flows.factor_out.FactorOut.build">
 <code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_shape</span><span class="p">:</span> <span class="n">tensorflow.python.framework.tensor_shape.TensorShape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.factor_out.FactorOut.build" title="Permalink to this definition">¶</a></dt>
@@ -695,17 +773,19 @@ layer instantiation and layer call.</p>
 <dt id="TFGENZOO.flows.flowbase.FlowBase">
 <em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.flowbase.</code><code class="sig-name descname">FlowBase</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flowbase.FlowBase" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tensorflow.python.keras.engine.base_layer.Layer</span></code></p>
-<p>Flow-based model’s abstruct class
-.. rubric:: Examples</p>
+<p>Flow-based model’s abstruct class</p>
+<p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">layer</span> <span class="o">=</span> <span class="n">FlowBase</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="c1"># forward method</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x_hat</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># inverse method</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="n">x_hat</span><span class="p">)</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="mf">1e-3</span>
 </pre></div>
 </div>
-<p class="rubric">Notes</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
 <p>If you need data-dependent initialization (e.g. ActNorm),
 You can write it at #initialize_parameter.</p>
+</div>
 <dl class="py method">
 <dt id="TFGENZOO.flows.flowbase.FlowBase.build">
 <code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_shape</span><span class="p">:</span> <span class="n">tensorflow.python.framework.tensor_shape.TensorShape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flowbase.FlowBase.build" title="Permalink to this definition">¶</a></dt>
@@ -764,15 +844,7 @@ layer instantiation and layer call.</p>
 <dl class="py method">
 <dt id="TFGENZOO.flows.flowbase.FlowComponent.assert_log_det_jacobian">
 <code class="sig-name descname">assert_log_det_jacobian</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">log_det_jacobian</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flowbase.FlowComponent.assert_log_det_jacobian" title="Permalink to this definition">¶</a></dt>
-<dd><p>assert log_det_jacobian’s shape
-TODO:
-tf-2.0’s bug
-tf.debugging.assert_shapes([(tf.constant(1.0), (None, ))])
-# =&gt; None (true)
-tf.debugging.assert_shapes([(tf.constant([1.0, 1.0]), (None, ))])
-# =&gt; None (true)
-tf.debugging.assert_shapes([(tf.constant([[1.0], [1.0]]), (None, ))])
-# =&gt; Error</p>
+<dd><p>assert log_det_jacobian’s shape</p>
 </dd></dl>
 
 <dl class="py method">
@@ -796,8 +868,8 @@ tf.debugging.assert_shapes([(tf.constant([[1.0], [1.0]]), (None, ))])
 <dt id="TFGENZOO.flows.flowbase.FlowModule">
 <em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.flowbase.</code><code class="sig-name descname">FlowModule</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">components</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#TFGENZOO.flows.flowbase.FlowComponent" title="TFGENZOO.flows.flowbase.FlowComponent">TFGENZOO.flows.flowbase.FlowComponent</a><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flowbase.FlowModule" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#TFGENZOO.flows.flowbase.FlowBase" title="TFGENZOO.flows.flowbase.FlowBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">TFGENZOO.flows.flowbase.FlowBase</span></code></a></p>
-<p>Sequential Layer for FlowBase’s Layer
-.. rubric:: Examples</p>
+<p>Sequential Layer for FlowBase’s Layer</p>
+<p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">layers</span> <span class="o">=</span> <span class="p">[</span><span class="n">FlowBase</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">module</span> <span class="o">=</span> <span class="n">FlowModule</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">module</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -850,32 +922,33 @@ Sources:</p>
 <div><p><a class="reference external" href="https://arxiv.org/pdf/1807.03039.pdf">https://arxiv.org/pdf/1807.03039.pdf</a>
 <a class="reference external" href="https://github.com/openai/glow/blob/master/model.py#L457-L472">https://github.com/openai/glow/blob/master/model.py#L457-L472</a></p>
 </div></blockquote>
-<p>Notes:
-- forward formula</p>
-<blockquote>
-<div><p>forall i, j: z_{i, j} = W x_{i, j}
-LogDetJacobian = H W log|det(W)|</p>
-<dl class="simple">
-<dt>where</dt><dd><p>x_{i, j}, y_{i, j} in [C, C]
-W in [C, C]</p>
-</dd>
-</dl>
-</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
 <ul>
-<li><p>inverse formula</p>
-<blockquote>
-<div><p>forall i, j: x_{i, j} = W^{-1} z_{i, j}
-InverseLogDetJacobian = - H W log|det(W)|</p>
-<blockquote>
-<div><dl class="simple">
-<dt>where</dt><dd><p>x_{i, j}, y_{i, j} in [C, C]
-W in [C, C]</p>
+<li><dl>
+<dt>forward formula</dt><dd><div class="math notranslate nohighlight">
+\[\begin{split}\forall i, j: z_{i, j} &amp;= Wx_{i, j} \\
+LogDetJacobian &amp;= hw \log|det(W)|\\
+, where &amp;\\
+W &amp;\in \mathbb{R}^{c    imes c}\\
+    x &amp;\in \mathbb{R}^{b \times h\times w \times c}\ \ \
+({\rm batch, height, width, channel})\end{split}\]</div>
 </dd>
 </dl>
-</div></blockquote>
-</div></blockquote>
+</li>
+<li><dl>
+<dt>inverse formula</dt><dd><div class="math notranslate nohighlight">
+\[\begin{split}\forall i, j: x_{i, j} &amp;= W^{-1} z_{i, j}\\
+InverseLogDetJacobian &amp;= - h w \log|det(W)|\\
+, where &amp;\\
+W &amp;\in \mathbb{R}^{c\times c}\\
+x &amp;\in \mathbb{R}^{b \times h\times w \times c}\ \ \
+({\rm batch, height, width, channel})\end{split}\]</div>
+</dd>
+</dl>
 </li>
 </ul>
+</div>
 <dl class="py method">
 <dt id="TFGENZOO.flows.inv1x1conv.Inv1x1Conv.build">
 <code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_shape</span><span class="p">:</span> <span class="n">tensorflow.python.framework.tensor_shape.TensorShape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.inv1x1conv.Inv1x1Conv.build" title="Permalink to this definition">¶</a></dt>
@@ -908,19 +981,23 @@ layer instantiation and layer call.</p>
 <dl class="py function">
 <dt id="TFGENZOO.flows.inv1x1conv.regular_matrix_init">
 <code class="sig-prename descclassname">TFGENZOO.flows.inv1x1conv.</code><code class="sig-name descname">regular_matrix_init</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">shape</span><span class="p">:</span> <span class="n">Tuple<span class="p">[</span>int<span class="p">, </span>int<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.inv1x1conv.regular_matrix_init" title="Permalink to this definition">¶</a></dt>
-<dd><p>initialize with orthogonal matrix
-:param shape: generated matrix’s shape [C, C]
-:param dtype:</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>orthogonal matrix [C, C]</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>w_init</p>
+<dd><p>initialize with orthogonal matrix</p>
+<dl class="simple">
+<dt>Sources:</dt><dd><p><a class="reference external" href="https://github.com/openai/glow/blob/master/model.py#L445-L451">https://github.com/openai/glow/blob/master/model.py#L445-L451</a></p>
 </dd>
 </dl>
-<dl class="simple">
-<dt>Source:</dt><dd><p><a class="reference external" href="https://github.com/openai/glow/blob/master/model.py#L445-L451">https://github.com/openai/glow/blob/master/model.py#L445-L451</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>shape</strong> – generated matrix’s shape [C, C]</p></li>
+<li><p><strong>dtype</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>w_init, orthogonal matrix [C, C]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1148,15 +1225,7 @@ layer instantiation and layer call.</p>
 <dl class="py method">
 <dt id="TFGENZOO.flows.FlowComponent.assert_log_det_jacobian">
 <code class="sig-name descname">assert_log_det_jacobian</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">log_det_jacobian</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.FlowComponent.assert_log_det_jacobian" title="Permalink to this definition">¶</a></dt>
-<dd><p>assert log_det_jacobian’s shape
-TODO:
-tf-2.0’s bug
-tf.debugging.assert_shapes([(tf.constant(1.0), (None, ))])
-# =&gt; None (true)
-tf.debugging.assert_shapes([(tf.constant([1.0, 1.0]), (None, ))])
-# =&gt; None (true)
-tf.debugging.assert_shapes([(tf.constant([[1.0], [1.0]]), (None, ))])
-# =&gt; Error</p>
+<dd><p>assert log_det_jacobian’s shape</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1180,8 +1249,8 @@ tf.debugging.assert_shapes([(tf.constant([[1.0], [1.0]]), (None, ))])
 <dt id="TFGENZOO.flows.FlowModule">
 <em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.</code><code class="sig-name descname">FlowModule</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">components</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#TFGENZOO.flows.flowbase.FlowComponent" title="TFGENZOO.flows.flowbase.FlowComponent">TFGENZOO.flows.flowbase.FlowComponent</a><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.FlowModule" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#TFGENZOO.flows.flowbase.FlowBase" title="TFGENZOO.flows.flowbase.FlowBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">TFGENZOO.flows.flowbase.FlowBase</span></code></a></p>
-<p>Sequential Layer for FlowBase’s Layer
-.. rubric:: Examples</p>
+<p>Sequential Layer for FlowBase’s Layer</p>
+<p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">layers</span> <span class="o">=</span> <span class="p">[</span><span class="n">FlowBase</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">module</span> <span class="o">=</span> <span class="n">FlowModule</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">module</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -1456,32 +1525,33 @@ Sources:</p>
 <div><p><a class="reference external" href="https://arxiv.org/pdf/1807.03039.pdf">https://arxiv.org/pdf/1807.03039.pdf</a>
 <a class="reference external" href="https://github.com/openai/glow/blob/master/model.py#L457-L472">https://github.com/openai/glow/blob/master/model.py#L457-L472</a></p>
 </div></blockquote>
-<p>Notes:
-- forward formula</p>
-<blockquote>
-<div><p>forall i, j: z_{i, j} = W x_{i, j}
-LogDetJacobian = H W log|det(W)|</p>
-<dl class="simple">
-<dt>where</dt><dd><p>x_{i, j}, y_{i, j} in [C, C]
-W in [C, C]</p>
-</dd>
-</dl>
-</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
 <ul>
-<li><p>inverse formula</p>
-<blockquote>
-<div><p>forall i, j: x_{i, j} = W^{-1} z_{i, j}
-InverseLogDetJacobian = - H W log|det(W)|</p>
-<blockquote>
-<div><dl class="simple">
-<dt>where</dt><dd><p>x_{i, j}, y_{i, j} in [C, C]
-W in [C, C]</p>
+<li><dl>
+<dt>forward formula</dt><dd><div class="math notranslate nohighlight">
+\[\begin{split}\forall i, j: z_{i, j} &amp;= Wx_{i, j} \\
+LogDetJacobian &amp;= hw \log|det(W)|\\
+, where &amp;\\
+W &amp;\in \mathbb{R}^{c    imes c}\\
+    x &amp;\in \mathbb{R}^{b \times h\times w \times c}\ \ \
+({\rm batch, height, width, channel})\end{split}\]</div>
 </dd>
 </dl>
-</div></blockquote>
-</div></blockquote>
+</li>
+<li><dl>
+<dt>inverse formula</dt><dd><div class="math notranslate nohighlight">
+\[\begin{split}\forall i, j: x_{i, j} &amp;= W^{-1} z_{i, j}\\
+InverseLogDetJacobian &amp;= - h w \log|det(W)|\\
+, where &amp;\\
+W &amp;\in \mathbb{R}^{c\times c}\\
+x &amp;\in \mathbb{R}^{b \times h\times w \times c}\ \ \
+({\rm batch, height, width, channel})\end{split}\]</div>
+</dd>
+</dl>
 </li>
 </ul>
+</div>
 <dl class="py method">
 <dt id="TFGENZOO.flows.Inv1x1Conv.build">
 <code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_shape</span><span class="p">:</span> <span class="n">tensorflow.python.framework.tensor_shape.TensorShape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.Inv1x1Conv.build" title="Permalink to this definition">¶</a></dt>
@@ -1514,19 +1584,23 @@ layer instantiation and layer call.</p>
 <dl class="py function">
 <dt id="TFGENZOO.flows.regular_matrix_init">
 <code class="sig-prename descclassname">TFGENZOO.flows.</code><code class="sig-name descname">regular_matrix_init</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">shape</span><span class="p">:</span> <span class="n">Tuple<span class="p">[</span>int<span class="p">, </span>int<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.regular_matrix_init" title="Permalink to this definition">¶</a></dt>
-<dd><p>initialize with orthogonal matrix
-:param shape: generated matrix’s shape [C, C]
-:param dtype:</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>orthogonal matrix [C, C]</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>w_init</p>
+<dd><p>initialize with orthogonal matrix</p>
+<dl class="simple">
+<dt>Sources:</dt><dd><p><a class="reference external" href="https://github.com/openai/glow/blob/master/model.py#L445-L451">https://github.com/openai/glow/blob/master/model.py#L445-L451</a></p>
 </dd>
 </dl>
-<dl class="simple">
-<dt>Source:</dt><dd><p><a class="reference external" href="https://github.com/openai/glow/blob/master/model.py#L445-L451">https://github.com/openai/glow/blob/master/model.py#L445-L451</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>shape</strong> – generated matrix’s shape [C, C]</p></li>
+<li><p><strong>dtype</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>w_init, orthogonal matrix [C, C]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
 </dd>
 </dl>
 </dd></dl>

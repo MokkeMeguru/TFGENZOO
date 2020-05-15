@@ -89,7 +89,17 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">News</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="backlog.html">backlog</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Discussion</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Discussion</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#is-1x1conv-compatible-with-tensordot">Is 1x1Conv compatible with tensordot?</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#experiments">Experiments</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#sometimes-matrixdeterminant-will-be-crash">SomeTimes, matrixdeterminant will be crash</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="index.html#relase">Relase</a></li>
 </ul>
 </li>
@@ -163,6 +173,28 @@
             
   <div class="section" id="discussion">
 <h1>Discussion<a class="headerlink" href="#discussion" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="is-1x1conv-compatible-with-tensordot">
+<h2>Is 1x1Conv compatible with tensordot?<a class="headerlink" href="#is-1x1conv-compatible-with-tensordot" title="Permalink to this headline">¶</a></h2>
+<p>1x1conv is the convolution with filter [1, 1].</p>
+<p>So this procedure is same as tensordot.</p>
+<div class="section" id="experiments">
+<h3>Experiments<a class="headerlink" href="#experiments" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://colab.research.google.com/gist/MokkeMeguru/ee7af2a1c4947e4b0305efb892daf6b2/tfgenzoo_knowledges.ipynb">TFGENZOO_KNOWLEDGES (CAST 1x1conv to TensorDot)(colab notebook)</a></p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="sometimes-matrixdeterminant-will-be-crash">
+<h2>SomeTimes, matrixdeterminant will be crash<a class="headerlink" href="#sometimes-matrixdeterminant-will-be-crash" title="Permalink to this headline">¶</a></h2>
+<p>Sometimes, matrixdeterminant will be 0. which is cannot apply backpropergation.</p>
+<p>We can use decomposed matrix of W, but it consume training time more and more…</p>
+<div class="section" id="references">
+<h3>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/tensorflow/probability/blob/master/tensorflow_probability/python/bijectors/scale_matvec_lu.py">Tensorflow Probability - ScaledMatvecLU</a></p></li>
+</ul>
+</div>
+</div>
 </div>
 
 

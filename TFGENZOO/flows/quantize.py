@@ -34,7 +34,7 @@ class LogitifyImage(FlowBase):
 
         super(LogitifyImage, self).build(input_shape)
 
-    def __init__(self, corruption_level=1.0, alpha=1e-5):
+    def __init__(self, corruption_level=1.0, alpha=0.05):
         super(LogitifyImage, self).__init__()
         self.corruption_level = corruption_level
         self.alpha = alpha
@@ -47,6 +47,9 @@ class LogitifyImage(FlowBase):
     def forward(self, x: tf.Tensor, **kwargs):
         """
         ref. https://github.com/taesungp/real-nvp/blob/master/real_nvp/model.py#L42-L54
+        ref. https://github.com/tensorflow/models/blob/fe4e6b653141a197779d752b422419493e5d9128/research/real_nvp/real_nvp_multiscale_dataset.py#L1073-L1077
+        ref. https://github.com/masa-su/pixyz/blob/master/pixyz/flows/operations.py#L253-L254
+        ref. https://github.com/fmu2/realNVP/blob/8d36691df215af3678440ccb7c01a13d2b441a4a/data_utils.py#L112-L119
         """
 
         # 1. transform the domain of x from [0, 1] to [0, 255]

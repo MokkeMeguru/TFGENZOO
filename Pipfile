@@ -13,13 +13,11 @@ pytest = "*"
 jupyterlab = "*"
 
 [packages]
-gast = "==0.3.2"
 tensorflow-probability = "*"
+tensorflow = "==2.1.0"
 sentencepiece = "*"
 pandas = "*"
 matplotlib = "*"
-tensorflow-addons = "*"
-tensorflow = "==2.1.0"
 
 
 [requires]

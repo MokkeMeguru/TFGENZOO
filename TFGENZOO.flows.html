@@ -225,7 +225,7 @@ Sources:</p>
 <dt>initialize</dt><dd><div class="line-block">
 <div class="line">mean = mean(first_batch)</div>
 <div class="line">var = variance(first_batch)</div>
-<div class="line">logs = log(scale / sqrt(var)) / log_scale_factor</div>
+<div class="line">logs = log(scale / sqrt(var)) / logscale_factor</div>
 <div class="line">bias = - mean</div>
 </div>
 </dd>
@@ -233,7 +233,7 @@ Sources:</p>
 </li>
 <li><dl>
 <dt>forward formula</dt><dd><div class="line-block">
-<div class="line">logs = logs * log_scale_factor</div>
+<div class="line">logs = logs * logscale_factor</div>
 <div class="line">scale = exp(logs)</div>
 </div>
 <p>z = (x + bias) * scale
@@ -243,7 +243,7 @@ log_det_jacobain = sum(logs) * H * W</p>
 </li>
 <li><dl>
 <dt>inverse formula</dt><dd><div class="line-block">
-<div class="line">logs = logs * log_scale_factor</div>
+<div class="line">logs = logs * logsscale_factor</div>
 <div class="line">inv_scale = exp(-logs)</div>
 <div class="line">z = x * inv_scale - bias</div>
 <div class="line">inverse_log_det_jacobian = sum(- logs) * H * W</div>
@@ -1035,28 +1035,55 @@ layer instantiation and layer call.</p>
 <em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.quantize.</code><code class="sig-name descname">LogitifyImage</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">corruption_level</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">alpha</span><span class="o">=</span><span class="default_value">0.05</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.quantize.LogitifyImage" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#TFGENZOO.flows.flowbase.FlowBase" title="TFGENZOO.flows.flowbase.FlowBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">TFGENZOO.flows.flowbase.FlowBase</span></code></a></p>
 <p>Apply Tapani Raiko’s dequantization and express image in terms of logits</p>
-<dl class="simple">
-<dt>Sources:</dt><dd><p><a class="reference external" href="https://github.com/taesungp/real-nvp/blob/master/real_nvp/model.py">https://github.com/taesungp/real-nvp/blob/master/real_nvp/model.py</a></p>
-</dd>
-</dl>
-<p>Notes:
-- forward formula</p>
+<p>Sources:</p>
 <blockquote>
-<div><dl class="simple">
-<dt>z = logit(x)</dt><dd><p>= log(x) - log(1 - x)</p>
+<div><p><a class="reference external" href="https://github.com/taesungp/real-nvp/blob/master/real_nvp/model.py">https://github.com/taesungp/real-nvp/blob/master/real_nvp/model.py</a>
+<a class="reference external" href="https://github.com/taesungp/real-nvp/blob/master/real_nvp/model.py#L42-L54">https://github.com/taesungp/real-nvp/blob/master/real_nvp/model.py#L42-L54</a>
+<a class="reference external" href="https://github.com/tensorflow/models/blob/fe4e6b653141a197779d752b422419493e5d9128/research/real_nvp/real_nvp_multiscale_dataset.py#L1073-L1077">https://github.com/tensorflow/models/blob/fe4e6b653141a197779d752b422419493e5d9128/research/real_nvp/real_nvp_multiscale_dataset.py#L1073-L1077</a>
+<a class="reference external" href="https://github.com/masa-su/pixyz/blob/master/pixyz/flows/operations.py#L253-L254">https://github.com/masa-su/pixyz/blob/master/pixyz/flows/operations.py#L253-L254</a>
+<a class="reference external" href="https://github.com/fmu2/realNVP/blob/8d36691df215af3678440ccb7c01a13d2b441a4a/data_utils.py#L112-L119">https://github.com/fmu2/realNVP/blob/8d36691df215af3678440ccb7c01a13d2b441a4a/data_utils.py#L112-L119</a></p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>corrupution_level</strong> (<em>float</em>) – power of added random variable.</p></li>
+<li><p><strong>alpha</strong> (<em>float</em>) – parameter about transform close interval to open interval
+[0, 1] to (1, 0)</p></li>
+</ul>
 </dd>
 </dl>
-</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>We know many implementation on this quantization, but we use this formula.
+since many implementations use it.</p>
 <ul>
-<li><p>inverse formula</p>
-<blockquote>
-<div><dl class="simple">
-<dt>x = logisitic(z)</dt><dd><p>= 1 / (1 + exp( -z ))</p>
+<li><dl>
+<dt>forward preprocess (add noise)</dt><dd><div class="math notranslate nohighlight">
+\[\begin{split}x &amp;\leftarrow 255.0 x  \ \because [0, 1] \rightarrow [0, 255] \\
+x &amp;\leftarrow x + \text{corruption_level} \times  \epsilon \ where\ \epsilon \sim N(0, 1)\\
+x &amp;\leftarrow x / (\text{corruption_level} + 255.0)\\
+x &amp;\leftarrow x  (1 - \alpha) + 0.5 \alpha \ \because \ [0, 1] \rightarrow (0, 1)\end{split}\]</div>
 </dd>
 </dl>
-</div></blockquote>
+</li>
+<li><dl>
+<dt>forward formula</dt><dd><div class="math notranslate nohighlight">
+\[\begin{split}z &amp;= logit(x)\\
+  &amp;= \log(x) - \log(1 - x)\\
+LogDetJacobian &amp;= sum(softplus(z) + softplus(-z) - softplus(\log(\cfrac{\alpha}{1 - \alpha})))\end{split}\]</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>inverse formula</dt><dd><div class="math notranslate nohighlight">
+\[\begin{split}x &amp;= logisitic(z)\\
+  &amp;= 1 / (1 + exp( -z )) \\
+InverseLogDetJacobian &amp;= sum(-2 \log(logistic(z)) - z)\end{split}\]</div>
+</dd>
+</dl>
 </li>
 </ul>
+</div>
 <dl class="py method">
 <dt id="TFGENZOO.flows.quantize.LogitifyImage.build">
 <code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_shape</span><span class="p">:</span> <span class="n">tensorflow.python.framework.tensor_shape.TensorShape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.quantize.LogitifyImage.build" title="Permalink to this definition">¶</a></dt>
@@ -1077,17 +1104,12 @@ layer instantiation and layer call.</p>
 <dl class="py method">
 <dt id="TFGENZOO.flows.quantize.LogitifyImage.forward">
 <code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.quantize.LogitifyImage.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>ref. <a class="reference external" href="https://github.com/taesungp/real-nvp/blob/master/real_nvp/model.py#L42-L54">https://github.com/taesungp/real-nvp/blob/master/real_nvp/model.py#L42-L54</a>
-ref. <a class="reference external" href="https://github.com/tensorflow/models/blob/fe4e6b653141a197779d752b422419493e5d9128/research/real_nvp/real_nvp_multiscale_dataset.py#L1073-L1077">https://github.com/tensorflow/models/blob/fe4e6b653141a197779d752b422419493e5d9128/research/real_nvp/real_nvp_multiscale_dataset.py#L1073-L1077</a>
-ref. <a class="reference external" href="https://github.com/masa-su/pixyz/blob/master/pixyz/flows/operations.py#L253-L254">https://github.com/masa-su/pixyz/blob/master/pixyz/flows/operations.py#L253-L254</a>
-ref. <a class="reference external" href="https://github.com/fmu2/realNVP/blob/8d36691df215af3678440ccb7c01a13d2b441a4a/data_utils.py#L112-L119">https://github.com/fmu2/realNVP/blob/8d36691df215af3678440ccb7c01a13d2b441a4a/data_utils.py#L112-L119</a></p>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt id="TFGENZOO.flows.quantize.LogitifyImage.inverse">
 <code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">z</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.quantize.LogitifyImage.inverse" title="Permalink to this definition">¶</a></dt>
-<dd><p>ref. <a class="reference external" href="https://github.com/taesungp/real-nvp/blob/master/real_nvp/model.py#L82">https://github.com/taesungp/real-nvp/blob/master/real_nvp/model.py#L82</a></p>
-</dd></dl>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -1098,46 +1120,59 @@ ref. <a class="reference external" href="https://github.com/fmu2/realNVP/blob/8d
 <dt id="TFGENZOO.flows.squeeze.Squeezing">
 <em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.squeeze.</code><code class="sig-name descname">Squeezing</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">with_zaux</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.squeeze.Squeezing" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#TFGENZOO.flows.flowbase.FlowBase" title="TFGENZOO.flows.flowbase.FlowBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">TFGENZOO.flows.flowbase.FlowBase</span></code></a></p>
-<p>Squeezing Layer
-Sources:</p>
+<p>Squeezing Layer</p>
+<p>Sources:</p>
 <blockquote>
-<div><p><a class="reference external" href="https://github.com/openai/glow/blob/master/tfops.py#L338-L352">https://github.com/openai/glow/blob/master/tfops.py#L338-L352</a></p>
+<div><p><a class="reference external" href="https://github.com/openai/glow/blob/master/tfops.py#L338-L352">https://github.com/openai/glow/blob/master/tfops.py#L338-L352</a>
+<a class="reference external" href="https://arxiv.org/pdf/1605.08803.pdf">https://arxiv.org/pdf/1605.08803.pdf</a> Figure 3</p>
 </div></blockquote>
-<p>Notes:
-- forward formula</p>
-<blockquote>
-<div><p>z = reshape(x, [B, H // 2, W // 2, C * 4])</p>
-</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
 <ul>
-<li><p>inverse formula</p>
-<blockquote>
-<div><p>x = reshape(z, [B, H, W, C])</p>
-</div></blockquote>
+<li><dl>
+<dt>forward formula</dt><dd><div class="line-block">
+<div class="line">z = reshape(x, [B, H // 2, W // 2, C * 4])</div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>inverse formula</dt><dd><div class="line-block">
+<div class="line">x = reshape(z, [B, H, W, C])</div>
+</div>
+</dd>
+</dl>
 </li>
 <li><p>checkerboard spacing</p>
 <blockquote>
 <div><p>e.g.</p>
-<dl class="simple">
-<dt>[[[[1], [2], [5], [6]],</dt><dd><p>[[3], [4], [7], [8]],
-[[9], [10], [13], [14]],
-[[11], [12], [15], [16]]]]</p>
-</dd>
-</dl>
+<div class="line-block">
+<div class="line">[[[[1], [2], [5], [6]],</div>
+<div class="line">[[3], [4], [7], [8]],</div>
+<div class="line">[[9], [10], [13], [14]],</div>
+<div class="line">[[11], [12], [15], [16]]]]</div>
+</div>
 <p>to</p>
-<dl class="simple">
-<dt>[[[ 1,  5],</dt><dd><p>[ 9, 13]]]</p>
-</dd>
-<dt>[[[ 2,  6],</dt><dd><p>[10, 14]]]</p>
-</dd>
-<dt>[[[ 3,  7],</dt><dd><p>[11, 15]]]</p>
-</dd>
-<dt>[[[ 4,  8],</dt><dd><p>[12, 16]]]</p>
-</dd>
-</dl>
-<p>ref. <a class="reference external" href="https://arxiv.org/pdf/1605.08803.pdf">https://arxiv.org/pdf/1605.08803.pdf</a> Figure 3</p>
+<div class="line-block">
+<div class="line">[[[ 1,  5],</div>
+<div class="line">[ 9, 13]]]</div>
+</div>
+<div class="line-block">
+<div class="line">[[[ 2,  6],</div>
+<div class="line">[10, 14]]]</div>
+</div>
+<div class="line-block">
+<div class="line">[[[ 3,  7],</div>
+<div class="line">[11, 15]]]</div>
+</div>
+<div class="line-block">
+<div class="line">[[[ 4,  8],</div>
+<div class="line">[12, 16]]]</div>
+</div>
 </div></blockquote>
 </li>
 </ul>
+</div>
 <dl class="py method">
 <dt id="TFGENZOO.flows.squeeze.Squeezing.forward">
 <code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="n">zaux</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.squeeze.Squeezing.forward" title="Permalink to this definition">¶</a></dt>
@@ -1305,7 +1340,7 @@ Sources:</p>
 <dt>initialize</dt><dd><div class="line-block">
 <div class="line">mean = mean(first_batch)</div>
 <div class="line">var = variance(first_batch)</div>
-<div class="line">logs = log(scale / sqrt(var)) / log_scale_factor</div>
+<div class="line">logs = log(scale / sqrt(var)) / logscale_factor</div>
 <div class="line">bias = - mean</div>
 </div>
 </dd>
@@ -1313,7 +1348,7 @@ Sources:</p>
 </li>
 <li><dl>
 <dt>forward formula</dt><dd><div class="line-block">
-<div class="line">logs = logs * log_scale_factor</div>
+<div class="line">logs = logs * logscale_factor</div>
 <div class="line">scale = exp(logs)</div>
 </div>
 <p>z = (x + bias) * scale
@@ -1323,7 +1358,7 @@ log_det_jacobain = sum(logs) * H * W</p>
 </li>
 <li><dl>
 <dt>inverse formula</dt><dd><div class="line-block">
-<div class="line">logs = logs * log_scale_factor</div>
+<div class="line">logs = logs * logsscale_factor</div>
 <div class="line">inv_scale = exp(-logs)</div>
 <div class="line">z = x * inv_scale - bias</div>
 <div class="line">inverse_log_det_jacobian = sum(- logs) * H * W</div>

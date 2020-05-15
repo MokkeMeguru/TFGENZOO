@@ -19,7 +19,7 @@ pandas = "*"
 matplotlib = "*"
 tensorflow-addons = "*"
 tensorflow = "==2.1.0"
-gast==0.3.2
+gast = ">=0.3.2"
 
 [requires]
 python_version = "3.7"

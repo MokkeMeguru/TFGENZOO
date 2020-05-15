@@ -9,9 +9,13 @@ Layer = layers.Layer
 
 class ShallowResNet(Model):
     """ResNet of OpenAI's Glow
+
     Sources:
+
         https://github.com/openai/glow/blob/master/model.py#L420-L426
-    Notes:
+
+    Note:
+
         This layer is not Residual Network
         because this layer does not have Skip connection
     """
@@ -27,15 +31,20 @@ class ShallowResNet(Model):
         self.conv1 = Conv2D(width=self.width)
         self.conv2 = Conv2D(width=self.width, kernel_size=[1, 1])
 
-    def call(self, x: tf.Tensor):
+    def call(self, x: tf.Tensor, condition: tf.Tensor = None):
+        if condition is not None:
+            x = tf.concat([x, condition], axis=-1)
         x = tf.nn.relu(self.conv1(x))
         x = tf.nn.relu(self.conv2(x))
         x = self.conv_out(x)
         return x
 
+
 class ShallowConnectedResNet(Model):
     """ResNet of OpenAI's Glow + Skip Connection
+
     Sources:
+
         https://github.com/openai/glow/blob/master/model.py#L420-L426
     Notes:
         This layer is not Residual Network
@@ -53,7 +62,9 @@ class ShallowConnectedResNet(Model):
         self.conv1 = Conv2D(width=self.width)
         self.conv2 = Conv2D(width=self.width, kernel_size=[1, 1])
 
-    def call(self, x: tf.Tensor):
+    def call(self, x: tf.Tensor, condition: tf.Tensor = None):
+        if condition is not None:
+            x = tf.concat([x, condition], axis=-1)
         shortcut = x
         x = tf.nn.relu(self.conv1(x))
         x = tf.nn.relu(self.conv2(x))

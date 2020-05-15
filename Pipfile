@@ -13,9 +13,8 @@ pytest = "*"
 jupyterlab = "*"
 
 [packages]
-tensorflow-probability = "*"
-tensorflow = "==2.1.0"
-sentencepiece = "*"
+tensorflow = "==2.2.0"
+tensorflow-probability = "0.10.0"
 pandas = "*"
 matplotlib = "*"
 

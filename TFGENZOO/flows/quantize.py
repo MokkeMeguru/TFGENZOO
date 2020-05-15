@@ -34,7 +34,7 @@ class LogitifyImage(FlowBase):
 
         super(LogitifyImage, self).build(input_shape)
 
-    def __init__(self, corruption_level=1.0, alpha=1e-5):
+    def __init__(self, corruption_level=1.0, alpha=0.05):
         super(LogitifyImage, self).__init__()
         self.corruption_level = corruption_level
         self.alpha = alpha

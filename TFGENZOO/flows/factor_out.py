@@ -7,6 +7,32 @@ from TFGENZOO.flows.utils.util import split_feature
 
 
 class FactorOut(FactorOutBase):
+    """Basic Factor Out Layer
+
+    This layer drops factor-outed Tensor z_i
+
+    Note:
+
+        * forward procedure
+           | input  : h_{i-1}
+           | output : h_{i}, loss
+           |
+           | [z_i, h_i] = split(h_{i-1})
+           |
+           | loss =
+           |     z_i \sim N(0, 1) if conditional is False
+           |     z_i \sim N(mu, sigma) if conditional is True
+           |  ,where
+           | mu, sigma = Conv(h)
+
+        * inverse procedure
+           | input  : h_{i}
+           | output : h_{i-1}
+           |
+           | sample z_i from N(0, 1) or N(mu, sigma) by conditional
+           | h_{i-1} = [z_i, h_i]
+    """
+
     def build(self, input_shape: tf.TensorShape):
         self.split_size = input_shape[-1] // 2
         super(FactorOut, self).build(input_shape)

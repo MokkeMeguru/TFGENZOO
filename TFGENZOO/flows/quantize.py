@@ -5,10 +5,10 @@ from TFGENZOO.flows.flowbase import FlowBase
 
 
 class LogitifyImage(FlowBase):
-    """Apply Tapani Raiko's dequantization and express
-    image in terms of logits
+    """Apply Tapani Raiko's dequantization and express image in terms of logits
+
     Sources:
-        https://github.com/taesungp/real-nvp/blob/master/real_nvp/model.p
+         https://github.com/taesungp/real-nvp/blob/master/real_nvp/model.py
 
     Notes:
     - forward formula

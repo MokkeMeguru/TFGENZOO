@@ -14,17 +14,17 @@ class Actnorm(FlowComponent):
         * initialize
             | mean = mean(first_batch)
             | var = variance(first_batch)
-            | logs = log(scale / sqrt(var)) / log_scale_factor
+            | logs = log(scale / sqrt(var)) / logscale_factor
             | bias = - mean
 
         * forward formula
-            | logs = logs * log_scale_factor
+            | logs = logs * logscale_factor
             | scale = exp(logs)
             z = (x + bias) * scale
             log_det_jacobain = sum(logs) * H * W
 
         * inverse formula
-            | logs = logs * log_scale_factor
+            | logs = logs * logsscale_factor
             | inv_scale = exp(-logs)
             | z = x * inv_scale - bias
             | inverse_log_det_jacobian = sum(- logs) * H * W

@@ -5,42 +5,43 @@ from TFGENZOO.flows.flowbase import FlowBase
 
 class Squeezing(FlowBase):
     """Squeezing Layer
+
     Sources:
-       https://github.com/openai/glow/blob/master/tfops.py#L338-L352
 
-    Notes:
-    - forward formula
+        https://github.com/openai/glow/blob/master/tfops.py#L338-L352
+        https://arxiv.org/pdf/1605.08803.pdf Figure 3
 
-        z = reshape(x, [B, H // 2, W // 2, C * 4])
+    Note:
 
-    - inverse formula
+        * forward formula
+            | z = reshape(x, [B, H // 2, W // 2, C * 4])
 
-        x = reshape(z, [B, H, W, C])
+        * inverse formula
+            | x = reshape(z, [B, H, W, C])
 
-    - checkerboard spacing
+        * checkerboard spacing
 
-        e.g.
+                e.g.
 
-        [[[[1], [2], [5], [6]],
-         [[3], [4], [7], [8]],
-         [[9], [10], [13], [14]],
-         [[11], [12], [15], [16]]]]
+                | [[[[1], [2], [5], [6]],
+                | [[3], [4], [7], [8]],
+                | [[9], [10], [13], [14]],
+                | [[11], [12], [15], [16]]]]
 
-        to
+                to
 
-        [[[ 1,  5],
-          [ 9, 13]]]
+                | [[[ 1,  5],
+                | [ 9, 13]]]
 
-        [[[ 2,  6],
-          [10, 14]]]
+                | [[[ 2,  6],
+                | [10, 14]]]
 
-        [[[ 3,  7],
-          [11, 15]]]
+                | [[[ 3,  7],
+                | [11, 15]]]
 
-        [[[ 4,  8],
-          [12, 16]]]
+                | [[[ 4,  8],
+                | [12, 16]]]
 
-        ref. https://arxiv.org/pdf/1605.08803.pdf Figure 3
     """
 
     def __init__(self, with_zaux=False):

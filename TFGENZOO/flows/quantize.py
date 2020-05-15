@@ -8,18 +8,44 @@ class LogitifyImage(FlowBase):
     """Apply Tapani Raiko's dequantization and express image in terms of logits
 
     Sources:
-         https://github.com/taesungp/real-nvp/blob/master/real_nvp/model.py
 
-    Notes:
-    - forward formula
+        https://github.com/taesungp/real-nvp/blob/master/real_nvp/model.py
+        https://github.com/taesungp/real-nvp/blob/master/real_nvp/model.py#L42-L54
+        https://github.com/tensorflow/models/blob/fe4e6b653141a197779d752b422419493e5d9128/research/real_nvp/real_nvp_multiscale_dataset.py#L1073-L1077
+        https://github.com/masa-su/pixyz/blob/master/pixyz/flows/operations.py#L253-L254
+        https://github.com/fmu2/realNVP/blob/8d36691df215af3678440ccb7c01a13d2b441a4a/data_utils.py#L112-L119
 
-        z = logit(x)
-          = log(x) - log(1 - x)
+    Args:
+        corrupution_level (float): power of added random variable.
+        alpha (float)            : parameter about transform close interval to open interval
+                                   [0, 1] to (1, 0)
 
-    - inverse formula
+    Note:
 
-        x = logisitic(z)
-          = 1 / (1 + exp( -z ))
+        We know many implementation on this quantization, but we use this formula.
+        since many implementations use it.
+
+        * forward preprocess (add noise)
+            .. math::
+
+                x &\\leftarrow 255.0 x  \\ \\because [0, 1] \\rightarrow [0, 255] \\\\
+                x &\\leftarrow x + \\text{corruption_level} \\times  \\epsilon \\ where\\ \\epsilon \\sim N(0, 1)\\\\
+                x &\\leftarrow x / (\\text{corruption_level} + 255.0)\\\\
+                x &\\leftarrow x  (1 - \\alpha) + 0.5 \\alpha \\ \\because \\ [0, 1] \\rightarrow (0, 1)
+
+        * forward formula
+            .. math::
+
+                 z &= logit(x)\\\\
+                   &= \\log(x) - \\log(1 - x)\\\\
+                 LogDetJacobian &= sum(softplus(z) + softplus(-z) - softplus(\\log(\\cfrac{\\alpha}{1 - \\alpha})))
+
+        * inverse formula
+            .. math::
+
+                 x &= logisitic(z)\\\\
+                   &= 1 / (1 + exp( -z )) \\\\
+                 InverseLogDetJacobian &= sum(-2 \\log(logistic(z)) - z)
 
     """
 
@@ -46,10 +72,6 @@ class LogitifyImage(FlowBase):
 
     def forward(self, x: tf.Tensor, **kwargs):
         """
-        ref. https://github.com/taesungp/real-nvp/blob/master/real_nvp/model.py#L42-L54
-        ref. https://github.com/tensorflow/models/blob/fe4e6b653141a197779d752b422419493e5d9128/research/real_nvp/real_nvp_multiscale_dataset.py#L1073-L1077
-        ref. https://github.com/masa-su/pixyz/blob/master/pixyz/flows/operations.py#L253-L254
-        ref. https://github.com/fmu2/realNVP/blob/8d36691df215af3678440ccb7c01a13d2b441a4a/data_utils.py#L112-L119
         """
 
         # 1. transform the domain of x from [0, 1] to [0, 255]
@@ -78,7 +100,6 @@ class LogitifyImage(FlowBase):
 
     def inverse(self, z: tf.Tensor, **kwargs):
         """
-        ref. https://github.com/taesungp/real-nvp/blob/master/real_nvp/model.py#L82
         """
         denominator = 1 + tf.exp(-z)
         x = 1 / denominator

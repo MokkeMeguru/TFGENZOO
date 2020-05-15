@@ -4,19 +4,28 @@ import tensorflow_probability as tfp
 
 
 def gaussian_likelihood(mean: tf.Tensor, logsd: tf.Tensor, x: tf.Tensor):
-    """calculate negative log likelihood of Gaussian Distribution.
+    r"""calculate negative log likelihood of Gaussian Distribution.
+
     Args:
-        mean  (tf.Tensor[B, ...]): mean
-        logsd (tf.Tensor[B, ...]): log standard deviation
-        x     (tf.Tensor[B, ...]): tensor
+        mean  (tf.Tensor): mean [B, ...]
+        logsd (tf.Tensor): log standard deviation [B, ...]
+        x     (tf.Tensor): tensor [B, ...]
+
     Returns:
-        ll    (tf.Tensor[B, ...]): log likelihood
+        ll    (tf.Tensor): log likelihood [B, ...]
+
     Note:
-        ll = - 1/2 * {
-           k * ln(2 * PI) + ln |var| + (x - mu)^T (Var ^ -1) (x - mu)}
-        , where
-            k = 1 (Independent)
-            var is a variance = exp(2. * logsd)
+
+       .. math::
+          :nowrap:
+
+          \begin{align}
+          ll &= - \cfrac{1}{2} (k\log(2 \pi) + \log |Var| \\
+             &+ (x - Mu)^T (Var ^ {-1}) (x - Mu))\\
+          ,\ where & \\
+               & k = 1\ (Independent)\\
+               & Var\ is\ a\ variance = exp(2 logsd)
+          \end{align}
     """
     c = np.log(2 * np.pi)
     ll = -0.5 * (c + 2.0 * logsd + ((x - mean) ** 2) / tf.math.exp(2.0 * logsd))
@@ -24,13 +33,16 @@ def gaussian_likelihood(mean: tf.Tensor, logsd: tf.Tensor, x: tf.Tensor):
 
 
 def gaussian_sample(mean: tf.Tensor, logsd: tf.Tensor, temparature: float = 1.0):
-    """sampling from mean / logsd * temparature
+    r"""sampling from mean, logsd * temparature
+
     Args:
-        mean (tf.Tensor[B, ...]): mean
-        logsd(tf.Tensor[B, ...]): log standard deviation
+        mean (tf.Tensor): mean [B, ...]
+        logsd(tf.Tensor): log standard deviation [B, ...]
         temparature      (float): temparature
+
     Returns:
-        new_z(tf.Tensor[B, ...]): sampled latent variable
+        new_z(tf.Tensor): sampled latent variable [B, ...]
+
     Noto:
         I cann't gurantee it's correctness.
         Please open the tensorflow probability's Issue.

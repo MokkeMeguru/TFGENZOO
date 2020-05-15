@@ -9,27 +9,25 @@ class Actnorm(FlowComponent):
 
         https://github.com/openai/glow/blob/master/tfops.py#L71-L163
 
-    Notes:
-    - initialize
+    Note:
 
-        mean = mean(first_batch)
-        var = variance(first_batch)
-        logs = log(scale / sqrt(var)) / log_scale_factor
-        bias = - mean
+        * initialize
+            | mean = mean(first_batch)
+            | var = variance(first_batch)
+            | logs = log(scale / sqrt(var)) / log_scale_factor
+            | bias = - mean
 
-    - forward formula
+        * forward formula
+            | logs = logs * log_scale_factor
+            | scale = exp(logs)
+            z = (x + bias) * scale
+            log_det_jacobain = sum(logs) * H * W
 
-        logs = logs * log_scale_factor
-        scale = exp(logs)
-        z = (x + bias) * scale
-        log_det_jacobain = sum(logs) * H * W
-
-    - inverse
-
-        logs = logs * log_scale_factor
-        inv_scale = exp(-logs)
-        z = x * inv_scale - bias
-        inverse_log_det_jacobian = sum(- logs) * H * W
+        * inverse formula
+            | logs = logs * log_scale_factor
+            | inv_scale = exp(-logs)
+            | z = x * inv_scale - bias
+            | inverse_log_det_jacobian = sum(- logs) * H * W
 
     Attributes:
         calc_ldj: bool

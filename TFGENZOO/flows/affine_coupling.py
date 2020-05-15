@@ -25,91 +25,38 @@ class LogScale(Layer):
     def call(self, x: tf.Tensor):
         return x * tf.exp(self.logs * self.log_scale_factor)
 
-
-class GlowNN(Layer):
-    """
-    attributes:
-    - depth: int
-    convolution depth
-    """
-
-    def build(self, input_shape: tf.TensorShape):
-        res_block = Sequential()
-        filters = int(input_shape[-1])
-        for i in range(self.depth):
-            res_block.add(
-                layers.Conv2D(
-                    filters=filters,
-                    kernel_size=3,
-                    strides=(1, 1),
-                    padding="SAME",
-                    use_bias=False,
-                    activation=None,
-                )
-            )
-            res_block.add(ActnormActivation())
-            res_block.add(layers.ReLU())
-        res_block.add(
-            layers.Conv2D(
-                filters=filters * 2,
-                kernel_size=3,
-                strides=(1, 1),
-                padding="SAME",
-                kernel_initializer="zeros",
-                bias_initializer="zeros",
-                use_bias=True,
-                activation=None,
-            )
-        )
-
-        res_block.add(LogScale())
-        self.res_block = res_block
-        super(GlowNN, self).build(input_shape)
-
-    def __init__(self, depth=2, **kwargs):
-        super(GlowNN, self).__init__(kwargs)
-        self.depth = depth
-
-    def call(self, x: tf.Tensor, **kwargs):
-        return self.res_block(
-            x, training=True if kwargs.get("training", True) else False
-        )
-
-
 class AffineCouplingMask(Enum):
     ChannelWise = 1
 
 
 class AffineCoupling(FlowComponent):
     """Affine Coupling Layer
+
     Sources:
         https://github.com/masa-su/pixyz/blob/master/pixyz/flows/coupling.py
 
-    Notes:
-    - forward formula
+    Note:
+        * forward formula
+            | [x1, x2] = split(x)
+            | log_scale, shift = NN(x1)
+            | scale = sigmoid(log_scale + 2.0)
+            | z1 = x1
+            | z2 = (x2 + shift) * scale
+            | z = concat([z1, z2])
+            | LogDetJacobian = sum(log(scale))
 
-        [x1, x2] = split(x)
-        log_scale, shift = NN(x1)
-        scale = sigmoid(log_scale + 2.0)
-        z1 = x1
-        z2 = (x2 + shift) * scale
-        z = concat([z1, z2])
-        LogDetJacobian = sum(log(scale))
+        * inverse formula
+            | [z1, z2] = split(x)
+            | log_scale, shift = NN(z1)
+            | scale = sigmoid(log_scale + 2.0)
+            | x1 = z1
+            | x2 = z2 / scale - shift
+            | z = concat([x1, x2])
+            | InverseLogDetJacobian = - sum(log(scale))
 
-    - inverse formula
-
-        [z1, z2] = split(x)
-        log_scale, shift = NN(z1)
-        scale = sigmoid(log_scale + 2.0)
-        x1 = z1
-        x2 = z2 / scale - shift
-        z = concat([x1, x2])
-        InverseLogDetJacobian = - sum(log(scale))
-
-    - implementation notes
-
-       in Glow's Paper, scale is calculated by exp(log_scale),
-       but IN IMPLEMENTATION, scale is done by sigmoid(log_scale + 2.0)
+        * implementation notes
+           | in Glow's Paper, scale is calculated by exp(log_scale),
+           | but IN IMPLEMENTATION, scale is done by sigmoid(log_scale + 2.0)
     """
 
     def __init__(

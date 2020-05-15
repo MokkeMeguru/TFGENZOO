@@ -9,6 +9,7 @@ Layer = layers.Layer
 
 class FlowBase(Layer, metaclass=ABCMeta):
     """Flow-based model's abstruct class
+   
     Examples:
 
         >>> layer = FlowBase()
@@ -16,7 +17,7 @@ class FlowBase(Layer, metaclass=ABCMeta):
         >>> x_hat = layer(z, inverse=True) # inverse method
         >>> assert tf.reduce_sum((x - x_hat)^2) << 1e-3
 
-    Notes:
+    Note:
 
         If you need data-dependent initialization (e.g. ActNorm),
         You can write it at #initialize_parameter.
@@ -80,14 +81,16 @@ class FlowComponent(FlowBase):
 
     def assert_log_det_jacobian(self, log_det_jacobian: tf.Tensor):
         """assert log_det_jacobian's shape
+       
         TODO:
-        tf-2.0's bug
-        tf.debugging.assert_shapes([(tf.constant(1.0), (None, ))])
-        # => None (true)
-        tf.debugging.assert_shapes([(tf.constant([1.0, 1.0]), (None, ))])
-        # => None (true)
-        tf.debugging.assert_shapes([(tf.constant([[1.0], [1.0]]), (None, ))])
-        # => Error
+
+            | tf-2.0's bug
+            | tf.debugging.assert_shapes([(tf.constant(1.0), (None, ))])
+            | # => None (true)
+            | tf.debugging.assert_shapes([(tf.constant([1.0, 1.0]), (None, ))])
+            | # => None (true)
+            | tf.debugging.assert_shapes([(tf.constant([[1.0], [1.0]]), (None, ))])
+            | # => Error
         """
         if self.with_debug:
             tf.debugging.assert_shapes([(log_det_jacobian, (None,))])
@@ -95,6 +98,7 @@ class FlowComponent(FlowBase):
 
 class FlowModule(FlowBase):
     """Sequential Layer for FlowBase's Layer
+
     Examples:
 
          >>> layers = [FlowBase() for _ in range(10)]

@@ -18,6 +18,5 @@ tensorflow-probability = "==0.10.0"
 pandas = "*"
 matplotlib = "*"
 
-
 [requires]
 python_version = "3.6"

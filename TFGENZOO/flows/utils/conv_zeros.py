@@ -8,20 +8,24 @@ Layer = layers.Layer
 
 class Conv2DZeros(Layer):
     """Convolution layer for NHWC image with zero initialization
+
     Sources:
 
         https://github.com/openai/glow/blob/master/tfops.py#L292-L313
 
-    Notes:
+    Note:
         this layer not implemented.
-        - function add_edge_padding
+        * function add_edge_padding
            ref. https://github.com/openai/glow/blob/master/tfops.py#L203-L232
 
         Xavier Initialize is better than other initializer
-          ref. https://arxiv.org/pdf/1907.02392.pdf
-          code.
-            - https://www.tensorflow.org/api_docs/python/tf/keras/initializers/GlorotNormal
-            - https://www.tensorflow.org/api_docs/python/tf/keras/initializers/GlorotUniform?version=nightly
+
+            ref. https://arxiv.org/pdf/1907.02392.pdf
+
+            code.
+
+                * https://www.tensorflow.org/api_docs/python/tf/keras/initializers/GlorotNormal
+                * https://www.tensorflow.org/api_docs/python/tf/keras/initializers/GlorotUniform?version=nightly
     """
 
     def __init__(

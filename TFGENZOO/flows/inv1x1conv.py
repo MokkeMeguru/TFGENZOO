@@ -8,13 +8,17 @@ from TFGENZOO.flows.flowbase import FlowComponent
 
 def regular_matrix_init(shape: Tuple[int, int], dtype=None):
     """initialize with orthogonal matrix
+
+    Sources:
+        https://github.com/openai/glow/blob/master/model.py#L445-L451
+
     Args:
         shape: generated matrix's shape [C, C]
         dtype:
+
     Returns:
-        w_init: orthogonal matrix [C, C]
-    Source:
-        https://github.com/openai/glow/blob/master/model.py#L445-L451
+       np.array: w_init, orthogonal matrix [C, C]
+
     """
     assert len(shape) == 2, "this initialization for 2D matrix"
     assert shape[0] == shape[1], "this initialization for 2D matrix, C \times C"
@@ -29,24 +33,28 @@ class Inv1x1Conv(FlowComponent):
         https://arxiv.org/pdf/1807.03039.pdf
         https://github.com/openai/glow/blob/master/model.py#L457-L472
 
-    Notes:
-    - forward formula
+    Note:
+   
+        * forward formula
+            .. math::
 
-        forall i, j: z_{i, j} = W x_{i, j}
-        LogDetJacobian = H W log|det(W)|
+                \\forall i, j: z_{i, j} &= Wx_{i, j} \\\\
+                LogDetJacobian &= hw \log|det(W)|\\\\
+                , where &\\\\
+                W &\\in \\mathbb{R}^{c \times c}\\\\
+                    x &\\in \\mathbb{R}^{b \\times h\\times w \\times c}\\ \\ \\
+                ({\\rm batch, height, width, channel})
 
-        where
-            x_{i, j}, y_{i, j} in [C, C]
-            W in [C, C]
-    - inverse formula
+        * inverse formula
+            .. math::
 
-        forall i, j: x_{i, j} = W^{-1} z_{i, j}
-        InverseLogDetJacobian = - H W log|det(W)|
-
-         where
-             x_{i, j}, y_{i, j} in [C, C]
-             W in [C, C]
-    """
+                \\forall i, j: x_{i, j} &= W^{-1} z_{i, j}\\\\
+                InverseLogDetJacobian &= - h w \log|det(W)|\\\\
+                , where &\\\\
+                W &\\in \\mathbb{R}^{c\\times c}\\\\
+                x &\\in \\mathbb{R}^{b \\times h\\times w \\times c}\\ \\ \\
+                ({\\rm batch, height, width, channel})
+   """
 
     def build(self, input_shape: tf.TensorShape):
         _, h, w, c = input_shape

@@ -10,17 +10,23 @@ Layer = layers.Layer
 
 class Conv2D(Layer):
     """Convolution layer for NHWC image
+
     Sources:
 
         https://github.com/openai/glow/blob/master/tfops.py#L235-L264
 
     Note:
         this layer applies
-        - data-dependent normalization (actnorm, openai's Glow)
-        - weight normalization for stable training
+
+        * data-dependent normalization (actnorm, openai's Glow)
+
+        * weight normalization for stable training
+
         this layer not implemented.
-        - function add_edge_padding
-           ref. https://github.com/openai/glow/blob/master/tfops.py#L203-L232
+
+        * function add_edge_padding
+
+        ref. https://github.com/openai/glow/blob/master/tfops.py#L203-L232
     """
 
     def __init__(

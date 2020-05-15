@@ -1,0 +1,10 @@
+* How to build?
+#+begin_src shell
+python3 setup.py sdist
+python3 setup.py sdist bdist_wheel
+#+end_src
+* How to generate sphinx code via docstring?
+#+begin_src shell
+sphinx-apidoc -f -o ./source ./TFGENZOO
+#+end_src
+

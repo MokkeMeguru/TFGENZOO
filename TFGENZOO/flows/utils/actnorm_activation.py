@@ -50,12 +50,18 @@ class ActnormActivation(Layer):
             shape=tuple(logs_shape),
             initializer="zeros",
             trainable=True,
+            synchronization=tf.VariableSynchronization.ON_READ,
+            aggregation=tf.VariableAggregation.MEAN,
         )
         self.bias = self.add_weight(
-            name="bias", shape=tuple(logs_shape), initializer="zeros", trainable=True
+            name="bias", shape=tuple(logs_shape), initializer="zeros", trainable=True,
+            synchronization=tf.VariableSynchronization.ON_READ,
+            aggregation=tf.VariableAggregation.MEAN,
         )
         self.initialized = self.add_weight(
-            name="initialized", dtype=tf.bool, trainable=False
+            name="initialized", dtype=tf.bool, trainable=False,
+            synchronization=tf.VariableSynchronization.ON_READ,
+            aggregation=tf.VariableAggregation.ONLY_FIRST_REPLICA,
         )
         self.initialized.assign(False)
         self.build = True

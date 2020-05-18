@@ -32,7 +32,9 @@ class FlowBase(Layer, metaclass=ABCMeta):
 
     def build(self, input_shape: tf.TensorShape):
         self.initialized = self.add_weight(
-            name="initialized", dtype=tf.bool, trainable=False
+            name="initialized", dtype=tf.bool, 
+            trainable=False,
+            aggregation=tf.VariableAggregation.ONLY_FIRST_REPLICA
         )
         self.initialized.assign(False)
         self.built = True

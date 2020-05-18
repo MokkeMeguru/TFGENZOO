@@ -69,7 +69,7 @@ class Actnorm(FlowComponent):
         self.bias = self.add_weight(
             name="bias", shape=tuple(logs_shape), initializer="zeros", trainable=True,
             synchronization=tf.VariableSynchronization.ON_READ,
-            aggregation=tf.VariableAggregation.VariableAggregation.MEAN,
+            aggregation=tf.VariableAggregation.MEAN,
         )
 
         super().build(input_shape)

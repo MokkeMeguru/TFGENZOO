@@ -34,6 +34,7 @@ class FlowBase(Layer, metaclass=ABCMeta):
         self.initialized = self.add_weight(
             name="initialized", dtype=tf.bool, 
             trainable=False,
+            synchronization=tf.VariableSynchronization.ON_READ,
             aggregation=tf.VariableAggregation.ONLY_FIRST_REPLICA
         )
         self.initialized.assign(False)

@@ -67,7 +67,7 @@ class ActnormActivation(Layer):
     def initialize_parameter(self, x: tf.Tensor):
         tf.print("[Info] initialize parameter at {}".format(self.name))
         ctx = tf.distribute.get_replica_context()
-        if ctx:
+        if False:
             n = ctx.num_replicas_in_sync
             x_mean, x_mean_sq = ctx.all_reduce(
                 tf.distribute.ReduceOp.SUM,

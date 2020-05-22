@@ -66,13 +66,13 @@ class ActnormActivation(Layer):
             name="logscale_train",
             shape=tuple(logs_shape),
             initializer="zeros",
-            trainable=true,
+            trainable=True,
         )
         self.bias_train = self.add_weight(
             name="bias_train",
             shape=tuple(logs_shape),
             initializer="zeros",
-            trainable=true,
+            trainable=True,
         )
 
         self.initialized = self.add_weight(

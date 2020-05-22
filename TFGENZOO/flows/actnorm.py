@@ -130,8 +130,7 @@ class Actnorm(FlowComponent):
             else:
                 raise Exception("Invalid initialize")
         else:
-            if not inverse:
-                logs_init, bias_init = self.logs_init, self.bias_init
+            logs_init, bias_init = self.logs_init, self.bias_init
         self.logs_init.assign(logs_init)
         self.bias_init.assign(bias_init)
         if inverse:

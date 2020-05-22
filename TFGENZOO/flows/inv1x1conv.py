@@ -96,7 +96,7 @@ class Inv1x1Conv(FlowComponent):
         return z, log_det_jacobian
 
     def inverse(self, z: tf.Tensor, **kwargs):
-        _W = tf.reshape(tf.linalg.inv(self.W), [1, 1, self.c, self.c])
+        _W = tf.reshape(tf.linalg.inv(self.W), [1, 1, self.c, self.c]) + tf.eye(self.c) * 1e-4
         x = tf.nn.conv2d(z, _W, [1, 1, 1, 1], "SAME")
 
         # if not self.with_tpu:

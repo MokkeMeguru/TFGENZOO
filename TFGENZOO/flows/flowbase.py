@@ -35,7 +35,7 @@ class FlowBase(Layer, metaclass=ABCMeta):
             name="initialized",
             dtype=tf.bool,
             trainable=False,
-            initializer=lambda _: False,
+            initializer=lambda shape, dtype: False,
             synchronization=tf.VariableSynchronization.ON_READ,
             aggregation=tf.VariableAggregation.ONLY_FIRST_REPLICA,
         )

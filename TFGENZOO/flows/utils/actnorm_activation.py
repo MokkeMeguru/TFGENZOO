@@ -45,19 +45,40 @@ class ActnormActivation(Layer):
         logs_shape = [1 for _ in range(len(input_shape))]
         logs_shape[-1] = input_shape[-1]
 
-        self.logs = self.add_weight(
-            name="logscale",
+        self.logs_init = self.add_weight(
+            name="logscale_init",
             shape=tuple(logs_shape),
             initializer="zeros",
-            trainable=True,
+            trainable=False,
+            synchronization=tf.VariableSynchronization.ON_READ,
             aggregation=tf.VariableAggregation.MEAN,
         )
-        self.bias = self.add_weight(
-            name="bias", shape=tuple(logs_shape), initializer="zeros", trainable=True,
+        self.bias_init = self.add_weight(
+            name="bias_init",
+            shape=tuple(logs_shape),
+            initializer="zeros",
+            trainable=False,
+            synchronization=tf.VariableSynchronization.ON_READ,
             aggregation=tf.VariableAggregation.MEAN,
         )
+
+        self.logs_train = self.add_weight(
+            name="logscale_train",
+            shape=tuple(logs_shape),
+            initializer="zeros",
+            trainable=true,
+        )
+        self.bias_train = self.add_weight(
+            name="bias_train",
+            shape=tuple(logs_shape),
+            initializer="zeros",
+            trainable=true,
+        )
+
         self.initialized = self.add_weight(
-            name="initialized", dtype=tf.bool, trainable=False,
+            name="initialized",
+            dtype=tf.bool,
+            trainable=False,
             synchronization=tf.VariableSynchronization.ON_READ,
             aggregation=tf.VariableAggregation.ONLY_FIRST_REPLICA,
         )
@@ -73,7 +94,8 @@ class ActnormActivation(Layer):
                 tf.distribute.ReduceOp.SUM,
                 [
                     tf.reduce_mean(x, axis=self.reduce_axis, keepdims=True) / n,
-                    tf.reduce_mean(tf.square(x), axis=self.reduce_axis, keepdims=True) / n,
+                    tf.reduce_mean(tf.square(x), axis=self.reduce_axis, keepdims=True)
+                    / n,
                 ],
             )
 
@@ -84,16 +106,25 @@ class ActnormActivation(Layer):
         logs = (
             tf.math.log(self.scale * tf.math.rsqrt(x_var + 1e-6)) / self.logscale_factor
         )
-        self.logs.assign(logs)
-        self.bias.assign(-x_mean)
+        self.logs_init.assign(logs)
+        self.bias_init.assign(-x_mean)
+
+    def get_logs(self):
+        return self.logs_init + self.logs_train
+
+    def get_bias(self):
+        return self.bias_init + self.bias_train
 
     def call(self, x: tf.Tensor):
+
         if not self.initialized:
             self.initialize_parameter(x)
             self.initialized.assign(True)
 
-        logs = self.logs * self.logscale_factor
-        x = x + self.bias
+        logs = self.get_logs() * self.logscale_factor
+        bias = self.get_bias()
+
+        x = x + bias
         x = x * tf.exp(logs)
         return x
 

@@ -79,11 +79,10 @@ class ActnormActivation(Layer):
             name="initialized",
             dtype=tf.bool,
             trainable=False,
+            initializer=lambda _: False,
             synchronization=tf.VariableSynchronization.ON_READ,
             aggregation=tf.VariableAggregation.ONLY_FIRST_REPLICA,
         )
-        with tf.init_scope():
-            self.initialized.assign(False)
         self.build = True
 
     def initialize_parameter(self, x: tf.Tensor):

@@ -32,12 +32,14 @@ class FlowBase(Layer, metaclass=ABCMeta):
 
     def build(self, input_shape: tf.TensorShape):
         self.initialized = self.add_weight(
-            name="initialized", dtype=tf.bool, 
+            name="initialized",
+            dtype=tf.bool,
             trainable=False,
             synchronization=tf.VariableSynchronization.ON_READ,
-            aggregation=tf.VariableAggregation.ONLY_FIRST_REPLICA
+            aggregation=tf.VariableAggregation.ONLY_FIRST_REPLICA,
         )
-        self.initialized.assign(False)
+        with tf.init_scope():
+            self.initialized.assign(False)
         self.built = True
 
     def call(self, x: tf.Tensor, inverse=False, **kwargs):

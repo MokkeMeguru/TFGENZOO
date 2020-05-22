@@ -102,7 +102,7 @@ class ActnormActivation(Layer):
         #     # var(x) = x^2 - mean(x)^2
         #     x_var = x_mean_sq - tf.square(x_mean)
         # else:
-        x_mean, x_var = tf.nn.moments(x, axis=self.reduce_axis, keepdims=True)
+        x_mean, x_var = tf.nn.moments(x, axes=self.reduce_axis, keepdims=True)
         logs = (
             tf.math.log(self.scale * tf.math.rsqrt(x_var + 1e-6)) / self.logscale_factor
         )

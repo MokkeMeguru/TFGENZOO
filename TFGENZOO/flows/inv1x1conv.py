@@ -84,7 +84,7 @@ class Inv1x1Conv(FlowComponent):
         #     )
         # else:
         log_det_jacobian = tf.cast(
-            tf.math.log(tf.abs(tf.linalg.det(tf.cast(self.W, tf.float64))))
+            tf.math.log(tf.abs(tf.matrix_determinant(tf.cast(self.W, tf.float64))))
             * self.h
             * self.w,
             tf.float32,
@@ -108,7 +108,7 @@ class Inv1x1Conv(FlowComponent):
         # else:
         log_det_jacobian = tf.cast(
             -1
-            * tf.math.log(tf.abs(tf.linalg.det(tf.cast(self.W, tf.float64))))
+            * tf.math.log(tf.abs(tf.matrix_determinant(tf.cast(self.W, tf.float64))))
             * self.h
             * self.w,
             tf.float32,

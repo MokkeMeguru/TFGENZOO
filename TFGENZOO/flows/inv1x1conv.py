@@ -77,18 +77,18 @@ class Inv1x1Conv(FlowComponent):
         _W = tf.reshape(self.W, [1, 1, self.c, self.c])
         z = tf.nn.conv2d(x, _W, [1, 1, 1, 1], "SAME")
         # scalar
-        if not self.with_tpu:
-            log_det_jacobian = tf.cast(
-                tf.linalg.slogdet(tf.cast(self.W, tf.float64))[1] * self.h * self.w,
-                tf.float32,
-            )
-        else:
-            log_det_jacobian = tf.cast(
-                tf.math.log(tf.abs(tf.linalg.det(tf.cast(self.W, tf.float64))))
-                * self.h
-                * self.w,
-                tf.float32,
-            )
+        # if not self.with_tpu:
+        #     log_det_jacobian = tf.cast(
+        #         tf.linalg.slogdet(tf.cast(self.W, tf.float64))[1] * self.h * self.w,
+        #         tf.float32,
+        #     )
+        # else:
+        log_det_jacobian = tf.cast(
+            tf.math.log(tf.abs(tf.linalg.det(tf.cast(self.W, tf.float64))))
+            * self.h
+            * self.w,
+            tf.float32,
+        )
         # expand as batch
         log_det_jacobian = tf.broadcast_to(log_det_jacobian, tf.shape(x)[0:1])
         return z, log_det_jacobian
@@ -97,22 +97,22 @@ class Inv1x1Conv(FlowComponent):
         _W = tf.reshape(tf.linalg.inv(self.W), [1, 1, self.c, self.c])
         x = tf.nn.conv2d(z, _W, [1, 1, 1, 1], "SAME")
 
-        if not self.with_tpu:
-            inverse_log_det_jacobian = tf.cast(
-                -1
-                * tf.linalg.slogdet(tf.cast(self.W, tf.float64))[1]
-                * self.h
-                * self.w,
-                tf.float32,
-            )
-        else:
-            log_det_jacobian = tf.cast(
-                -1
-                * tf.math.log(tf.abs(tf.linalg.det(tf.cast(self.W, tf.float64))))
-                * self.h
-                * self.w,
-                tf.float32,
-            )
+        # if not self.with_tpu:
+        #     inverse_log_det_jacobian = tf.cast(
+        #         -1
+        #         * tf.linalg.slogdet(tf.cast(self.W, tf.float64))[1]
+        #         * self.h
+        #         * self.w,
+        #         tf.float32,
+        #     )
+        # else:
+        log_det_jacobian = tf.cast(
+            -1
+            * tf.math.log(tf.abs(tf.linalg.det(tf.cast(self.W, tf.float64))))
+            * self.h
+            * self.w,
+            tf.float32,
+        )
 
         inverse_log_det_jacobian = tf.broadcast_to(
             inverse_log_det_jacobian, tf.shape(z)[0:1]

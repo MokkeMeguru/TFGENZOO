@@ -21,10 +21,10 @@ class ActnormTest(tf.test.TestCase):
     def testActnormOutput(self):
         x = tf.random.normal([1024, 16, 16, 4])
         self.actnorm(x)
-        self.assertShapeEqual(np.zeros([1, 1, 1, 4]), self.actnorm.logs.value())
-        self.assertShapeEqual(np.zeros([1, 1, 1, 4]), self.actnorm.bias.value())
+        self.assertShapeEqual(np.zeros([1, 1, 1, 4]), self.actnorm.logs_init.value())
+        self.assertShapeEqual(np.zeros([1, 1, 1, 4]), self.actnorm.bias_init.value())
         self.assertAllClose(
-            self.actnorm.logs.value(),
+            self.actnorm.logs_init.value(),
             tf.math.log(
                 self.actnorm.scale
                 / tf.ones([1, 1, 1, 4])
@@ -35,7 +35,7 @@ class ActnormTest(tf.test.TestCase):
             atol=1e-1,
         )
         self.assertAllClose(
-            self.actnorm.bias.value(), tf.zeros([1, 1, 1, 4]), rtol=1e-8, atol=1e-1
+            self.actnorm.bias_init.value(), tf.zeros([1, 1, 1, 4]), rtol=1e-8, atol=1e-1
         )
 
 

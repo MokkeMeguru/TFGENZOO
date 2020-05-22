@@ -106,8 +106,7 @@ class ActnormActivation(Layer):
         logs = (
             tf.math.log(self.scale * tf.math.rsqrt(x_var + 1e-6)) / self.logscale_factor
         )
-        self.logs_init.assign(logs)
-        self.bias_init.assign(-x_mean)
+        return (logs, -x_mean)
 
     def get_logs(self):
         return self.logs_init + self.logs_train
@@ -118,8 +117,13 @@ class ActnormActivation(Layer):
     def call(self, x: tf.Tensor):
 
         if not self.initialized:
-            self.initialize_parameter(x)
+            logs_init, bias_init = self.initialize_parameter(x)
             self.initialized.assign(True)
+        else:
+            logs_init, bias_init = self.logs_init, self.bias_init
+
+        self.logs_init.assign(logs_init)
+        self.bias_init.assign(bias_init)
 
         logs = self.get_logs() * self.logscale_factor
         bias = self.get_bias()

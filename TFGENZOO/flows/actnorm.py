@@ -119,8 +119,24 @@ class Actnorm(FlowComponent):
             tf.math.log(self.scale * tf.math.rsqrt(x_var + 1e-6)) / self.logscale_factor
         )
 
-        self.bias_init.assign(-x_mean)
-        self.logs_init.assign(logs)
+        return (logs, -x_mean)
+
+    def call(self, x: tf.Tensor, inverse=False, **kwargs):
+        if not self.initialized:
+            if not inverse:
+                logs_init, bias_init = self.initialize_parameter(x)
+                self.initialized.assign(True)
+            else:
+                raise Exception("Invalid initialize")
+        else:
+            if not inverse:
+                logs_init, bias_init = self.logs_init, self.bias_init
+        self.logs_init.assign(logs_init)
+        self.bias_init.assign(bias_init)
+        if inverse:
+            return self.inverse(x, **kwargs)
+        else:
+            return self.forward(x, **kwargs)
 
     def forward(self, x: tf.Tensor, **kwargs):
 

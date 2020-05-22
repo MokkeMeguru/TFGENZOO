@@ -141,8 +141,8 @@ class ConditionalFlowModule(FlowBase):
 
          >>> layers = [FlowBase() for _ in range(10)]
          >>> module = FlowModule(layers)
-         >>> z = module(x, inverse=False)
-         >>> x_hat = module(z, inverse=True)
+         >>> z = module(x, condition=c, inverse=False)
+         >>> x_hat = module(z, condition=c, inverse=True)
          >>> assert ((x - x_hat)^2) << 1e-3
     """
 
@@ -153,20 +153,20 @@ class ConditionalFlowModule(FlowBase):
         super(FlowModule, self).__init__()
         self.components = components
 
-    def forward(self, x, **kwargs):
+    def forward(self, x, condition=None, **kwargs):
         z = x
         log_det_jacobian = []
         for component in self.components:
-            z, ldj = component(z, inverse=False, **kwargs)
+            z, ldj = component(z, inverse=False, condition=condition ** kwargs)
             log_det_jacobian.append(ldj)
         log_det_jacobian = sum(log_det_jacobian)
         return z, log_det_jacobian
 
-    def inverse(self, z, **kwargs):
+    def inverse(self, z, condition=None, **kwargs):
         x = z
         inverse_log_det_jacobian = []
         for component in reversed(self.components):
-            x, ildj = component(x, inverse=True, **kwargs)
+            x, ildj = component(x, inverse=True, condition=condition, **kwargs)
             inverse_log_det_jacobian.append(ildj)
         inverse_log_det_jacobian = sum(inverse_log_det_jacobian)
         return x, inverse_log_det_jacobian

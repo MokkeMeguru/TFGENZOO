@@ -76,7 +76,7 @@ class Inv1x1Conv(FlowComponent):
             raise NotImplementedError("TPU is not supported in Tensorflow == 2.2.0")
 
     def forward(self, x: tf.Tensor, **kwargs):
-        _W = tf.reshape(self.W, [1, 1, self.c, self.c])
+        _W = tf.reshape(self.W, [1, 1, self.c, self.c]) + tf.eye(self.c) * 1e-4
         z = tf.nn.conv2d(x, _W, [1, 1, 1, 1], "SAME")
         # scalar
         # if not self.with_tpu

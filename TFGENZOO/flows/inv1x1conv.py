@@ -69,7 +69,7 @@ class Inv1x1Conv(FlowComponent):
         )
         super().build(input_shape)
 
-    def __init__(self, with_tpu: bool = True, **kwargs):
+    def __init__(self, with_tpu: bool = False, **kwargs):
         super().__init__()
         self.with_tpu = with_tpu
         if self.with_tpu:

@@ -63,9 +63,11 @@ class Actnorm(FlowComponent):
             shape=tuple(logs_shape),
             initializer="zeros",
             trainable=True,
+            aggregation=tf.VariableAggregation.MEAN,
         )
         self.bias = self.add_weight(
-            name="bias", shape=tuple(logs_shape), initializer="zeros", trainable=True
+            name="bias", shape=tuple(logs_shape), initializer="zeros", trainable=True,
+            aggregation=tf.VariableAggregation.MEAN,
         )
 
         super().build(input_shape)
@@ -73,17 +75,21 @@ class Actnorm(FlowComponent):
     def initialize_parameter(self, x: tf.Tensor):
         tf.print("[Info] initialize parameter at {}".format(self.name))
         ctx = tf.distribute.get_replica_context()
-        n = ctx.num_replicas_in_sync
-        x_mean, x_mean_sq = ctx.all_reduce(
-            tf.distribute.ReduceOp.SUM,
-            [
-                tf.reduce_mean(x, axis=self.reduce_axis, keepdims=True) / n,
-                tf.reduce_mean(tf.square(x), axis=self.reduce_axis, keepdims=True) / n,
-            ],
-        )
+        if ctx:
+            n = ctx.num_replicas_in_sync
+            x_mean, x_mean_sq = ctx.all_reduce(
+                tf.distribute.ReduceOp.SUM,
+                [
+                    tf.reduce_mean(x, axis=self.reduce_axis, keepdims=True) / n,
+                    tf.reduce_mean(tf.square(x), axis=self.reduce_axis, keepdims=True) / n,
+                ],
+            )
 
-        # var(x) = x^2 - mean(x)^2
-        x_var = x_mean_sq - tf.square(x_mean)
+            # var(x) = x^2 - mean(x)^2
+            x_var = x_mean_sq - tf.square(x_mean)
+        else:
+            x_mean, x_var = tf.nn.moments(x, axis=self.reduce_axis, keepdims=True)
+        
         logs = (
             tf.math.log(self.scale * tf.math.rsqrt(x_var + 1e-6)) / self.logscale_factor
         )

@@ -100,7 +100,12 @@ class ActnormActivation(Layer):
             # squared = self.squared
         else:
             tf.print("initialization at {}".format(self.name))
-            mean, variance = tf.nn.moments(x, axes=[0, 1, 2], keepdims=True)
+            # mean, variance = tf.nn.moments(x, axes=[0, 1, 2], keepdims=True)
+            mean = tf.reduce_mean(x, axis=[0, 1, 2], keepdims=True)
+            squared = tf.reduce_mean(tf.square(x), axis=[0, 1, 2], keepdims=True)
+          
+            variance = squared - tf.square(mean)
+            
             bias = -mean
             logs = (	 
                 #     # var(x) = E(x^2) - E(x)^2

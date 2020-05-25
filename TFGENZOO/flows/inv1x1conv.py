@@ -73,7 +73,7 @@ class Inv1x1Conv(FlowComponent):
         super().__init__()
 
     def forward(self, x: tf.Tensor, **kwargs):
-        W = self.W + tf.eye(shape[3]) * 1e-5
+        W = self.W + tf.eye(self.c) * 1e-5
         _W = tf.reshape(W, [1, 1, self.c, self.c])
         z = tf.nn.conv2d(x, _W, [1, 1, 1, 1], "SAME")
         # scalar
@@ -86,7 +86,7 @@ class Inv1x1Conv(FlowComponent):
         return z, log_det_jacobian
 
     def inverse(self, z: tf.Tensor, **kwargs):
-        W = self.W + tf.eye(shape[3]) * 1e-5
+        W = self.W + tf.eye(self.c) * 1e-5
         _W = tf.reshape(tf.linalg.inv(W), [1, 1, self.c, self.c])
         x = tf.nn.conv2d(z, _W, [1, 1, 1, 1], "SAME")
 

@@ -75,11 +75,11 @@ class Actnorm(FlowComponent):
 
         super().build(input_shape)
 
-    @property.getter
+    @property
     def bias(self):
         return -self.mean
 
-    @property.getter
+    @property
     def logs(self):
         # var(x) = E(x^2) - E(x)^2
         variance = self.squared - tf.square(self.mean)

@@ -68,7 +68,7 @@ class Actnorm(FlowComponent):
         self.squared = self.add_weight(
             name="squared",
             shape=tuple(stats_shape),
-            initializer="zeros",
+            initializer="ones",
             trainable=True,
             aggregation=tf.VariableAggregation.MEAN,
         )

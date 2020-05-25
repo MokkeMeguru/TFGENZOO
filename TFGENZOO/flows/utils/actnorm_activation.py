@@ -95,8 +95,6 @@ class ActnormActivation(Layer):
         self.initialized.assign(True)
 
     def call(self, x: tf.Tensor):
-        if inverse and not self.initialized:
-            raise Exception("Invalid initialize")
 
         self.data_dep_initialize(x)
 

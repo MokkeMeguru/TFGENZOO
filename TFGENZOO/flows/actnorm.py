@@ -64,8 +64,17 @@ class Actnorm(FlowComponent):
             initializer="zeros",
             trainable=True,
         )
+<<<<<<< HEAD
         self.bias = self.add_weight(
             name="bias", shape=tuple(logs_shape), initializer="zeros", trainable=True
+=======
+        self.squared = self.add_weight(
+            name="squared",
+            shape=tuple(stats_shape),
+            initializer="ones",
+            trainable=True,
+            aggregation=tf.VariableAggregation.MEAN,
+>>>>>>> origin/master
         )
 
         # self.mean = self.add_weight(

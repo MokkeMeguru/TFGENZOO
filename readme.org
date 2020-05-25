@@ -5,14 +5,13 @@
 
 ** News [2020/3/17]
 
- update loss value
+ update loss value in Glow-MNIST
  |-------+-------+------------+--------------|
  | data  |   NLL(val) | epoch      | pretrained   |
  |-------+-------+------------+--------------|
  | MNIST | 1.33 | 64 | --- |
  |-------+-------+------------+--------------|
   
-  Easy to understand how to implement flow-based model e.g. OpenAI's Glow
 * What's this repository?
   This is a repository for some researcher to build some Generative models using Tensorflow 2.0.
 

@@ -73,11 +73,12 @@ class Inv1x1Conv(FlowComponent):
         super().__init__()
 
     def forward(self, x: tf.Tensor, **kwargs):
-        _W = tf.reshape(self.W, [1, 1, self.c, self.c])
+        W = self.W + tf.eye(shape[3]) * 1e-5
+        _W = tf.reshape(W, [1, 1, self.c, self.c])
         z = tf.nn.conv2d(x, _W, [1, 1, 1, 1], "SAME")
         # scalar
         log_det_jacobian = tf.cast(
-            tf.linalg.slogdet(tf.cast(self.W, tf.float64))[1] * self.h * self.w,
+            tf.linalg.slogdet(tf.cast(W, tf.float64))[1] * self.h * self.w,
             tf.float32,
         )
         # expand as batch
@@ -85,11 +86,12 @@ class Inv1x1Conv(FlowComponent):
         return z, log_det_jacobian
 
     def inverse(self, z: tf.Tensor, **kwargs):
-        _W = tf.reshape(tf.linalg.inv(self.W), [1, 1, self.c, self.c])
+        W = self.W + tf.eye(shape[3]) * 1e-5
+        _W = tf.reshape(tf.linalg.inv(W), [1, 1, self.c, self.c])
         x = tf.nn.conv2d(z, _W, [1, 1, 1, 1], "SAME")
 
         inverse_log_det_jacobian = tf.cast(
-            -1 * tf.linalg.slogdet(tf.cast(self.W, tf.float64))[1] * self.h * self.w,
+            -1 * tf.linalg.slogdet(tf.cast(W, tf.float64))[1] * self.h * self.w,
             tf.float32,
         )
 

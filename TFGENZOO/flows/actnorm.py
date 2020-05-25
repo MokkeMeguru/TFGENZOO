@@ -23,6 +23,7 @@ class Actnorm(FlowComponent):
             z = (x + bias) * scale
             log_det_jacobain = sum(logs) * H * W
 
+
         * inverse formula
             | logs = logs * logsscale_factor
             | inv_scale = exp(-logs)
@@ -60,23 +61,13 @@ class Actnorm(FlowComponent):
 
         self.logs = self.add_weight(
             name="logscale",
-            shape=tuple(logs_shape),
+            shape=tuple(stats_shape),
             initializer="zeros",
             trainable=True,
         )
-<<<<<<< HEAD
         self.bias = self.add_weight(
             name="bias", shape=tuple(logs_shape), initializer="zeros", trainable=True
-=======
-        self.squared = self.add_weight(
-            name="squared",
-            shape=tuple(stats_shape),
-            initializer="ones",
-            trainable=True,
-            aggregation=tf.VariableAggregation.MEAN,
->>>>>>> origin/master
         )
-
         # self.mean = self.add_weight(
         #     name="mean",
         #     shape=tuple(stats_shape),
@@ -113,8 +104,8 @@ class Actnorm(FlowComponent):
             mean, variance = tf.nn.moment(x)
             bias = -mean
             logs = tf.log(variance)
-        self.bias.assign(-mean)
-        self.logs.assign(logs)
+        # self.bias.assign(-mean)
+        # self.logs.assign(logs)
 
         # if self.initialized:
         #     mean = self.mean
@@ -126,8 +117,11 @@ class Actnorm(FlowComponent):
 
         # self.mean.assign(mean)
         # self.squared.assign(squared)
+        with tf.control_dependencies([bias, logs]):
+            self.bias.assign(bias)
+            self.logs.assign(logs)
 
-        super().data_dep_initialize(x)
+            super().data_dep_initialize(x)
 
     def forward(self, x: tf.Tensor, **kwargs):
         logs = self.logs * self.logscale_factor

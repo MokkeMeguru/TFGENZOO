@@ -45,20 +45,30 @@ class ActnormActivation(Layer):
         stats_shape = [1 for _ in range(len(input_shape))]
         stats_shape[-1] = input_shape[-1]
 
-        self.mean = self.add_weight(
-            name="mean",
+        self.logs = self.add_weight(
+            name="logscale",
             shape=tuple(stats_shape),
             initializer="zeros",
             trainable=True,
-            aggregation=tf.VariableAggregation.MEAN,
         )
-        self.squared = self.add_weight(
-            name="squared",
-            shape=tuple(stats_shape),
-            initializer="ones",
-            trainable=True,
-            aggregation=tf.VariableAggregation.MEAN,
+        self.bias = self.add_weight(
+            name="bias", shape=tuple(stats_shape), initializer="zeros", trainable=True
         )
+
+        # self.mean = self.add_weight(
+        #     name="mean",
+        #     shape=tuple(stats_shape),
+        #     initializer="zeros",
+        #     trainable=True,
+        #     aggregation=tf.VariableAggregation.MEAN,
+        # )
+        # self.squared = self.add_weight(
+        #     name="squared",
+        #     shape=tuple(stats_shape),
+        #     initializer="ones",
+        #     trainable=True,
+        #     aggregation=tf.VariableAggregation.MEAN,
+        # )
 
         self.initialized = self.add_weight(
             name="initialized",
@@ -70,29 +80,38 @@ class ActnormActivation(Layer):
         )
         self.build = True
 
-    @property
-    def bias(self):
-        return -self.mean
+    # @property
+    # def bias(self):
+    #     return -self.mean
 
-    @property
-    def logs(self):
-        # var(x) = E(x^2) - E(x)^2
-        variance = self.squared - tf.square(self.mean)
-        return tf.math.log(variance)
+    # @property
+    # def logs(self):
+    #     # var(x) = E(x^2) - E(x)^2
+    #     variance = self.squared - tf.square(self.mean)
+    #     return tf.math.log(variance)
 
     def data_dep_initialize(self, x: tf.Tensor):
         if self.initialized:
-            mean = self.mean
-            squared = self.squared
+            bias, logs = self.bias, self.logs
+
+            # mean = self.mean
+            # squared = self.squared
         else:
             tf.print("initialization at {}".format(self.name))
-            mean = tf.reduce_mean(x, axis=[0, 1, 2], keepdims=True)
-            squared = tf.reduce_mean(tf.square(x), axis=[0, 1, 2], keepdims=True)
+            mean, variance = tf.nn.moment(x)
+            bias = -mean
+            logs = tf.log(variance)
 
-        self.mean.assign(mean)
-        self.squared.assign(squared)
+            # tf.print("initialization at {}".format(self.name))
+            # mean = tf.reduce_mean(x, axis=[0, 1, 2], keepdims=True)
+            # squared = tf.reduce_mean(tf.square(x), axis=[0, 1, 2], keepdims=True)
 
-        self.initialized.assign(True)
+        # self.mean.assign(mean)
+        # self.squared.assign(squared)
+        with tf.control_dependencies([bias, logs]):
+            self.bias.assign(bias)
+            self.logs.assign(logs)
+            self.initialized.assign(True)
 
     def call(self, x: tf.Tensor):
 

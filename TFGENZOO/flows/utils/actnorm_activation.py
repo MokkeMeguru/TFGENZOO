@@ -45,85 +45,55 @@ class ActnormActivation(Layer):
         logs_shape = [1 for _ in range(len(input_shape))]
         logs_shape[-1] = input_shape[-1]
 
-        self.logs_init = self.add_weight(
-            name="logscale_init",
-            shape=tuple(logs_shape),
-            initializer="zeros",
-            trainable=False,
-            synchronization=tf.VariableSynchronization.ON_READ,
-            aggregation=tf.VariableAggregation.MEAN,
-        )
-        self.bias_init = self.add_weight(
-            name="bias_init",
-            shape=tuple(logs_shape),
-            initializer="zeros",
-            trainable=False,
-            synchronization=tf.VariableSynchronization.ON_READ,
-            aggregation=tf.VariableAggregation.MEAN,
-        )
-
-        self.logs_train = self.add_weight(
-            name="logscale_train",
+        self.logs = self.add_weight(
+            name="logscale",
             shape=tuple(logs_shape),
             initializer="zeros",
             trainable=True,
+            aggregation=tf.VariableAggregation.MEAN,
         )
-        self.bias_train = self.add_weight(
-            name="bias_train",
-            shape=tuple(logs_shape),
-            initializer="zeros",
-            trainable=True,
+        self.bias = self.add_weight(
+            name="bias", shape=tuple(logs_shape), initializer="zeros", trainable=True,
+            aggregation=tf.VariableAggregation.MEAN,
         )
-
         self.initialized = self.add_weight(
-            name="initialized",
-            dtype=tf.bool,
-            trainable=False,
-            initializer=lambda shape, dtype: False,
+            name="initialized", dtype=tf.bool, trainable=False,
             synchronization=tf.VariableSynchronization.ON_READ,
             aggregation=tf.VariableAggregation.ONLY_FIRST_REPLICA,
         )
+        self.initialized.assign(False)
         self.build = True
 
     def initialize_parameter(self, x: tf.Tensor):
         tf.print("[Info] initialize parameter at {}".format(self.name))
+        ctx = tf.distribute.get_replica_context()
+        if ctx:
+            n = ctx.num_replicas_in_sync
+            x_mean, x_mean_sq = ctx.all_reduce(
+                tf.distribute.ReduceOp.SUM,
+                [
+                    tf.reduce_mean(x, axis=self.reduce_axis, keepdims=True) / n,
+                    tf.reduce_mean(tf.square(x), axis=self.reduce_axis, keepdims=True) / n,
+                ],
+            )
 
-        # ctx = tf.distribute.get_replica_context()
-        # if ctx:
-        #     n = ctx.num_replicas_in_sync
-        #     x_mean, x_mean_sq = ctx.all_reduce(
-        #         tf.distribute.ReduceOp.SUM,
-        #         [
-        #             tf.reduce_mean(x, axis=self.reduce_axis, keepdims=True) / n,
-        #             tf.reduce_mean(tf.square(x), axis=self.reduce_axis, keepdims=True)
-        #             / n,
-        #         ],
-        #     )
-        #     # var(x) = x^2 - mean(x)^2
-        #     x_var = x_mean_sq - tf.square(x_mean)
-        # else:
-        x_mean, x_var = tf.nn.moments(x, axes=self.reduce_axis, keepdims=True)
-
+            # var(x) = x^2 - mean(x)^2
+            x_var = x_mean_sq - tf.square(x_mean)
+        else:
+            x_mean, x_var = tf.nn.moments(x, axis=self.reduce_axis, keepdims=True)
         logs = (
             tf.math.log(self.scale * tf.math.rsqrt(x_var + 1e-6)) / self.logscale_factor
         )
-        return (logs, -x_mean)
+        self.logs.assign(logs)
+        self.bias.assign(-x_mean)
 
     def call(self, x: tf.Tensor):
-
         if not self.initialized:
-            logs_init, bias_init = self.initialize_parameter(x)
-            self.logs_init.assign(logs_init)
-            self.bias_init.assign(bias_init)
+            self.initialize_parameter(x)
             self.initialized.assign(True)
-        else:
-            logs_init, bias_init = self.logs_init, self.bias_init
 
-        
-        logs = (logs_init + self.logs_train) * self.logscale_factor
-        bias = bias_init + self.logs_train
-        
-        x = x + bias
+        logs = self.logs * self.logscale_factor
+        x = x + self.bias
         x = x * tf.exp(logs)
         return x
 

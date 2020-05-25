@@ -58,93 +58,50 @@ class Actnorm(FlowComponent):
         logs_shape = [1 for _ in range(len(input_shape))]
         logs_shape[-1] = input_shape[-1]
 
-        self.logs_init = self.add_weight(
-            name="logscale_init",
-            shape=tuple(logs_shape),
-            initializer="zeros",
-            trainable=False,
-            synchronization=tf.VariableSynchronization.ON_READ,
-            aggregation=tf.VariableAggregation.MEAN,
-        )
-        self.bias_init = self.add_weight(
-            name="bias_init",
-            shape=tuple(logs_shape),
-            initializer="zeros",
-            trainable=False,
-            synchronization=tf.VariableSynchronization.ON_READ,
-            aggregation=tf.VariableAggregation.MEAN,
-        )
-
-        self.logs_train = self.add_weight(
-            name="logscale_train",
+        self.logs = self.add_weight(
+            name="logscale",
             shape=tuple(logs_shape),
             initializer="zeros",
             trainable=True,
+            aggregation=tf.VariableAggregation.MEAN,
         )
-        self.bias_train = self.add_weight(
-            name="bias_train",
-            shape=tuple(logs_shape),
-            initializer="zeros",
-            trainable=True,
+        self.bias = self.add_weight(
+            name="bias", shape=tuple(logs_shape), initializer="zeros", trainable=True,
+            aggregation=tf.VariableAggregation.MEAN,
         )
 
         super().build(input_shape)
 
-    def get_logs(self):
-        return self.logs_init + self.logs_train
-
-    def get_bias(self):
-        return self.bias_init + self.bias_train
-
     def initialize_parameter(self, x: tf.Tensor):
         tf.print("[Info] initialize parameter at {}".format(self.name))
+        ctx = tf.distribute.get_replica_context()
+        if ctx:
+            n = ctx.num_replicas_in_sync
+            x_mean, x_mean_sq = ctx.all_reduce(
+                tf.distribute.ReduceOp.SUM,
+                [
+                    tf.reduce_mean(x, axis=self.reduce_axis, keepdims=True) / n,
+                    tf.reduce_mean(tf.square(x), axis=self.reduce_axis, keepdims=True) / n,
+                ],
+            )
 
-        # ctx = tf.distribute.get_replica_context()
-        # if ctx:
-        #     n = ctx.num_replicas_in_sync
-        #     x_mean, x_mean_sq = ctx.all_reduce(
-        #         tf.distribute.ReduceOp.SUM,
-        #         [
-        #             tf.reduce_mean(x, axis=self.reduce_axis, keepdims=True) / n,
-        #             tf.reduce_mean(tf.square(x), axis=self.reduce_axis, keepdims=True)
-        #             / n,
-        #         ],
-        #     )
-
-        #     # var(x) = x^2 - mean(x)^2
-        #     x_var = x_mean_sq - tf.square(x_mean)
-        # else:
-        x_mean, x_var = tf.nn.moments(x, axes=self.reduce_axis, keepdims=True)
-
+            # var(x) = x^2 - mean(x)^2
+            x_var = x_mean_sq - tf.square(x_mean)
+        else:
+            x_mean, x_var = tf.nn.moments(x, axis=self.reduce_axis, keepdims=True)
+        
         logs = (
             tf.math.log(self.scale * tf.math.rsqrt(x_var + 1e-6)) / self.logscale_factor
         )
 
-        return (logs, -x_mean)
-
-    def call(self, x: tf.Tensor, inverse=False, **kwargs):
-        if not self.initialized:
-            if not inverse:
-                logs_init, bias_init = self.initialize_parameter(x)
-                self.initialized.assign(True)
-            else:
-                raise Exception("Invalid initialize")
-        else:
-            logs_init, bias_init = self.logs_init, self.bias_init
-        self.logs_init.assign(logs_init)
-        self.bias_init.assign(bias_init)
-        if inverse:
-            return self.inverse(x, **kwargs)
-        else:
-            return self.forward(x, **kwargs)
+        self.bias.assign(-x_mean)
+        self.logs.assign(logs)
 
     def forward(self, x: tf.Tensor, **kwargs):
-
-        logs = self.get_logs() * self.logscale_factor
-        bias = self.get_bias()
+        logs = self.logs * self.logscale_factor
 
         # centering
-        z = x + bias
+        z = x + self.bias
         # scaling
         z = z * tf.exp(logs)
 
@@ -153,14 +110,12 @@ class Actnorm(FlowComponent):
         return z, log_det_jacobian
 
     def inverse(self, z: tf.Tensor, **kwargs):
-
-        logs = self.get_logs() * self.logscale_factor
-        bias = self.get_bias()
+        logs = self.logs * self.logscale_factor
 
         # inverse scaling
         x = z * tf.exp(-1 * logs)
         # inverse centering
-        x = x - bias
+        x = x - self.bias
 
         inverse_log_det_jacobian = -1 * tf.reduce_sum(logs) * self.logdet_factor
         inverse_log_det_jacobian = tf.broadcast_to(

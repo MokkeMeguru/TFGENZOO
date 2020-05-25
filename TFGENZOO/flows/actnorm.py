@@ -66,7 +66,7 @@ class Actnorm(FlowComponent):
             trainable=True,
         )
         self.bias = self.add_weight(
-            name="bias", shape=tuple(logs_shape), initializer="zeros", trainable=True
+            name="bias", shape=tuple(stats_shape), initializer="zeros", trainable=True
         )
         # self.mean = self.add_weight(
         #     name="mean",

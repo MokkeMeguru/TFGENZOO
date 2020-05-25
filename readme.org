@@ -3,8 +3,14 @@
 [[file:https://img.shields.io/badge/python-3.7-blue.svg]]
 [[file:https://img.shields.io/badge/tensorflow-%3E%3D2.2.0-brightgreen.svg]]
 
-* News [2020/5/1]
-  Move example code to the [[https://github.com/MokkeMeguru/TFGENZOO_EXAMPLE][TFGENZOO_EXAMPLE]]. 
+** News [2020/3/17]
+
+ update loss value
+ |-------+-------+------------+--------------|
+ | data  |   NLL(val) | epoch      | pretrained   |
+ |-------+-------+------------+--------------|
+ | MNIST | 1.33 | 64 | --- |
+ |-------+-------+------------+--------------|
   
   Easy to understand how to implement flow-based model e.g. OpenAI's Glow
 * What's this repository?
@@ -23,7 +29,8 @@ We should Implement correct codes with well-documented(tested).
   2. build this repository ~docker-compose build~
   3. run the environment ~sh run_script.sh~
   4. connect it via VSCode or Emacs or vi or anything.
-
+* Examples
+  - [[https://github.com/MokkeMeguru/TFGENZOO_EXAMPLE][TFGENZOO_EXAMPLE]]
 * Roadmap
     - [ ] Flow-based Model Architecture (RealNVP, Glow)
     - [ ] i-ResNet Model Architecture (i-ResNet, i-RevNet)
@@ -47,7 +54,7 @@ python 3.6 > trainer.main()
 
 ** News [2020/3/17]
 
- update loss function
+ update loss value
  |-------+-------+------------+--------------|
  | data  |   NLL(val) | epoch      | pretrained   |
  |-------+-------+------------+--------------|
@@ -80,4 +87,7 @@ python 3.6 > trainer.main()
    #+begin_src
    pip install git+https://github.com/MokkeMeguru/TFGENZOO.git@v1.0-beta2#egg=TFGENZOO
    #+end_src
+
+** News [2020/5/1]
+  Move example code to the [[https://github.com/MokkeMeguru/TFGENZOO_EXAMPLE][TFGENZOO_EXAMPLE]]. 
 

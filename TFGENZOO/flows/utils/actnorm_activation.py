@@ -71,10 +71,8 @@ class ActnormActivation(Layer):
 
     def data_dep_initialize(self, x: tf.Tensor):
         if self.initialized:
-            # bias, logs = self.bias, self.logs
+            bias, logs = self.bias, self.logs
 
-            mean = self.mean
-            squared = self.squared
         else:
             tf.print("initialization at {}".format(self.name))
             mean = tf.reduce_mean(x, axis=[0, 1, 2], keepdims=True)

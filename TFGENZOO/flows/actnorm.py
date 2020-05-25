@@ -93,11 +93,12 @@ class Actnorm(FlowComponent):
             tf.print("initialization at {}".format(self.name))
             mean = tf.reduce_mean(x, axis=[0, 1, 2], keepdims=True)
             squared = tf.reduce_mean(tf.square(x), axis=[0, 1, 2], keepdims=True)
+        
+        with tf.control_dependencies([mean, squared]):
+            self.mean.assign(mean)
+            self.squared.assign(squared)
 
-        self.mean.assign(mean)
-        self.squared.assign(squared)
-
-        super().data_dep_initialize(x)
+            super().data_dep_initialize(x)
 
     def forward(self, x: tf.Tensor, **kwargs):
         logs = self.logs * self.logscale_factor

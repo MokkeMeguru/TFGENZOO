@@ -89,10 +89,11 @@ class ActnormActivation(Layer):
             mean = tf.reduce_mean(x, axis=[0, 1, 2], keepdims=True)
             squared = tf.reduce_mean(tf.square(x), axis=[0, 1, 2], keepdims=True)
 
-        self.mean.assign(mean)
-        self.squared.assign(squared)
+        with tf.control_dependencies([mean, squared]):
+            self.mean.assign(mean)
+            self.squared.assign(squared)
 
-        self.initialized.assign(True)
+            self.initialized.assign(True)
 
     def call(self, x: tf.Tensor):
 

@@ -50,9 +50,11 @@ class ActnormActivation(Layer):
             shape=tuple(stats_shape),
             initializer="zeros",
             trainable=True,
+            aggregation=tf.VariableAggregation.MEAN,
         )
         self.bias = self.add_weight(
-            name="bias", shape=tuple(stats_shape), initializer="zeros", trainable=True
+            name="bias", shape=tuple(stats_shape), initializer="zeros", trainable=True,
+            aggregation=tf.VariableAggregation.MEAN,
         )
 
         # self.mean = self.add_weight(

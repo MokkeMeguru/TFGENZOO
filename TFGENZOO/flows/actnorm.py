@@ -83,19 +83,19 @@ class Actnorm(FlowComponent):
     def logs(self):
         # var(x) = E(x^2) - E(x)^2
         variance = self.squared - tf.square(self.mean)
-        return tf.log(variance)
+        return tf.math.log(variance)
 
     def data_dep_initialize(self, x: tf.Tensor):
         if self.initialized:
             mean = self.mean
             squared = self.squared
         else:
-            tf.print("initialization at {}".format(self.__name__))
+            tf.print("initialization at {}".format(self.name))
             mean = tf.reduce_mean(x, axis=[0, 1, 2], keepdims=True)
             squared = tf.reduce_mean(tf.square(x), axis=[0, 1, 2], keepdims=True)
 
         self.mean.assign(mean)
-        self.squared.asign(squared)
+        self.squared.assign(squared)
 
         super().data_dep_initialize(x)
 

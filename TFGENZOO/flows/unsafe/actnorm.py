@@ -1,49 +1,64 @@
 import tensorflow as tf
-from tensorflow.keras import layers
 
-Layer = layers.Layer
+from TFGENZOO.flows.flowbase import FlowComponent
 
 
-class ActnormActivation(Layer):
-    """Actnorm Layer without inverse function
+class Actnorm(FlowComponent):
+    """Actnorm Layer
 
-    This layer cannot sync mean / variance via Multi GPU
+    This layer can SyncBatch Normalization, but may crash frequently.
 
     Sources:
 
         https://github.com/openai/glow/blob/master/tfops.py#L71-L163
 
-    Attributes:
-        scale (float)          : scaling
-        logscale_factor (float): logscale_factor
-
     Note:
+
         * initialize
             | mean = mean(first_batch)
-            | var = variance(first-batch)
-            | logs = log(scale / sqrt(var)) / log-scale-factor
-            | bias = -mean
+            | var = variance(first_batch)
+            | logs = log(scale / sqrt(var)) / logscale_factor
+            | bias = - mean
 
-        * forward formula (forward only)
-            | logs = logs * log_scale_factor
+        * forward formula
+            | logs = logs * logscale_factor
             | scale = exp(logs)
-            | z = (x + bias) * scale
+            z = (x + bias) * scale
+            log_det_jacobain = sum(logs) * H * W
+
+
+        * inverse formula
+            | logs = logs * logsscale_factor
+            | inv_scale = exp(-logs)
+            | z = x * inv_scale - bias
+            | inverse_log_det_jacobian = sum(- logs) * H * W
+
+    Attributes:
+        calc_ldj: bool
+            flag of calculate log det jacobian
+        scale: float
+            initialize batch's variance scaling
+        logscale_factor: float
+            barrier log value to - Inf
     """
 
-    def __init__(self, scale: float = 1.0, logscale_factor=3.0, **kwargs):
-        super(ActnormActivation, self).__init__()
+    def __init__(self, scale: float = 1.0, logscale_factor: float = 3.0, **kwargs):
+        super(Actnorm, self).__init__(**kwargs)
         self.scale = scale
         self.logscale_factor = logscale_factor
 
+    # pylint: disable=attribute-defined-outside-init
     def build(self, input_shape: tf.TensorShape):
         if len(input_shape) == 4:
             reduce_axis = [0, 1, 2]
             b, h, w, c = list(input_shape)
+            self.logdet_factor = tf.constant(h * w, dtype=tf.float32)
         else:
             raise NotImplementedError()
 
         self.reduce_axis = reduce_axis
 
+        # stats_shape = [1, 1, 1, C] if input_shape == [B, H, W, C]
         stats_shape = [1 for _ in range(len(input_shape))]
         stats_shape[-1] = input_shape[-1]
 
@@ -67,20 +82,12 @@ class ActnormActivation(Layer):
         self.squared = self.add_weight(
             name="squared",
             shape=tuple(stats_shape),
-            initializer="ones",
+            initializer="zeros",
             trainable=True,
             aggregation=tf.VariableAggregation.MEAN,
         )
 
-        self.initialized = self.add_weight(
-            name="initialized",
-            dtype=tf.bool,
-            trainable=False,
-            initializer=lambda shape, dtype: False,
-            synchronization=tf.VariableSynchronization.ON_READ,
-            aggregation=tf.VariableAggregation.ONLY_FIRST_REPLICA,
-        )
-        self.build = True
+        super().build(input_shape)
 
     @property
     def bias(self):
@@ -90,7 +97,6 @@ class ActnormActivation(Layer):
     def logs(self):
         # var(x) = E(x^2) - E(x)^2
         variance = self.squared - tf.square(self.mean)
-
         logs = (
             #     # var(x) = E(x^2) - E(x)^2
             tf.math.log(self.scale * tf.math.rsqrt(variance + 1e-6))
@@ -100,9 +106,9 @@ class ActnormActivation(Layer):
         return logs
 
     def data_dep_initialize(self, x: tf.Tensor):
+
         if self.initialized:
             # bias, logs = self.bias, self.logs
-
             mean = self.mean
             squared = self.squared
         else:
@@ -115,8 +121,6 @@ class ActnormActivation(Layer):
             #     / self.logscale_factor
             #     #     variance = self.squared - tf.square(self.mean)
             # )
-
-            # tf.print("initialization at {}".format(self.name))
             mean = tf.reduce_mean(x, axis=[0, 1, 2], keepdims=True)
             squared = tf.reduce_mean(tf.square(x), axis=[0, 1, 2], keepdims=True)
 
@@ -125,25 +129,31 @@ class ActnormActivation(Layer):
             self.squared.assign(squared)
             # self.bias.assign(bias)
             # self.logs.assign(logs)
-            self.initialized.assign(True)
 
-    def call(self, x: tf.Tensor):
+            super().data_dep_initialize(x)
 
-        self.data_dep_initialize(x)
-
+    def forward(self, x: tf.Tensor, **kwargs):
         logs = self.logs * self.logscale_factor
-        x = x + self.bias
-        x = x * tf.exp(logs)
-        return x
 
+        # centering
+        z = x + self.bias
+        # scaling
+        z = z * tf.exp(logs)
 
-def main():
-    aa = ActnormActivation()
-    x = tf.keras.Input([16, 16, 2])
-    y = aa(x)
-    model = tf.keras.Model(x, y)
-    model.summary()
-    print(model.variables)
-    y_ = model(tf.random.normal([32, 16, 16, 2]))
-    print(y_.shape)
-    print(model.variables)
+        log_det_jacobian = tf.reduce_sum(logs) * self.logdet_factor
+        log_det_jacobian = tf.broadcast_to(log_det_jacobian, tf.shape(x)[0:1])
+        return z, log_det_jacobian
+
+    def inverse(self, z: tf.Tensor, **kwargs):
+        logs = self.logs * self.logscale_factor
+
+        # inverse scaling
+        x = z * tf.exp(-1 * logs)
+        # inverse centering
+        x = x - self.bias
+
+        inverse_log_det_jacobian = -1 * tf.reduce_sum(logs) * self.logdet_factor
+        inverse_log_det_jacobian = tf.broadcast_to(
+            inverse_log_det_jacobian, tf.shape(x)[0:1]
+        )
+        return x, inverse_log_det_jacobian

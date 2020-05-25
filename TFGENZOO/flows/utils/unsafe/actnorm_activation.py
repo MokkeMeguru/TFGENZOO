@@ -7,7 +7,7 @@ Layer = layers.Layer
 class ActnormActivation(Layer):
     """Actnorm Layer without inverse function
 
-    This layer cannot sync mean / variance via Multi GPU
+    This layer can SyncBatch Normalization, but may crash frequently.
 
     Sources:
 

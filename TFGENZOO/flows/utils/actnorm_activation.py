@@ -118,7 +118,7 @@ class ActnormActivation(Layer):
             mean = tf.reduce_mean(x, axis=[0, 1, 2], keepdims=True)
             squared = tf.reduce_mean(tf.square(x), axis=[0, 1, 2], keepdims=True)
 
-        with tf.control_dependencies([bias, logs]):
+        with tf.control_dependencies([mean, squared]):
             self.mean.assign(mean)
             self.squared.assign(squared)
             # self.bias.assign(bias)

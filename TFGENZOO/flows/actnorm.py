@@ -103,7 +103,7 @@ class Actnorm(FlowComponent):
             tf.print("initialization at {}".format(self.name))
             mean, variance = tf.nn.moments(x, axes=[0, 1, 2], keepdims=True)
             bias = -mean
-            logs = tf.log(variance)
+            logs = tf.math.log(variance)
         # self.bias.assign(-mean)
         # self.logs.assign(logs)
 

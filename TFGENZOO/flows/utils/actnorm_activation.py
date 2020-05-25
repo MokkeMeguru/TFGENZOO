@@ -42,55 +42,63 @@ class ActnormActivation(Layer):
 
         self.reduce_axis = reduce_axis
 
-        logs_shape = [1 for _ in range(len(input_shape))]
-        logs_shape[-1] = input_shape[-1]
+        stats_shape = [1 for _ in range(len(input_shape))]
+        stats_shape[-1] = input_shape[-1]
 
-        self.logs = self.add_weight(
-            name="logscale",
-            shape=tuple(logs_shape),
+        self.mean = self.add_weight(
+            name="mean",
+            shape=tuple(stats_shape),
             initializer="zeros",
             trainable=True,
             aggregation=tf.VariableAggregation.MEAN,
         )
-        self.bias = self.add_weight(
-            name="bias", shape=tuple(logs_shape), initializer="zeros", trainable=True,
+        self.squared = self.add_weight(
+            name="squared",
+            shape=tuple(stats_shape),
+            initializer="zeros",
+            trainable=True,
             aggregation=tf.VariableAggregation.MEAN,
         )
+
         self.initialized = self.add_weight(
-            name="initialized", dtype=tf.bool, trainable=False,
+            name="initialized",
+            dtype=tf.bool,
+            trainable=False,
+            initializer=lambda shape, dtype: False,
             synchronization=tf.VariableSynchronization.ON_READ,
             aggregation=tf.VariableAggregation.ONLY_FIRST_REPLICA,
         )
-        self.initialized.assign(False)
         self.build = True
 
-    def initialize_parameter(self, x: tf.Tensor):
-        tf.print("[Info] initialize parameter at {}".format(self.name))
-        ctx = tf.distribute.get_replica_context()
-        if ctx:
-            n = ctx.num_replicas_in_sync
-            x_mean, x_mean_sq = ctx.all_reduce(
-                tf.distribute.ReduceOp.SUM,
-                [
-                    tf.reduce_mean(x, axis=self.reduce_axis, keepdims=True) / n,
-                    tf.reduce_mean(tf.square(x), axis=self.reduce_axis, keepdims=True) / n,
-                ],
-            )
+    @property.getter
+    def bias(self):
+        return -self.mean
 
-            # var(x) = x^2 - mean(x)^2
-            x_var = x_mean_sq - tf.square(x_mean)
+    @property.getter
+    def logs(self):
+        # var(x) = E(x^2) - E(x)^2
+        variance = self.squared - tf.square(self.mean)
+        return tf.log(variance)
+
+    def data_dep_initialize(self, x: tf.Tensor):
+        if self.initialized:
+            mean = self.mean
+            squared = self.squared
         else:
-            x_mean, x_var = tf.nn.moments(x, axis=self.reduce_axis, keepdims=True)
-        logs = (
-            tf.math.log(self.scale * tf.math.rsqrt(x_var + 1e-6)) / self.logscale_factor
-        )
-        self.logs.assign(logs)
-        self.bias.assign(-x_mean)
+            tf.print("initialization at {}".format(self.__name__))
+            mean = tf.reduce_mean(x, axis=[0, 1, 2], keepdims=True)
+            squared = tf.reduce_mean(tf.square(x), axis=[0, 1, 2], keepdims=True)
+
+        self.mean.assign(mean)
+        self.squared.asign(squared)
+
+        self.initialized.assign(True)
 
     def call(self, x: tf.Tensor):
-        if not self.initialized:
-            self.initialize_parameter(x)
-            self.initialized.assign(True)
+        if inverse and not self.initialized:
+            raise Exception("Invalid initialize")
+
+        self.data_dep_initialize(x)
 
         logs = self.logs * self.logscale_factor
         x = x + self.bias

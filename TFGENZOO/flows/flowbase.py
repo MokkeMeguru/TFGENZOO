@@ -27,26 +27,26 @@ class FlowBase(Layer, metaclass=ABCMeta):
     def __init__(self, **kwargs):
         super(FlowBase, self).__init__(kwargs)
 
-    def initialize_parameter(self, x: tf.Tensor):
-        pass
+    def data_dep_initialize(self, x: tf.Tensor):
+        self.initialized.assign(True)
 
     def build(self, input_shape: tf.TensorShape):
         self.initialized = self.add_weight(
-            name="initialized", dtype=tf.bool, 
+            name="initialized",
+            dtype=tf.bool,
             trainable=False,
             synchronization=tf.VariableSynchronization.ON_READ,
-            aggregation=tf.VariableAggregation.ONLY_FIRST_REPLICA
+            aggregation=tf.VariableAggregation.ONLY_FIRST_REPLICA,
+            initializer=lambda shape, dtype: False,
         )
-        self.initialized.assign(False)
         self.built = True
 
     def call(self, x: tf.Tensor, inverse=False, **kwargs):
-        if not self.initialized:
-            if not inverse:
-                self.initialize_parameter(x)
-                self.initialized.assign(True)
-            else:
-                raise Exception("Invalid initialize")
+        if inverse and not self.initialized:
+            raise Exception("Invalid initialize")
+
+        self.data_dep_initialize(x)
+
         if inverse:
             return self.inverse(x, **kwargs)
         else:
@@ -160,12 +160,11 @@ class FactorOutBase(FlowBase):
         super(FactorOutBase, self).build(input_shape)
 
     def call(self, x: tf.Tensor, zaux: tf.Tensor = None, inverse=False, **kwargs):
-        if not self.initialized:
-            if not inverse:
-                self.initialize_parameter(x)
-                self.initialized.assign(True)
-            else:
-                raise Exception("Invalid initialize")
+        if inverse and not self.initialized:
+            raise Exception("Invalid initialize")
+
+        self.data_dep_initialize(x)
+
         if inverse:
             return self.inverse(x, zaux, **kwargs)
         else:

@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: TFGENZOO
-Version: 0.1.0
+Version: 1.0.0
 Summary: helper of building generative model with Tensorflow 2.x
 Home-page: https://github.com/MokkeMeguru/TFGENZOO
 Author: MokkeMeguru

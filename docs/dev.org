@@ -6,5 +6,5 @@ python3 setup.py sdist bdist_wheel
 * How to generate sphinx code via docstring?
 #+begin_src shell
 sphinx-apidoc -f -o ./source ./TFGENZOO
+make html
 #+end_src
-

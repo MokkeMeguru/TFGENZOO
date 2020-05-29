@@ -1,0 +1,424 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>TFGENZOO.flows.unsafe package &mdash; TFGENZOO 1.0-beta1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js"></script>
+        <script src="_static/twemoji.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="_static/twemoji.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="TFGENZOO.flows.utils package" href="TFGENZOO.flows.utils.html" />
+    <link rel="prev" title="TFGENZOO.flows package" href="TFGENZOO.flows.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> TFGENZOO
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="news/index.html">News</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage/quickstart.html">Simple Tutorial</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="TFGENZOO.html">TFGENZOO package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="TFGENZOO.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="TFGENZOO.flows.html">TFGENZOO.flows package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="TFGENZOO.flows.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.actnorm">TFGENZOO.flows.actnorm module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.actnorm_test">TFGENZOO.flows.actnorm_test module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.affine_coupling">TFGENZOO.flows.affine_coupling module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.affine_coupling_test">TFGENZOO.flows.affine_coupling_test module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.cond_factor_out">TFGENZOO.flows.cond_factor_out module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.factor_out">TFGENZOO.flows.factor_out module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.flowbase">TFGENZOO.flows.flowbase module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#tfgenzoo-flows-flowmodel-module">TFGENZOO.flows.flowmodel module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.inv1x1conv">TFGENZOO.flows.inv1x1conv module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.inv1x1conv_test">TFGENZOO.flows.inv1x1conv_test module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.quantize">TFGENZOO.flows.quantize module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.squeeze">TFGENZOO.flows.squeeze module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="TFGENZOO.gans.html">TFGENZOO.gans package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="TFGENZOO.layers.html">TFGENZOO.layers package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="TFGENZOO.optimizers.html">TFGENZOO.optimizers package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="TFGENZOO.html#module-TFGENZOO">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">TFGENZOO</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="TFGENZOO.html">TFGENZOO package</a> &raquo;</li>
+        
+          <li><a href="TFGENZOO.flows.html">TFGENZOO.flows package</a> &raquo;</li>
+        
+      <li>TFGENZOO.flows.unsafe package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/TFGENZOO.flows.unsafe.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="tfgenzoo-flows-unsafe-package">
+<h1>TFGENZOO.flows.unsafe package<a class="headerlink" href="#tfgenzoo-flows-unsafe-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-TFGENZOO.flows.unsafe.actnorm">
+<span id="tfgenzoo-flows-unsafe-actnorm-module"></span><h2>TFGENZOO.flows.unsafe.actnorm module<a class="headerlink" href="#module-TFGENZOO.flows.unsafe.actnorm" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="TFGENZOO.flows.unsafe.actnorm.Actnorm">
+<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.unsafe.actnorm.</code><code class="sig-name descname">Actnorm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">scale</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">logscale_factor</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">3.0</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.unsafe.actnorm.Actnorm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="TFGENZOO.flows.html#TFGENZOO.flows.flowbase.FlowComponent" title="TFGENZOO.flows.flowbase.FlowComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TFGENZOO.flows.flowbase.FlowComponent</span></code></a></p>
+<p>Actnorm Layer</p>
+<p>This layer can SyncBatch Normalization, but may crash frequently.</p>
+<p>Sources:</p>
+<blockquote>
+<div><p><a class="reference external" href="https://github.com/openai/glow/blob/master/tfops.py#L71-L163">https://github.com/openai/glow/blob/master/tfops.py#L71-L163</a></p>
+</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul>
+<li><dl>
+<dt>initialize</dt><dd><div class="line-block">
+<div class="line">mean = mean(first_batch)</div>
+<div class="line">var = variance(first_batch)</div>
+<div class="line">logs = log(scale / sqrt(var)) / logscale_factor</div>
+<div class="line">bias = - mean</div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>forward formula</dt><dd><div class="line-block">
+<div class="line">logs = logs * logscale_factor</div>
+<div class="line">scale = exp(logs)</div>
+</div>
+<p>z = (x + bias) * scale
+log_det_jacobain = sum(logs) * H * W</p>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>inverse formula</dt><dd><div class="line-block">
+<div class="line">logs = logs * logsscale_factor</div>
+<div class="line">inv_scale = exp(-logs)</div>
+<div class="line">z = x * inv_scale - bias</div>
+<div class="line">inverse_log_det_jacobian = sum(- logs) * H * W</div>
+</div>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<dl class="py attribute">
+<dt id="TFGENZOO.flows.unsafe.actnorm.Actnorm.calc_ldj">
+<code class="sig-name descname">calc_ldj</code><a class="headerlink" href="#TFGENZOO.flows.unsafe.actnorm.Actnorm.calc_ldj" title="Permalink to this definition">¶</a></dt>
+<dd><p>bool
+flag of calculate log det jacobian</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="TFGENZOO.flows.unsafe.actnorm.Actnorm.scale">
+<code class="sig-name descname">scale</code><a class="headerlink" href="#TFGENZOO.flows.unsafe.actnorm.Actnorm.scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>float
+initialize batch’s variance scaling</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="TFGENZOO.flows.unsafe.actnorm.Actnorm.logscale_factor">
+<code class="sig-name descname">logscale_factor</code><a class="headerlink" href="#TFGENZOO.flows.unsafe.actnorm.Actnorm.logscale_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>float
+barrier log value to - Inf</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.unsafe.actnorm.Actnorm.bias">
+<em class="property">property </em><code class="sig-name descname">bias</code><a class="headerlink" href="#TFGENZOO.flows.unsafe.actnorm.Actnorm.bias" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.unsafe.actnorm.Actnorm.build">
+<code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_shape</span><span class="p">:</span> <span class="n">tensorflow.python.framework.tensor_shape.TensorShape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.unsafe.actnorm.Actnorm.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates the variables of the layer (optional, for subclass implementers).</p>
+<p>This is a method that implementers of subclasses of <cite>Layer</cite> or <cite>Model</cite>
+can override if they need a state-creation step in-between
+layer instantiation and layer call.</p>
+<p>This is typically used to create the weights of <cite>Layer</cite> subclasses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>input_shape</strong> – Instance of <cite>TensorShape</cite>, or list of instances of
+<cite>TensorShape</cite> if the layer expects a list of inputs
+(one instance per input).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.unsafe.actnorm.Actnorm.data_dep_initialize">
+<code class="sig-name descname">data_dep_initialize</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.unsafe.actnorm.Actnorm.data_dep_initialize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.unsafe.actnorm.Actnorm.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.unsafe.actnorm.Actnorm.forward" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.unsafe.actnorm.Actnorm.inverse">
+<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">z</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.unsafe.actnorm.Actnorm.inverse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.unsafe.actnorm.Actnorm.logs">
+<em class="property">property </em><code class="sig-name descname">logs</code><a class="headerlink" href="#TFGENZOO.flows.unsafe.actnorm.Actnorm.logs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-TFGENZOO.flows.unsafe.actnorm_test">
+<span id="tfgenzoo-flows-unsafe-actnorm-test-module"></span><h2>TFGENZOO.flows.unsafe.actnorm_test module<a class="headerlink" href="#module-TFGENZOO.flows.unsafe.actnorm_test" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="TFGENZOO.flows.unsafe.actnorm_test.ActnormInvTest">
+<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.unsafe.actnorm_test.</code><code class="sig-name descname">ActnormInvTest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">methodName</span><span class="o">=</span><span class="default_value">'runTest'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.unsafe.actnorm_test.ActnormInvTest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tensorflow.python.framework.test_util.TensorFlowTestCase</span></code></p>
+<dl class="py method">
+<dt id="TFGENZOO.flows.unsafe.actnorm_test.ActnormInvTest.setUp">
+<code class="sig-name descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.unsafe.actnorm_test.ActnormInvTest.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hook method for setting up the test fixture before exercising it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.unsafe.actnorm_test.ActnormInvTest.testActnormInitializeOutputShape">
+<code class="sig-name descname">testActnormInitializeOutputShape</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.unsafe.actnorm_test.ActnormInvTest.testActnormInitializeOutputShape" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.unsafe.actnorm_test.ActnormInvTest.testActnormInvOutput">
+<code class="sig-name descname">testActnormInvOutput</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.unsafe.actnorm_test.ActnormInvTest.testActnormInvOutput" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="TFGENZOO.flows.unsafe.actnorm_test.ActnormScaleTest">
+<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.unsafe.actnorm_test.</code><code class="sig-name descname">ActnormScaleTest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">methodName</span><span class="o">=</span><span class="default_value">'runTest'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.unsafe.actnorm_test.ActnormScaleTest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tensorflow.python.framework.test_util.TensorFlowTestCase</span></code></p>
+<dl class="py method">
+<dt id="TFGENZOO.flows.unsafe.actnorm_test.ActnormScaleTest.setUp">
+<code class="sig-name descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.unsafe.actnorm_test.ActnormScaleTest.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hook method for setting up the test fixture before exercising it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.unsafe.actnorm_test.ActnormScaleTest.testActnormInitializeOutputShape">
+<code class="sig-name descname">testActnormInitializeOutputShape</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.unsafe.actnorm_test.ActnormScaleTest.testActnormInitializeOutputShape" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="TFGENZOO.flows.unsafe.actnorm_test.ActnormTest">
+<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.unsafe.actnorm_test.</code><code class="sig-name descname">ActnormTest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">methodName</span><span class="o">=</span><span class="default_value">'runTest'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.unsafe.actnorm_test.ActnormTest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tensorflow.python.framework.test_util.TensorFlowTestCase</span></code></p>
+<dl class="py method">
+<dt id="TFGENZOO.flows.unsafe.actnorm_test.ActnormTest.setUp">
+<code class="sig-name descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.unsafe.actnorm_test.ActnormTest.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hook method for setting up the test fixture before exercising it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.unsafe.actnorm_test.ActnormTest.testActnormInitializeOutputShape">
+<code class="sig-name descname">testActnormInitializeOutputShape</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.unsafe.actnorm_test.ActnormTest.testActnormInitializeOutputShape" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.unsafe.actnorm_test.ActnormTest.testActnormOutput">
+<code class="sig-name descname">testActnormOutput</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.unsafe.actnorm_test.ActnormTest.testActnormOutput" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-TFGENZOO.flows.unsafe">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-TFGENZOO.flows.unsafe" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="TFGENZOO.flows.utils.html" class="btn btn-neutral float-right" title="TFGENZOO.flows.utils package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="TFGENZOO.flows.html" class="btn btn-neutral float-left" title="TFGENZOO.flows package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, MokkeMeguru
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

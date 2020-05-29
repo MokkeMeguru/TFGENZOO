@@ -40,8 +40,8 @@
   <link rel="stylesheet" href="_static/twemoji.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="TFGENZOO.gans package" href="TFGENZOO.gans.html" />
-    <link rel="prev" title="TFGENZOO.flows package" href="TFGENZOO.flows.html" /> 
+    <link rel="next" title="TFGENZOO.flows.utils.unsafe package" href="TFGENZOO.flows.utils.unsafe.html" />
+    <link rel="prev" title="TFGENZOO.flows.unsafe package" href="TFGENZOO.flows.unsafe.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -187,6 +187,19 @@
             
   <div class="section" id="tfgenzoo-flows-utils-package">
 <h1>TFGENZOO.flows.utils package<a class="headerlink" href="#tfgenzoo-flows-utils-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="TFGENZOO.flows.utils.unsafe.html">TFGENZOO.flows.utils.unsafe package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="TFGENZOO.flows.utils.unsafe.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TFGENZOO.flows.utils.unsafe.html#module-TFGENZOO.flows.utils.unsafe.actnorm_activation">TFGENZOO.flows.utils.unsafe.actnorm_activation module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TFGENZOO.flows.utils.unsafe.html#module-TFGENZOO.flows.utils.unsafe">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
@@ -197,6 +210,7 @@
 <em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.utils.actnorm_activation.</code><code class="sig-name descname">ActnormActivation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">scale</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">logscale_factor</span><span class="o">=</span><span class="default_value">3.0</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.utils.actnorm_activation.ActnormActivation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tensorflow.python.keras.engine.base_layer.Layer</span></code></p>
 <p>Actnorm Layer without inverse function</p>
+<p>This layer cannot sync mean / variance via Multi GPU</p>
 <p>Sources:</p>
 <blockquote>
 <div><p><a class="reference external" href="https://github.com/openai/glow/blob/master/tfops.py#L71-L163">https://github.com/openai/glow/blob/master/tfops.py#L71-L163</a></p>
@@ -282,8 +296,8 @@ layer instantiation and layer call.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="TFGENZOO.flows.utils.actnorm_activation.ActnormActivation.initialize_parameter">
-<code class="sig-name descname">initialize_parameter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.utils.actnorm_activation.ActnormActivation.initialize_parameter" title="Permalink to this definition">¶</a></dt>
+<dt id="TFGENZOO.flows.utils.actnorm_activation.ActnormActivation.data_dep_initialize">
+<code class="sig-name descname">data_dep_initialize</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.utils.actnorm_activation.ActnormActivation.data_dep_initialize" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -588,10 +602,10 @@ Please open the tensorflow probability’s Issue.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="TFGENZOO.gans.html" class="btn btn-neutral float-right" title="TFGENZOO.gans package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="TFGENZOO.flows.utils.unsafe.html" class="btn btn-neutral float-right" title="TFGENZOO.flows.utils.unsafe package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="TFGENZOO.flows.html" class="btn btn-neutral float-left" title="TFGENZOO.flows package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="TFGENZOO.flows.unsafe.html" class="btn btn-neutral float-left" title="TFGENZOO.flows.unsafe package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

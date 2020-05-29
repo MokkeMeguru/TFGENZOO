@@ -7,6 +7,7 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
+   TFGENZOO.flows.unsafe
    TFGENZOO.flows.utils
 
 Submodules

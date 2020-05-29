@@ -40,7 +40,7 @@
   <link rel="stylesheet" href="_static/twemoji.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="TFGENZOO.flows.utils package" href="TFGENZOO.flows.utils.html" />
+    <link rel="next" title="TFGENZOO.flows.unsafe package" href="TFGENZOO.flows.unsafe.html" />
     <link rel="prev" title="TFGENZOO package" href="TFGENZOO.html" /> 
 </head>
 
@@ -189,7 +189,23 @@
 <h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="TFGENZOO.flows.unsafe.html">TFGENZOO.flows.unsafe package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="TFGENZOO.flows.unsafe.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TFGENZOO.flows.unsafe.html#module-TFGENZOO.flows.unsafe.actnorm">TFGENZOO.flows.unsafe.actnorm module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TFGENZOO.flows.unsafe.html#module-TFGENZOO.flows.unsafe.actnorm_test">TFGENZOO.flows.unsafe.actnorm_test module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TFGENZOO.flows.unsafe.html#module-TFGENZOO.flows.unsafe">Module contents</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="TFGENZOO.flows.utils.html">TFGENZOO.flows.utils package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="TFGENZOO.flows.utils.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="TFGENZOO.flows.utils.unsafe.html">TFGENZOO.flows.utils.unsafe package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.utils.unsafe.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.utils.unsafe.html#module-TFGENZOO.flows.utils.unsafe.actnorm_activation">TFGENZOO.flows.utils.unsafe.actnorm_activation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.utils.unsafe.html#module-TFGENZOO.flows.utils.unsafe">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="TFGENZOO.flows.utils.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TFGENZOO.flows.utils.html#module-TFGENZOO.flows.utils.actnorm_activation">TFGENZOO.flows.utils.actnorm_activation module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="TFGENZOO.flows.utils.html#module-TFGENZOO.flows.utils.conv">TFGENZOO.flows.utils.conv module</a></li>
@@ -292,13 +308,13 @@ layer instantiation and layer call.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="TFGENZOO.flows.actnorm.Actnorm.forward">
-<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.actnorm.Actnorm.forward" title="Permalink to this definition">¶</a></dt>
+<dt id="TFGENZOO.flows.actnorm.Actnorm.data_dep_initialize">
+<code class="sig-name descname">data_dep_initialize</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.actnorm.Actnorm.data_dep_initialize" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="TFGENZOO.flows.actnorm.Actnorm.initialize_parameter">
-<code class="sig-name descname">initialize_parameter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.actnorm.Actnorm.initialize_parameter" title="Permalink to this definition">¶</a></dt>
+<dt id="TFGENZOO.flows.actnorm.Actnorm.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.actnorm.Actnorm.forward" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -821,13 +837,13 @@ layer instantiation and layer call.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="TFGENZOO.flows.flowbase.FlowBase.forward">
-<em class="property">abstract </em><code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inputs</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flowbase.FlowBase.forward" title="Permalink to this definition">¶</a></dt>
+<dt id="TFGENZOO.flows.flowbase.FlowBase.data_dep_initialize">
+<code class="sig-name descname">data_dep_initialize</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flowbase.FlowBase.data_dep_initialize" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="TFGENZOO.flows.flowbase.FlowBase.initialize_parameter">
-<code class="sig-name descname">initialize_parameter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flowbase.FlowBase.initialize_parameter" title="Permalink to this definition">¶</a></dt>
+<dt id="TFGENZOO.flows.flowbase.FlowBase.forward">
+<em class="property">abstract </em><code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inputs</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flowbase.FlowBase.forward" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -1407,13 +1423,13 @@ layer instantiation and layer call.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="TFGENZOO.flows.Actnorm.forward">
-<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.Actnorm.forward" title="Permalink to this definition">¶</a></dt>
+<dt id="TFGENZOO.flows.Actnorm.data_dep_initialize">
+<code class="sig-name descname">data_dep_initialize</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.Actnorm.data_dep_initialize" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="TFGENZOO.flows.Actnorm.initialize_parameter">
-<code class="sig-name descname">initialize_parameter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.Actnorm.initialize_parameter" title="Permalink to this definition">¶</a></dt>
+<dt id="TFGENZOO.flows.Actnorm.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.Actnorm.forward" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -1653,7 +1669,7 @@ layer instantiation and layer call.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="TFGENZOO.flows.utils.html" class="btn btn-neutral float-right" title="TFGENZOO.flows.utils package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="TFGENZOO.flows.unsafe.html" class="btn btn-neutral float-right" title="TFGENZOO.flows.unsafe package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="TFGENZOO.html" class="btn btn-neutral float-left" title="TFGENZOO package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

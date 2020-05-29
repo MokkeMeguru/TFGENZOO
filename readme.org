@@ -1,16 +1,17 @@
-[[https://github.com/MokkeMeguru/TFGENZOO/workflows/tensorflow%20test/badge.svg?branch=flow%2Fdevelop]]
+[[https://github.com/MokkeMeguru/TFGENZOO/workflows/tensorflow%20test/badge.svg?branch=master]]
 [[https://img.shields.io/badge/License-MIT-yellow.svg]]
 [[file:https://img.shields.io/badge/python-3.7-blue.svg]]
 [[file:https://img.shields.io/badge/tensorflow-%3E%3D2.2.0-brightgreen.svg]]
+** News [2020/5/29]
+New training results [[https://www.tensorflow.org/datasets/catalog/oxford_flowers102][Oxford-flower102]] with only 4 hours! (Quadro P6000 x 1)
 
-** News [2020/3/17]
-
- update loss value in Glow-MNIST
- |-------+-------+------------+--------------|
+|-------+-------+------------+--------------|
  | data  |   NLL(val) | epoch      | pretrained   |
  |-------+-------+------------+--------------|
- | MNIST | 1.33 | 64 | --- |
+ | MNIST | 4.640194892883301 | 512 | --- |
  |-------+-------+------------+--------------|
+
+[[https://github.com/MokkeMeguru/seminar/blob/master/TFGENZOO/512epoch.png]]
   
 * What's this repository?
   This is a repository for some researcher to build some Generative models using Tensorflow 2.0.
@@ -23,15 +24,28 @@ We need strict definitions for shapes, parameters, and formulas.
 We should Implement correct codes with well-documented(tested).
 #+end_example
 
-* How to run?
+* How to use?
+** by Install
+- pipenv
+   #+begin_src
+   pipenv install git+https://github.com/MokkeMeguru/TFGENZOO.git@v1.0#egg=TFGENZOO
+   #+end_src
+  
+- pip
+   #+begin_src
+   pip install git+https://github.com/MokkeMeguru/TFGENZOO.git@v1.0#egg=TFGENZOO
+   #+end_src
+** Source build for development
+
   1. clone this repository (If you want to do it, I will push this repository to PYPI)
   2. build this repository ~docker-compose build~
   3. run the environment ~sh run_script.sh~
   4. connect it via VSCode or Emacs or vi or anything.
+
 * Examples
   - [[https://github.com/MokkeMeguru/TFGENZOO_EXAMPLE][TFGENZOO_EXAMPLE]]
 * Roadmap
-    - [ ] Flow-based Model Architecture (RealNVP, Glow)
+    - [X] Flow-based Model Architecture (RealNVP, Glow)
     - [ ] i-ResNet Model Architecture (i-ResNet, i-RevNet)
     - [ ] GANs Model Architecture (GANs)
 
@@ -76,17 +90,15 @@ python 3.6 > trainer.main()
 
 ** News [2020/4/24]
    publish installable alpha-version!!!
-  
- - pipenv
-   #+begin_src
-   pipenv install git+https://github.com/MokkeMeguru/TFGENZOO.git@v1.0-beta2#egg=TFGENZOO
-   #+end_src
-  
- - pip
-   #+begin_src
-   pip install git+https://github.com/MokkeMeguru/TFGENZOO.git@v1.0-beta2#egg=TFGENZOO
-   #+end_src
 
 ** News [2020/5/1]
   Move example code to the [[https://github.com/MokkeMeguru/TFGENZOO_EXAMPLE][TFGENZOO_EXAMPLE]]. 
 
+** News [2020/5/25]
+
+ update loss value in Glow-MNIST
+ |-------+-------+------------+--------------|
+ | data  |   NLL(val) | epoch      | pretrained   |
+ |-------+-------+------------+--------------|
+ | MNIST | 1.33 | 64 | --- |
+ |-------+-------+------------+--------------|

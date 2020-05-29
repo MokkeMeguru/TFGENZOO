@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: TFGENZOO
-Version: 0.1.0a0
+Version: 0.1.0
 Summary: helper of building generative model with Tensorflow 2.x
 Home-page: https://github.com/MokkeMeguru/TFGENZOO
 Author: MokkeMeguru
@@ -8,7 +8,11 @@ Author-email: meguru.mokke@gmail.com
 License: MIT
 Description: heavily documented (test and description and formula)generative model examples / layers
 Platform: UNKNOWN
-Classifier: Programming Language :: Python :: 3.7.6
-Classifier: Licence :: OSI Apprived :: MIT Licence
-Classifier: Operation System :: Linux, Windows
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.6
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Environment :: GPU :: NVIDIA CUDA :: 10.0
+Classifier: Environment :: GPU :: NVIDIA CUDA :: 10.1
 Description-Content-Type: text/markdown

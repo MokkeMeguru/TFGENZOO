@@ -24,11 +24,24 @@ We need strict definitions for shapes, parameters, and formulas.
 We should Implement correct codes with well-documented(tested).
 #+end_example
 
-* How to run?
+* How to use?
+** by Install
+- pipenv
+   #+begin_src
+   pipenv install git+https://github.com/MokkeMeguru/TFGENZOO.git@v1.0-beta2#egg=TFGENZOO
+   #+end_src
+  
+- pip
+   #+begin_src
+   pip install git+https://github.com/MokkeMeguru/TFGENZOO.git@v1.0-beta2#egg=TFGENZOO
+   #+end_src
+** Source build for development
+
   1. clone this repository (If you want to do it, I will push this repository to PYPI)
   2. build this repository ~docker-compose build~
   3. run the environment ~sh run_script.sh~
   4. connect it via VSCode or Emacs or vi or anything.
+
 * Examples
   - [[https://github.com/MokkeMeguru/TFGENZOO_EXAMPLE][TFGENZOO_EXAMPLE]]
 * Roadmap
@@ -77,16 +90,6 @@ python 3.6 > trainer.main()
 
 ** News [2020/4/24]
    publish installable alpha-version!!!
-  
- - pipenv
-   #+begin_src
-   pipenv install git+https://github.com/MokkeMeguru/TFGENZOO.git@v1.0-beta2#egg=TFGENZOO
-   #+end_src
-  
- - pip
-   #+begin_src
-   pip install git+https://github.com/MokkeMeguru/TFGENZOO.git@v1.0-beta2#egg=TFGENZOO
-   #+end_src
 
 ** News [2020/5/1]
   Move example code to the [[https://github.com/MokkeMeguru/TFGENZOO_EXAMPLE][TFGENZOO_EXAMPLE]]. 

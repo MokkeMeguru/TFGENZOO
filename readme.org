@@ -32,7 +32,7 @@ We should Implement correct codes with well-documented(tested).
 * Examples
   - [[https://github.com/MokkeMeguru/TFGENZOO_EXAMPLE][TFGENZOO_EXAMPLE]]
 * Roadmap
-    - [ ] Flow-based Model Architecture (RealNVP, Glow)
+    - [X] Flow-based Model Architecture (RealNVP, Glow)
     - [ ] i-ResNet Model Architecture (i-ResNet, i-RevNet)
     - [ ] GANs Model Architecture (GANs)
 

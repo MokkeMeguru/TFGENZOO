@@ -12,15 +12,6 @@ New training results [[https://www.tensorflow.org/datasets/catalog/oxford_flower
  |-------+-------+------------+--------------|
 
 [[https://github.com/MokkeMeguru/seminar/blob/master/TFGENZOO/512epoch.png]]
-
-** News [2020/5/25]
-
- update loss value in Glow-MNIST
- |-------+-------+------------+--------------|
- | data  |   NLL(val) | epoch      | pretrained   |
- |-------+-------+------------+--------------|
- | MNIST | 1.33 | 64 | --- |
- |-------+-------+------------+--------------|
   
 * What's this repository?
   This is a repository for some researcher to build some Generative models using Tensorflow 2.0.
@@ -100,3 +91,11 @@ python 3.6 > trainer.main()
 ** News [2020/5/1]
   Move example code to the [[https://github.com/MokkeMeguru/TFGENZOO_EXAMPLE][TFGENZOO_EXAMPLE]]. 
 
+** News [2020/5/25]
+
+ update loss value in Glow-MNIST
+ |-------+-------+------------+--------------|
+ | data  |   NLL(val) | epoch      | pretrained   |
+ |-------+-------+------------+--------------|
+ | MNIST | 1.33 | 64 | --- |
+ |-------+-------+------------+--------------|

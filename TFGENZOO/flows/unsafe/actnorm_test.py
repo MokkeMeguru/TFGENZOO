@@ -1,7 +1,7 @@
 import numpy as np
 import tensorflow as tf
 
-from TFGENZOO.flows.actnorm import Actnorm
+from TFGENZOO.flows.unsafe.actnorm import Actnorm
 
 
 class ActnormTest(tf.test.TestCase):

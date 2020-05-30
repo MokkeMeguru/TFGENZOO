@@ -35,6 +35,10 @@ We should Implement correct codes with well-documented(tested).
    #+begin_src
    pip install git+https://github.com/MokkeMeguru/TFGENZOO.git@v1.0#egg=TFGENZOO
    #+end_src
+- conda
+   #+begin_src
+   conda skeleton pypi TFGENZOO
+   #+end_src
 ** Source build for development
 
   1. clone this repository (If you want to do it, I will push this repository to PYPI)

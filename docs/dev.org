@@ -8,3 +8,11 @@ python3 setup.py sdist bdist_wheel
 sphinx-apidoc -f -o ./source ./TFGENZOO
 make html
 #+end_src
+
+* How to upload package
+#+begin_src shell
+rm -r TFGENZOO.egg-info/
+rm -r dist
+python setup.py sdist bdist_wheel
+twine upload --repository pypi dist/*
+#+end_src

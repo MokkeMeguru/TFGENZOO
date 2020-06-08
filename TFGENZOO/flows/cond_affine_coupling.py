@@ -55,7 +55,7 @@ class ConditionalAffineCoupling(FlowComponent):
         scale_shift_net: Layer = None,
         **kwargs
     ):
-        super(AffineCoupling, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.conditional_input = True
         if not scale_shift_net:
             raise ValueError
@@ -73,12 +73,12 @@ class ConditionalAffineCoupling(FlowComponent):
 
     def build(self, input_shape: tf.TensorShape):
         self.reduce_axis = list(range(len(input_shape)))[1:]
-        super(AffineCoupling, self).build(input_shape)
+        super().build(input_shape)
 
     def forward(self, x: tf.Tensor, cond: tf.Tensor, **kwargs):
         x1, x2 = tf.split(x, 2, axis=-1)
         z1 = x1
-        h = self.scale_shift_net(tf.concat([x1, cond], axis=-1), **kwargs)
+        h = self.scale_shift_net(x1, cond=cond, **kwargs)
         if self.mask_type == AffineCouplingMask.ChannelWise:
             shift = h[..., 0::2]
             log_scale = h[..., 1::2]
@@ -97,7 +97,7 @@ class ConditionalAffineCoupling(FlowComponent):
     def inverse(self, z: tf.Tensor, cond: tf.Tensor, **kwargs):
         z1, z2 = tf.split(z, 2, axis=-1)
         x1 = z1
-        h = self.scale_shift_net(tf.concat([z1, cond], axis=-1), **kwargs)
+        h = self.scale_shift_net(z1, cond=cond, **kwargs)
         if self.mask_type == AffineCouplingMask.ChannelWise:
             shift = h[..., 0::2]
             log_scale = h[..., 1::2]

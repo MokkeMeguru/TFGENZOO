@@ -44,6 +44,10 @@ class Actnorm(FlowComponent):
         self.scale = scale
         self.logscale_factor = logscale_factor
 
+    def get_config(self):
+        config_map = {"scale": self.scale, "logscale_factor": self.logscale_factor}
+        return config_map
+
     # pylint: disable=attribute-defined-outside-init
     def build(self, input_shape: tf.TensorShape):
         if len(input_shape) == 4:
@@ -67,8 +71,11 @@ class Actnorm(FlowComponent):
             aggregation=tf.VariableAggregation.MEAN,
         )
         self.bias = self.add_weight(
-            name="bias", shape=tuple(stats_shape), initializer="zeros", trainable=True,
-            aggregation=tf.VariableAggregation.MEAN,                    
+            name="bias",
+            shape=tuple(stats_shape),
+            initializer="zeros",
+            trainable=True,
+            aggregation=tf.VariableAggregation.MEAN,
         )
 
         super().build(input_shape)
@@ -78,13 +85,14 @@ class Actnorm(FlowComponent):
         if self.initialized:
             bias, logs = self.bias, self.logs
         else:
-            tf.print("initialization at {}".format(self.name))          
+            tf.print("initialization at {}".format(self.name))
             mean = tf.reduce_mean(x, axis=[0, 1, 2], keepdims=True)
             squared = tf.reduce_mean(tf.square(x), axis=[0, 1, 2], keepdims=True)
             variance = squared - tf.square(mean)
             bias = -mean
-            logs = (	 
-                tf.math.log(self.scale * tf.math.rsqrt(variance + 1e-6)) / self.logscale_factor
+            logs = (
+                tf.math.log(self.scale * tf.math.rsqrt(variance + 1e-6))
+                / self.logscale_factor
             )
 
         with tf.control_dependencies([bias, logs]):

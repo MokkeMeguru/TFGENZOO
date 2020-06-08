@@ -47,6 +47,10 @@ class Actnorm(FlowComponent):
         self.scale = scale
         self.logscale_factor = logscale_factor
 
+    def get_config(self):
+        config_map = {"scale": self.scale, "logscale_factor": self.logscale_factor}
+        return config_map
+
     # pylint: disable=attribute-defined-outside-init
     def build(self, input_shape: tf.TensorShape):
         if len(input_shape) == 4:

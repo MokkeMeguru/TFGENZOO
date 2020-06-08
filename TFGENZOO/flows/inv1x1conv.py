@@ -72,14 +72,17 @@ class Inv1x1Conv(FlowComponent):
     def __init__(self, **kwargs):
         super().__init__()
 
+    def get_config(self):
+        config_map = {}
+        return config_map
+
     def forward(self, x: tf.Tensor, **kwargs):
         W = self.W + tf.eye(self.c) * 1e-5
         _W = tf.reshape(W, [1, 1, self.c, self.c])
         z = tf.nn.conv2d(x, _W, [1, 1, 1, 1], "SAME")
         # scalar
         log_det_jacobian = tf.cast(
-            tf.linalg.slogdet(tf.cast(W, tf.float64))[1] * self.h * self.w,
-            tf.float32,
+            tf.linalg.slogdet(tf.cast(W, tf.float64))[1] * self.h * self.w, tf.float32,
         )
         # expand as batch
         log_det_jacobian = tf.broadcast_to(log_det_jacobian, tf.shape(x)[0:1])

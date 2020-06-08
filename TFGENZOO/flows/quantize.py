@@ -51,6 +51,10 @@ class LogitifyImage(FlowBase):
 
     def build(self, input_shape: tf.TensorShape):
         super(LogitifyImage, self).build(input_shape)
+        # ref. https://github.com/masa-su/pixyz/blob/master/pixyz/flows/operations.py#L254
+        self.pre_logit_scale = tf.constant(
+            np.log(self.alpha) - np.log(1.0 - self.alpha), dtype=tf.float32
+        )
         if len(input_shape) == 4:
             self.reduce_axis = [1, 2, 3]
         elif len(input_shape) == 2:
@@ -65,10 +69,11 @@ class LogitifyImage(FlowBase):
         self.corruption_level = corruption_level
         self.alpha = alpha
 
-        # ref. https://github.com/masa-su/pixyz/blob/master/pixyz/flows/operations.py#L254
-        self.pre_logit_scale = tf.constant(
-            np.log(self.alpha) - np.log(1.0 - self.alpha), dtype=tf.float32
-        )
+    def get_config(self):
+        config = super().get_config()
+        config_update = {"corruption_level": self.corruption_level, "alpha": self.alpha}
+        config_base.update(config_update)
+        return config
 
     def forward(self, x: tf.Tensor, **kwargs):
         """

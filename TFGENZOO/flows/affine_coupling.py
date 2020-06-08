@@ -81,8 +81,8 @@ class AffineCoupling(FlowComponent):
     def get_config(self):
         config = super().get_config()
         config_update = {
-            "scale_shit_net": scale_shift_net.get_config(),
-            "mask_type": mask_type,
+            "scale_shit_net": self.scale_shift_net.get_config(),
+            "mask_type": self.mask_type,
         }
         config.update(config_update)
         return config

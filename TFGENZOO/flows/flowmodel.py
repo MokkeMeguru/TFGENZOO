@@ -20,6 +20,7 @@ class SingleFlow(Model):
         super().__init__()
         if resblk_kwargs is None:
             resblk_kwargs = {"num_block": 3, "units_factor": 6}
+
         self.resblk_kwargs = resblk_kwargs
         self.K = K
         self.L = L
@@ -34,6 +35,17 @@ class SingleFlow(Model):
                     AffineCoupling(scale_shift_net=ResidualNet(**self.resblk_kwargs))
                 )
         self.flows = layers
+
+    def get_config(self):
+        config = super().get_config()
+        config_update = {
+            "resblk_kwargs": self.resblk_kwargs,
+            "K": self.K,
+            "L": self.L,
+            "flows": [layer.get_config() for layer in self.flows],
+        }
+        config.update(config_update)
+        return config
 
     def call(self, x, zaux=None, inverse=False, training=True):
         if inverse:
@@ -117,6 +129,17 @@ class BasicGlow(Model):
                 layers.append(FactorOut(with_zaux=True, conditional=conditional))
         self.flows = layers
 
+    def get_config(self):
+        config = super().get_config()
+        config_update = {
+            "resblk_kwargs": self.resblk_kwargs,
+            "K": self.K,
+            "L": self.L,
+            "flows": [layer.get_config() for layer in self.flows],
+        }
+        config.update(config_update)
+        return config
+
     def call(self, x, zaux=None, inverse=False, training=True):
         if inverse:
             return self.inverse(x, zaux, training)
@@ -172,6 +195,12 @@ class SqueezeFactorOut(Model):
             Squeezing(with_zaux=True),
             FactorOut(with_zaux=True),
         ]
+
+    def get_config(self):
+        config = super().get_config()
+        config_update = {"flows": [flow.get_config() for flow in self.flows]}
+        config.update(config_update)
+        return config
 
     def call(self, x, zaux=None, inverse=False):
         if inverse:

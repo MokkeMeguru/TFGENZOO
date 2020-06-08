@@ -44,6 +44,19 @@ class FactorOut(FactorOutBase):
         if self.conditional:
             self.conv = Conv2DZeros(width_scale=2)
 
+    def get_config(self):
+        config = super().get_config()
+        config_update = {}
+        if self.conditional:
+            config_update = {
+                "conditional": self.conditional,
+                "conv": self.conv.get_config(),
+            }
+        else:
+            config_update = {"conditional": self.conditional}
+        config.update(config_update)
+        return config
+
     def split2d_prior(self, z: tf.Tensor):
         h = self.conv(z)
         return split_feature(h, "cross")

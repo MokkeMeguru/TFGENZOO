@@ -118,6 +118,15 @@ class FlowModule(FlowBase):
         super(FlowModule, self).__init__()
         self.components = components
 
+    def get_config(self):
+        config = super().get_config()
+        config_update_layer = []
+        for comp in self.components:
+            config_update_layer.append(comp.get_config())
+        config_update = {"components", config_update_layer}
+        config.update(config_update)
+        return config
+
     def forward(self, x, **kwargs):
         z = x
         log_det_jacobian = []
@@ -155,6 +164,12 @@ class FactorOutBase(FlowBase):
     def __init__(self, with_zaux: bool = False, **kwargs):
         super(FactorOutBase, self).__init__(**kwargs)
         self.with_zaux = with_zaux
+
+    def get_config(self):
+        config = super().get_config()
+        config_update = {"with_zaux": self.with_zaux}
+        config.update(config_update)
+        return config
 
     def build(self, input_shape: tf.TensorShape):
         super(FactorOutBase, self).build(input_shape)

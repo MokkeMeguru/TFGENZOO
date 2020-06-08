@@ -35,6 +35,12 @@ class ActnormActivation(Layer):
         self.scale = scale
         self.logscale_factor = logscale_factor
 
+    def get_config(self):
+        config = super().get_config()
+        config_update = {"scale": self.scale, "logscale_factor": self.logscale_factor}
+        config.update(config_update)
+        return config
+
     def build(self, input_shape: tf.TensorShape):
         if len(input_shape) == 4:
             reduce_axis = [0, 1, 2]
@@ -55,7 +61,10 @@ class ActnormActivation(Layer):
             aggregation=tf.VariableAggregation.MEAN,
         )
         self.bias = self.add_weight(
-            name="bias", shape=tuple(stats_shape), initializer="zeros", trainable=True,
+            name="bias",
+            shape=tuple(stats_shape),
+            initializer="zeros",
+            trainable=True,
             aggregation=tf.VariableAggregation.MEAN,
         )
 
@@ -77,14 +86,15 @@ class ActnormActivation(Layer):
             tf.print("initialization at {}".format(self.name))
             mean = tf.reduce_mean(x, axis=[0, 1, 2], keepdims=True)
             squared = tf.reduce_mean(tf.square(x), axis=[0, 1, 2], keepdims=True)
-          
+
             variance = squared - tf.square(mean)
-            
+
             bias = -mean
-            logs = (	 
-                tf.math.log(self.scale * tf.math.rsqrt(variance + 1e-6)) / self.logscale_factor
+            logs = (
+                tf.math.log(self.scale * tf.math.rsqrt(variance + 1e-6))
+                / self.logscale_factor
             )
-            
+
         with tf.control_dependencies([bias, logs]):
             self.bias.assign(bias)
             self.logs.assign(logs)

@@ -55,6 +55,23 @@ class Conv2D(Layer):
             self.activation = ActnormActivation()
         self.initializer = initializer
 
+    def get_config(self):
+        config = super().get_config()
+        config_update = {
+            "width": self.width,
+            "width_scale": self.width_scale,
+            "kernel_size": self.kernel_size,
+            "stride": self.stride,
+            "padding": self.padding,
+            "do_actnorm": self.do_actnorm,
+            "do_weightnorm": self.do_weightnorm,
+            "initializer": self.initializer.get_config,
+        }
+        if self.do_actnorm:
+            config_update.update({"activation": self.activation.get_config()})
+        config.update(config_update)
+        return config
+
     def build(self, input_shape: tf.TensorShape):
         n_in = input_shape[-1]
         n_out = self.width if self.width is not None else n_in * self.width_scale

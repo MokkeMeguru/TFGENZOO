@@ -22,6 +22,12 @@ class LogScale(Layer):
         super(LogScale, self).__init__(**kwargs)
         self.log_scale_factor = log_scale_factor
 
+    def get_config(self):
+        config = super().get_config()
+        config_update = {"log_scale_factor": self.log_scale_factor}
+        config.update(config_update)
+        return config
+
     def call(self, x: tf.Tensor):
         return x * tf.exp(self.logs * self.log_scale_factor)
 
@@ -73,11 +79,13 @@ class AffineCoupling(FlowComponent):
         self.mask_type = mask_type
 
     def get_config(self):
-        config_map = {
+        config = super().get_config()
+        config_update = {
             "scale_shit_net": scale_shift_net.get_config(),
             "mask_type": mask_type,
         }
-        return config_map
+        config.update(config_update)
+        return config
 
     def build(self, input_shape: tf.TensorShape):
         self.reduce_axis = list(range(len(input_shape)))[1:]

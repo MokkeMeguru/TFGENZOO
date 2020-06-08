@@ -47,6 +47,20 @@ class Conv2DZeros(Layer):
         self.logscale_factor = logscale_factor
         self.initializer = initializer
 
+    def get_config(self):
+        config = super().get_config()
+        config_update = {
+            "width": self.width,
+            "width_scale": self.width_scale,
+            "kernel_size": self.kernel_size,
+            "stride": self.stride,
+            "padding": self.padding,
+            "log_scale_factor": self.logscale_factor,
+            "initializer": self.initializer.get_config(),
+        }
+        config.update(config_update)
+        return config
+
     def build(self, input_shape: tf.TensorShape):
         n_in = input_shape[-1]
         n_out = self.width if self.width is not None else n_in * self.width_scale

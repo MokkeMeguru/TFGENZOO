@@ -27,11 +27,23 @@ class ShallowResNet(Model):
         self.conv1 = Conv2D(width=self.width)
         self.conv2 = Conv2D(width=self.width, kernel_size=[1, 1])
 
+    def get_config(self):
+        config = super().get_config()
+        config_update = {
+            "width": self.width,
+            "conv1": self.conv1.get_config(),
+            "conv2": self.conv2.get_config(),
+            "conv_out": self.conv_out.get_config(),
+        }
+        config.update(config_update)
+        return config
+
     def call(self, x: tf.Tensor):
         x = tf.nn.relu(self.conv1(x))
         x = tf.nn.relu(self.conv2(x))
         x = self.conv_out(x)
         return x
+
 
 class ShallowConnectedResNet(Model):
     """ResNet of OpenAI's Glow + Skip Connection
@@ -52,6 +64,17 @@ class ShallowConnectedResNet(Model):
         self.width = width
         self.conv1 = Conv2D(width=self.width)
         self.conv2 = Conv2D(width=self.width, kernel_size=[1, 1])
+
+    def get_config(self):
+        config = super().get_config()
+        config_update = {
+            "width": self.width,
+            "conv1": self.conv1.get_config(),
+            "conv2": self.conv2.get_config(),
+            "conv_out": self.conv_out.get_config(),
+        }
+        config.update(config_update)
+        return config
 
     def call(self, x: tf.Tensor):
         shortcut = x

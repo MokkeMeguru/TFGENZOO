@@ -35,6 +35,12 @@ class ActnormActivation(Layer):
         self.scale = scale
         self.logscale_factor = logscale_factor
 
+    def get_config(self):
+        config = super().get_config()
+        config_update = {"scale": self.scale, "logscale_factor": self.logscale_factor}
+        config.update(config_update)
+        return config
+
     def build(self, input_shape: tf.TensorShape):
         if len(input_shape) == 4:
             reduce_axis = [0, 1, 2]

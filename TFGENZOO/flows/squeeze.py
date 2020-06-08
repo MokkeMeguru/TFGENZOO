@@ -48,6 +48,12 @@ class Squeezing(FlowBase):
         super(Squeezing, self).__init__()
         self.with_zaux = with_zaux
 
+    def get_config(self):
+        config = super().get_config()
+        config_update = {"with_zaux": self.with_zaux}
+        config.update(config_update)
+        return config
+
     def forward(self, x: tf.Tensor, zaux: tf.Tensor = None, **kwargs):
         x = tf.nn.space_to_depth(x, 2)
         if self.with_zaux and zaux is not None:

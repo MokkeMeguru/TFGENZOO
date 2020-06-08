@@ -73,8 +73,10 @@ class Inv1x1Conv(FlowComponent):
         super().__init__()
 
     def get_config(self):
-        config_map = {}
-        return config_map
+        config = super().get_config()
+        config_update = {}
+        config.update(config_update)
+        return config
 
     def forward(self, x: tf.Tensor, **kwargs):
         W = self.W + tf.eye(self.c) * 1e-5

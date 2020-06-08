@@ -72,7 +72,7 @@ class LogitifyImage(FlowBase):
     def get_config(self):
         config = super().get_config()
         config_update = {"corruption_level": self.corruption_level, "alpha": self.alpha}
-        config_base.update(config_update)
+        config.update(config_update)
         return config
 
     def forward(self, x: tf.Tensor, **kwargs):

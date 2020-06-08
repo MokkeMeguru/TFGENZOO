@@ -72,7 +72,7 @@ class AffineCoupling(FlowComponent):
         scale_shift_net: Layer = None,
         **kwargs
     ):
-        super(AffineCoupling, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         if not scale_shift_net:
             raise ValueError
         self.scale_shift_net = scale_shift_net
@@ -89,7 +89,7 @@ class AffineCoupling(FlowComponent):
 
     def build(self, input_shape: tf.TensorShape):
         self.reduce_axis = list(range(len(input_shape)))[1:]
-        super(AffineCoupling, self).build(input_shape)
+        super().build(input_shape)
 
     def forward(self, x: tf.Tensor, **kwargs):
         x1, x2 = tf.split(x, 2, axis=-1)

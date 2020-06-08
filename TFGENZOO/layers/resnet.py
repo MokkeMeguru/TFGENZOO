@@ -38,7 +38,7 @@ class ShallowResNet(Model):
         config.update(config_update)
         return config
 
-    def call(self, x: tf.Tensor, cond: tf.Tensor):
+    def call(self, x: tf.Tensor, cond: tf.Tensor = None):
         if cond is not None:
             x = tf.concat([x, cond], axis=-1)
         x = tf.nn.relu(self.conv1(x))
@@ -78,7 +78,9 @@ class ShallowConnectedResNet(Model):
         config.update(config_update)
         return config
 
-    def call(self, x: tf.Tensor):
+    def call(self, x: tf.Tensor, cond: tf.Tensor = None):
+        if cond is not None:
+            x = tf.concat([x, cond], axis=-1)
         shortcut = x
         x = tf.nn.relu(self.conv1(x))
         x = tf.nn.relu(self.conv2(x))

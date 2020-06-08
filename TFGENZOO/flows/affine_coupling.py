@@ -25,6 +25,7 @@ class LogScale(Layer):
     def call(self, x: tf.Tensor):
         return x * tf.exp(self.logs * self.log_scale_factor)
 
+
 class AffineCouplingMask(Enum):
     ChannelWise = 1
 
@@ -70,6 +71,13 @@ class AffineCoupling(FlowComponent):
             raise ValueError
         self.scale_shift_net = scale_shift_net
         self.mask_type = mask_type
+
+    def get_config(self):
+        config_map = {
+            "scale_shit_net": scale_shift_net.get_config(),
+            "mask_type": mask_type,
+        }
+        return config_map
 
     def build(self, input_shape: tf.TensorShape):
         self.reduce_axis = list(range(len(input_shape)))[1:]

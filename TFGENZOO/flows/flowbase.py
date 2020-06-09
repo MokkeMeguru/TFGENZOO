@@ -160,11 +160,11 @@ class ConditionalFlowModule(FlowBase):
     """
 
     def build(self, input_shape: tf.TensorShape):
-        super(FlowModule, self).build(input_shape=input_shape)
+        super().build(input_shape=input_shape)
         self.conditional_input = True
 
     def __init__(self, components: List[FlowComponent]):
-        super(FlowModule, self).__init__()
+        super().__init__()
         self.components = components
 
     def get_config(self):

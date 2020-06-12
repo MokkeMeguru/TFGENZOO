@@ -10,9 +10,9 @@ class AffineCouplingTest(tf.test.TestCase):
     def setUp(self):
         super(AffineCouplingTest, self).setUp()
         self.affine_coupling = AffineCoupling(
-            scale_shift_net=lambda inputs: ShallowResNet(inputs, width=128)
+            scale_shift_net_template=lambda inputs: ShallowResNet(inputs, width=128)
         )
-        self.affine_coupling.build((None, 16, 16, 4))
+        self.affine_coupling.build([16, 16, 4])
 
     def testAffineCouplingInitialize(self):
         assert not self.affine_coupling.initialized

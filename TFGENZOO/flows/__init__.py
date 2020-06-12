@@ -1,8 +1,8 @@
 from TFGENZOO.flows.actnorm import Actnorm
-from TFGENZOO.flows.affine_coupling import (AffineCoupling, AffineCouplingMask,
-                                            LogScale)
+from TFGENZOO.flows.affine_coupling import AffineCoupling, AffineCouplingMask, LogScale
 from TFGENZOO.flows.flowbase import FactorOutBase, FlowComponent, FlowModule
 from TFGENZOO.flows.inv1x1conv import Inv1x1Conv, regular_matrix_init
+from TFGENZOO.flows.quantize import LogitifyImage
 
 __all__ = [
     "FactorOutBase",
@@ -14,4 +14,5 @@ __all__ = [
     "LogScale",
     "Inv1x1Conv",
     "regular_matrix_init",
+    "LogitifyImage",
 ]

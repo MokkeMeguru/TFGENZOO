@@ -46,7 +46,31 @@ class LogitifyImage(FlowBase):
                  x &= logisitic(z)\\\\
                    &= 1 / (1 + exp( -z )) \\\\
                  InverseLogDetJacobian &= sum(-2 \\log(logistic(z)) - z)
+    Examples:
 
+        >>> import tensorflow as tf
+        >>> from TFGENZOO.flows import LogitifyImage
+        >>> li = LogitifyImage()
+        >>> li.build([None, 32, 32, 1])
+        >>> li.get_config()
+        {'name': 'logitify_image_1', ...}
+        >>> inputs = tf.keras.Input([32, 32, 1])
+        >>> li(inputs)
+        (<tf.Tensor 'logitify_image/Identity:0' shape=(None, 32, 32, 1) dtype=float32>,
+        <tf.Tensor 'logitify_image/Identity_1:0' shape=(None,) dtype=float32>)
+        >>> tf.keras.Model(inputs, li(inputs)).summary()
+        Model: "model"
+        _________________________________________________________________
+        Layer (type)                 Output Shape              Param #
+        =================================================================
+        input_1 (InputLayer)         [(None, 32, 32, 1)]       0
+        _________________________________________________________________
+        logitify_image (LogitifyImag ((None, 32, 32, 1), (None 1
+        =================================================================
+        Total params: 1
+        Trainable params: 0
+        Non-trainable params: 1
+        _________________________________________________________________
     """
 
     def build(self, input_shape: tf.TensorShape):

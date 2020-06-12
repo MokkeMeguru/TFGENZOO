@@ -72,10 +72,13 @@ class AffineCoupling(FlowComponent):
         >>> from TFGENZOO.flows.affine_coupling import AffineCoupling
         >>> from TFGENZOO.layers.resnet import ShallowResNet
         >>> af = AffineCoupling(scale_shift_net_template=ShallowResNet)
-        >>> af.build([16, 16, 4])
+        >>> af.build([None, 16, 16, 4])
         >>> af.get_config()
             {'name': 'affine_coupling_1', ...}
         >>> inputs = tf.keras.Input([16, 16, 4])
+        >>> af(inputs)
+        (<tf.Tensor 'affine_coupling_3_2/Identity:0' shape=(None, 16, 16, 4) dtype=float32>,
+         <tf.Tensor 'affine_coupling_3_2/Identity_1:0' shape=(None,) dtype=float32>)
         >>> tf.keras.Model(inputs, af(inputs)).summary()
         Model: "model_1"
         _________________________________________________________________
@@ -124,9 +127,9 @@ class AffineCoupling(FlowComponent):
         return config
 
     def build(self, input_shape: tf.TensorShape):
-        self.reduce_axis = list(range(len(input_shape) + 1))[1:]
+        self.reduce_axis = list(range(len(input_shape)))[1:]
         if self.scale_shift_net is None:
-            resnet_inputs = list(input_shape)
+            resnet_inputs = list(input_shape)[1:]
             resnet_inputs[-1] = int(resnet_inputs[-1] / 2)
             self.scale_shift_net = self.scale_shift_net_template(
                 tf.keras.Input(resnet_inputs)

@@ -54,7 +54,29 @@ class Inv1x1Conv(FlowComponent):
                 W &\\in \\mathbb{R}^{c\\times c}\\\\
                 x &\\in \\mathbb{R}^{b \\times h\\times w \\times c}\\ \\ \\
                 ({\\rm batch, height, width, channel})
-   """
+
+
+    Examples:
+
+        >>> import tensorflow as tf
+        >>> from TFGENZOO.flows import Inv1x1Conv
+        >>> ic = Inv1x1Conv()
+        >>> ic.build([None, 16, 16, 4])
+        >>> ic.get_config()
+        {'name': 'inv1x1_conv_1', 'trainable': {}, 'dtype': 'float32'}
+        >>> inputs = tf.keras.Input([16, 16, 4])
+        >>> tf.keras.Model(inputs, ic(inputs)).summary()
+        Layer (type)                 Output Shape              Param #
+        =================================================================
+        input_3 (InputLayer)         [(None, 16, 16, 4)]       0
+        _________________________________________________________________
+        inv1x1_conv_1 (Inv1x1Conv)   ((None, 16, 16, 4), (None 17
+        =================================================================
+        Total params: 17
+        Trainable params: 0
+        Non-trainable params: 17
+        _________________________________________________________________
+    """
 
     def build(self, input_shape: tf.TensorShape):
         _, h, w, c = input_shape

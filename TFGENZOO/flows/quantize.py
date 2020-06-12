@@ -109,8 +109,18 @@ class LogitifyImage(FlowBase):
         denominator = 1 + tf.exp(-z)
         x = 1 / denominator
 
+        inverse_log_det_jacobian = -1 * (
+            tf.math.softplus(z)
+            + tf.math.softplus(-z)
+            - tf.math.softplus(self.pre_logit_scale)
+        )
+
+        # inverse_log_det_jacobian = tf.reduce_sum(
+        #     -2 * tf.math.log(denominator) - z, self.reduce_axis
+        # )
+
         inverse_log_det_jacobian = tf.reduce_sum(
-            -2 * tf.math.log(denominator) - z, self.reduce_axis
+            inverse_log_det_jacobian, self.reduce_axis
         )
         return x, inverse_log_det_jacobian
 

@@ -104,7 +104,7 @@ class AffineCoupling(FlowComponent):
         """
         Args:
             mask_type       (AffineCouplingMask: AffineCoupling Mask type
-            scale_shift_net (tf.keras.Layer): NN in the fomula
+            scale_shift_net (tf.keras.Layer): NN in the fomula (Deprecated)
             scale_shift_net_template (Callable[[tf.keras.Input], [tf.keras.Model]]): NN in the formula (for tf.keras.Model without Input Shape)
         """
         super().__init__(**kwargs)

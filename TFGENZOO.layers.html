@@ -96,6 +96,8 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">TFGENZOO.layers package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-TFGENZOO.layers.resnet">TFGENZOO.layers.resnet module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-TFGENZOO.layers.spadebn">TFGENZOO.layers.spadebn module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-TFGENZOO.layers.spectral_normalization">TFGENZOO.layers.spectral_normalization module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-TFGENZOO.layers.weight_norm">TFGENZOO.layers.weight_norm module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-TFGENZOO.layers">Module contents</a></li>
 </ul>
@@ -179,144 +181,353 @@
 </div>
 <div class="section" id="module-TFGENZOO.layers.resnet">
 <span id="tfgenzoo-layers-resnet-module"></span><h2>TFGENZOO.layers.resnet module<a class="headerlink" href="#module-TFGENZOO.layers.resnet" title="Permalink to this headline">¶</a></h2>
-<dl class="py class">
+<dl class="py function">
 <dt id="TFGENZOO.layers.resnet.ShallowConnectedResNet">
-<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.layers.resnet.</code><code class="sig-name descname">ShallowConnectedResNet</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">width</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">512</span></em>, <em class="sig-param"><span class="n">out_scale</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.layers.resnet.ShallowConnectedResNet" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tensorflow.python.keras.engine.training.Model</span></code></p>
-<p>ResNet of OpenAI’s Glow + Skip Connection
-Sources:</p>
+<code class="sig-prename descclassname">TFGENZOO.layers.resnet.</code><code class="sig-name descname">ShallowConnectedResNet</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inputs</span><span class="p">:</span> <span class="n">tensorflow.python.keras.engine.input_layer.Input</span></em>, <em class="sig-param"><span class="n">cond</span><span class="p">:</span> <span class="n">tensorflow.python.keras.engine.input_layer.Input</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">width</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">512</span></em>, <em class="sig-param"><span class="n">out_scale</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">2</span></em>, <em class="sig-param"><span class="n">connect_type</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'whole'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.layers.resnet.ShallowConnectedResNet" title="Permalink to this definition">¶</a></dt>
+<dd><p>ResNet of OpenAI’s Glow with Connection
+:param inputs: input tensor rank == 4
+:type inputs: tf.Tensor
+:param cond: input tensor rank == 4 (optional)
+:type cond: tf.Tensor
+:param width: hidden width
+:type width: int
+:param out_scale: output channel width scale
+:type out_scale: int</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>tf.keras.Model</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>model</p>
+</dd>
+</dl>
+<p>Sources:</p>
 <blockquote>
 <div><p><a class="reference external" href="https://github.com/openai/glow/blob/master/model.py#L420-L426">https://github.com/openai/glow/blob/master/model.py#L420-L426</a></p>
 </div></blockquote>
-<p class="rubric">Notes</p>
-<p>This layer is not Residual Network
-because this layer does not have shortcut connection</p>
-<dl class="py method">
-<dt id="TFGENZOO.layers.resnet.ShallowConnectedResNet.build">
-<code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_shape</span><span class="p">:</span> <span class="n">tensorflow.python.framework.tensor_shape.TensorShape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.layers.resnet.ShallowConnectedResNet.build" title="Permalink to this definition">¶</a></dt>
-<dd><p>Builds the model based on input shapes received.</p>
-<p>This is to be used for subclassed models, which do not know at instantiation
-time what their inputs look like.</p>
-<p>This method only exists for users who want to call <cite>model.build()</cite> in a
-standalone way (as a substitute for calling the model on real data to
-build it). It will never be called by the framework (and thus it will
-never throw unexpected errors in an unrelated workflow).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>input_shape</strong> – Single tuple, TensorShape, or list of shapes, where shapes
-are tuples, integers, or TensorShapes.</p>
-</dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>ValueError</strong> – <ol class="arabic simple">
-<li><p>In case of invalid user-provided data (not of type tuple,
-       list, or TensorShape).
-    2. If the model requires call arguments that are agnostic
-       to the input shapes (positional or kwarg in call signature).
-    3. If not all layers were properly built.
-    4. If float type inputs are not supported within the layers.</p></li>
-</ol>
-</p></li>
-<li><p><strong>In each of these cases</strong><strong>, </strong><strong>the user should build their model by calling it</strong> – </p></li>
-<li><p><strong>on real tensor data.</strong> – </p></li>
-</ul>
-</dd>
-</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">inputs</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Input</span><span class="p">([</span><span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cond</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sr</span> <span class="o">=</span> <span class="n">ShallowConnectedResNet</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sr</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+<span class="go">Model: &quot;model&quot;</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">Layer (type)                    Output Shape         Param #     Connected to</span>
+<span class="go">==================================================================================================</span>
+<span class="go">input_1 (InputLayer)            [(None, 16, 16, 2)]  0</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">conv2d_8 (Conv2D)               (None, 16, 16, 512)  10241       input_1[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">tf_op_layer_Relu_8 (TensorFlowO [(None, 16, 16, 512) 0           conv2d_8[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">conv2d_9 (Conv2D)               (None, 16, 16, 512)  2360321     tf_op_layer_Relu_8[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">tf_op_layer_Relu_9 (TensorFlowO [(None, 16, 16, 512) 0           conv2d_9[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">tf_op_layer_concat (TensorFlowO [(None, 16, 16, 514) 0           tf_op_layer_Relu_9[0][0]</span>
+<span class="go">                                                                input_1[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">conv2d_zeros_4 (Conv2DZeros)    (None, 16, 16, 4)    18512       tf_op_layer_concat[0][0]</span>
+<span class="go">==================================================================================================</span>
+<span class="go">Total params: 2,389,074</span>
+<span class="go">Trainable params: 2,389,072</span>
+<span class="go">Non-trainable params: 2</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cond</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Input</span><span class="p">([</span><span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">128</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sr</span> <span class="o">=</span> <span class="n">ShallowResNet</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">cond</span><span class="p">,</span> <span class="n">connect_type</span><span class="o">=</span><span class="s2">&quot;cond&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sr</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+<span class="go">sr.summary()</span>
+<span class="go">Model: &quot;model_4&quot;</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">Layer (type)                    Output Shape         Param #     Connected to</span>
+<span class="go">==================================================================================================</span>
+<span class="go">input_1 (InputLayer)            [(None, 16, 16, 2)]  0</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">input_2 (InputLayer)            [(None, 16, 16, 128) 0</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">tf_op_layer_concat_3 (TensorFlo [(None, 16, 16, 130) 0           input_1[0][0]</span>
+<span class="go">                                                                input_2[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">conv2d_14 (Conv2D)              (None, 16, 16, 512)  600065      tf_op_layer_concat_3[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">tf_op_layer_Relu_14 (TensorFlow [(None, 16, 16, 512) 0           conv2d_14[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">conv2d_15 (Conv2D)              (None, 16, 16, 512)  2360321     tf_op_layer_Relu_14[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">tf_op_layer_Relu_15 (TensorFlow [(None, 16, 16, 512) 0           conv2d_15[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">tf_op_layer_concat_4 (TensorFlo [(None, 16, 16, 640) 0           tf_op_layer_Relu_15[0][0]</span>
+<span class="go">                                                                input_2[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">conv2d_zeros_7 (Conv2DZeros)    (None, 16, 16, 4)    23048       tf_op_layer_concat_4[0][0]</span>
+<span class="go">==================================================================================================</span>
+<span class="go">Total params: 2,983,434</span>
+<span class="go">Trainable params: 2,983,432</span>
+<span class="go">Non-trainable params: 2</span>
+<span class="go">__________________________________________________________________________________________________</span>
+</pre></div>
+</div>
 </dd></dl>
 
-<dl class="py method">
-<dt id="TFGENZOO.layers.resnet.ShallowConnectedResNet.call">
-<code class="sig-name descname">call</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.layers.resnet.ShallowConnectedResNet.call" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls the model on new inputs.</p>
-<p>In this case <cite>call</cite> just reapplies
-all ops in the graph to the new inputs
-(e.g. build a new computational graph from the provided inputs).</p>
+<dl class="py function">
+<dt id="TFGENZOO.layers.resnet.ShallowConnectedResNetlikeSPADE">
+<code class="sig-prename descclassname">TFGENZOO.layers.resnet.</code><code class="sig-name descname">ShallowConnectedResNetlikeSPADE</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inputs</span><span class="p">:</span> <span class="n">tensorflow.python.keras.engine.input_layer.Input</span></em>, <em class="sig-param"><span class="n">cond</span><span class="p">:</span> <span class="n">tensorflow.python.keras.engine.input_layer.Input</span></em>, <em class="sig-param"><span class="n">width</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">512</span></em>, <em class="sig-param"><span class="n">out_scale</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">2</span></em>, <em class="sig-param"><span class="n">connect_type</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'whole'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.layers.resnet.ShallowConnectedResNetlikeSPADE" title="Permalink to this definition">¶</a></dt>
+<dd><p>ResNet of OpenAI’s Glow with Connection
+.. note:: WIP now…</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>inputs</strong> – A tensor or list of tensors.</p></li>
-<li><p><strong>training</strong> – Boolean or boolean scalar tensor, indicating whether to run
-the <cite>Network</cite> in training mode or inference mode.</p></li>
-<li><p><strong>mask</strong> – A mask or list of masks. A mask can be
-either a tensor or None (no mask).</p></li>
+<li><p><strong>inputs</strong> (<em>tf.Tensor</em>) – input tensor rank == 4</p></li>
+<li><p><strong>cond</strong> (<em>tf.Tensor</em>) – input tensor rank == 4 (optional)</p></li>
+<li><p><strong>width</strong> (<em>int</em>) – hidden width</p></li>
+<li><p><strong>out_scale</strong> (<em>int</em>) – output channel width scale</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A tensor if there is a single output, or
-a list of tensors if there are more than one outputs.</p>
+<dd class="field-even"><p>tf.keras.Model</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>model</p>
 </dd>
 </dl>
+<p>Sources:</p>
+<blockquote>
+<div><p><a class="reference external" href="https://github.com/openai/glow/blob/master/model.py#L420-L426">https://github.com/openai/glow/blob/master/model.py#L420-L426</a>
+<a class="reference external" href="https://github.com/NVlabs/SPADE">https://github.com/NVlabs/SPADE</a></p>
+</div></blockquote>
+<p>Examples:</p>
 </dd></dl>
 
-</dd></dl>
-
-<dl class="py class">
+<dl class="py function">
 <dt id="TFGENZOO.layers.resnet.ShallowResNet">
-<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.layers.resnet.</code><code class="sig-name descname">ShallowResNet</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">width</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">512</span></em>, <em class="sig-param"><span class="n">out_scale</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.layers.resnet.ShallowResNet" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tensorflow.python.keras.engine.training.Model</span></code></p>
-<p>ResNet of OpenAI’s Glow
-Sources:</p>
+<code class="sig-prename descclassname">TFGENZOO.layers.resnet.</code><code class="sig-name descname">ShallowResNet</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inputs</span><span class="p">:</span> <span class="n">tensorflow.python.keras.engine.input_layer.Input</span></em>, <em class="sig-param"><span class="n">cond</span><span class="p">:</span> <span class="n">tensorflow.python.keras.engine.input_layer.Input</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">width</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">512</span></em>, <em class="sig-param"><span class="n">out_scale</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.layers.resnet.ShallowResNet" title="Permalink to this definition">¶</a></dt>
+<dd><p>ResNet of OpenAI’s Glow
+:param inputs: input tensor rank == 4
+:type inputs: tf.Tensor
+:param cond: input tensor rank == 4 (optional)
+:type cond: tf.Tensor
+:param width: hidden width
+:type width: int
+:param out_scale: output channel width scale
+:type out_scale: int</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>tf.keras.Model</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>model</p>
+</dd>
+</dl>
+<p>Sources:</p>
 <blockquote>
 <div><p><a class="reference external" href="https://github.com/openai/glow/blob/master/model.py#L420-L426">https://github.com/openai/glow/blob/master/model.py#L420-L426</a></p>
 </div></blockquote>
 <p class="rubric">Notes</p>
 <p>This layer is not Residual Network
 because this layer does not have Skip connection</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">inputs</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Input</span><span class="p">([</span><span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cond</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sr</span> <span class="o">=</span> <span class="n">ShallowResNet</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sr</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+<span class="go">Model: &quot;model&quot;</span>
+<span class="go">_________________________________________________________________</span>
+<span class="go">Layer (type)                 Output Shape              Param #</span>
+<span class="go">=================================================================</span>
+<span class="go">input_1 (InputLayer)         [(None, 16, 16, 2)]       0</span>
+<span class="go">_________________________________________________________________</span>
+<span class="go">conv2d (Conv2D)              (None, 16, 16, 512)       10241</span>
+<span class="go">_________________________________________________________________</span>
+<span class="go">tf_op_layer_Relu (TensorFlow [(None, 16, 16, 512)]     0</span>
+<span class="go">_________________________________________________________________</span>
+<span class="go">conv2d_1 (Conv2D)            (None, 16, 16, 512)       2360321</span>
+<span class="go">_________________________________________________________________</span>
+<span class="go">tf_op_layer_Relu_1 (TensorFl [(None, 16, 16, 512)]     0</span>
+<span class="go">_________________________________________________________________</span>
+<span class="go">conv2d_zeros (Conv2DZeros)   (None, 16, 16, 4)         18440</span>
+<span class="go">=================================================================</span>
+<span class="go">Total params: 2,389,002</span>
+<span class="go">Trainable params: 2,389,000</span>
+<span class="go">Non-trainable params: 2</span>
+<span class="go">_________________________________________________________________</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cond</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Input</span><span class="p">([</span><span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">128</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sr</span> <span class="o">=</span> <span class="n">ShallowResNet</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sr</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+<span class="go">Model: &quot;model_1&quot;</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">Layer (type)                    Output Shape         Param #     Connected to</span>
+<span class="go">==================================================================================================</span>
+<span class="go">input_1 (InputLayer)            [(None, 16, 16, 2)]  0</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">input_3 (InputLayer)            [(None, 16, 16, 128) 0</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">tf_op_layer_concat_1 (TensorFlo [(None, 16, 16, 130) 0           input_1[0][0]</span>
+<span class="go">                                                                input_3[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">conv2d_2 (Conv2D)               (None, 16, 16, 512)  600065      tf_op_layer_concat_1[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">tf_op_layer_Relu_2 (TensorFlowO [(None, 16, 16, 512) 0           conv2d_2[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">conv2d_3 (Conv2D)               (None, 16, 16, 512)  2360321     tf_op_layer_Relu_2[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">tf_op_layer_Relu_3 (TensorFlowO [(None, 16, 16, 512) 0           conv2d_3[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">conv2d_zeros_1 (Conv2DZeros)    (None, 16, 16, 4)    18440       tf_op_layer_Relu_3[0][0]</span>
+<span class="go">==================================================================================================</span>
+<span class="go">Total params: 2,978,826</span>
+<span class="go">Trainable params: 2,978,824</span>
+<span class="go">Non-trainable params: 2</span>
+<span class="go">__________________________________________________________________________________________________</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="module-TFGENZOO.layers.spadebn">
+<span id="tfgenzoo-layers-spadebn-module"></span><h2>TFGENZOO.layers.spadebn module<a class="headerlink" href="#module-TFGENZOO.layers.spadebn" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="TFGENZOO.layers.spadebn.SpadeBN">
+<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.layers.spadebn.</code><code class="sig-name descname">SpadeBN</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">width</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">128</span></em>, <em class="sig-param"><span class="n">kernel_size</span><span class="o">=</span><span class="default_value">3</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.layers.spadebn.SpadeBN" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tensorflow.python.keras.engine.base_layer.Layer</span></code></p>
+<p>SPADE BatchNormalization</p>
+<p>Sources:</p>
+<blockquote>
+<div><p><a class="reference external" href="https://towardsdatascience.com/implementing-spade-using-fastai-6ad86b94030a">https://towardsdatascience.com/implementing-spade-using-fastai-6ad86b94030a</a></p>
+</div></blockquote>
 <dl class="py method">
-<dt id="TFGENZOO.layers.resnet.ShallowResNet.build">
-<code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_shape</span><span class="p">:</span> <span class="n">tensorflow.python.framework.tensor_shape.TensorShape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.layers.resnet.ShallowResNet.build" title="Permalink to this definition">¶</a></dt>
-<dd><p>Builds the model based on input shapes received.</p>
-<p>This is to be used for subclassed models, which do not know at instantiation
-time what their inputs look like.</p>
-<p>This method only exists for users who want to call <cite>model.build()</cite> in a
-standalone way (as a substitute for calling the model on real data to
-build it). It will never be called by the framework (and thus it will
-never throw unexpected errors in an unrelated workflow).</p>
+<dt id="TFGENZOO.layers.spadebn.SpadeBN.call">
+<code class="sig-name descname">call</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="n">cond</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.layers.spadebn.SpadeBN.call" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is where the layer’s logic lives.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>input_shape</strong> – Single tuple, TensorShape, or list of shapes, where shapes
-are tuples, integers, or TensorShapes.</p>
-</dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>ValueError</strong> – <ol class="arabic simple">
-<li><p>In case of invalid user-provided data (not of type tuple,
-       list, or TensorShape).
-    2. If the model requires call arguments that are agnostic
-       to the input shapes (positional or kwarg in call signature).
-    3. If not all layers were properly built.
-    4. If float type inputs are not supported within the layers.</p></li>
-</ol>
-</p></li>
-<li><p><strong>In each of these cases</strong><strong>, </strong><strong>the user should build their model by calling it</strong> – </p></li>
-<li><p><strong>on real tensor data.</strong> – </p></li>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> – Input tensor, or list/tuple of input tensors.</p></li>
+<li><p><strong>**kwargs</strong> – Additional keyword arguments.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A tensor or list/tuple of tensors.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="TFGENZOO.layers.resnet.ShallowResNet.call">
-<code class="sig-name descname">call</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.layers.resnet.ShallowResNet.call" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calls the model on new inputs.</p>
-<p>In this case <cite>call</cite> just reapplies
-all ops in the graph to the new inputs
-(e.g. build a new computational graph from the provided inputs).</p>
+<dt id="TFGENZOO.layers.spadebn.SpadeBN.get_config">
+<code class="sig-name descname">get_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.layers.spadebn.SpadeBN.get_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the config of the layer.</p>
+<p>A layer config is a Python dictionary (serializable)
+containing the configuration of a layer.
+The same layer can be reinstantiated later
+(without its trained weights) from this configuration.</p>
+<p>The config of a layer does not include connectivity
+information, nor the layer class name. These are handled
+by <cite>Network</cite> (one layer of abstraction above).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>inputs</strong> – A tensor or list of tensors.</p></li>
-<li><p><strong>training</strong> – Boolean or boolean scalar tensor, indicating whether to run
-the <cite>Network</cite> in training mode or inference mode.</p></li>
-<li><p><strong>mask</strong> – A mask or list of masks. A mask can be
-either a tensor or None (no mask).</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A tensor if there is a single output, or
-a list of tensors if there are more than one outputs.</p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Python dictionary.</p>
 </dd>
 </dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-TFGENZOO.layers.spectral_normalization">
+<span id="tfgenzoo-layers-spectral-normalization-module"></span><h2>TFGENZOO.layers.spectral_normalization module<a class="headerlink" href="#module-TFGENZOO.layers.spectral_normalization" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="TFGENZOO.layers.spectral_normalization.SpectralNormalization">
+<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.layers.spectral_normalization.</code><code class="sig-name descname">SpectralNormalization</code><span class="sig-paren">(</span><em class="sig-param">layer: &lt;module 'tensorflow_core.keras.layers' from '/home/meguru/.pyenv/versions/3.7.7/lib/python3.7/site-packages/tensorflow_core/python/keras/api/_v2/keras/layers/__init__.py'&gt;</em>, <em class="sig-param">power_iterations: int = 1</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.layers.spectral_normalization.SpectralNormalization" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tensorflow.python.keras.layers.wrappers.Wrapper</span></code></p>
+<dl class="simple">
+<dt>This wrapper controls the Lipschitz constant of the layer by</dt><dd><p>constraining its spectral norm.</p>
+</dd>
+</dl>
+<p>This stabilizes the training of GANs.
+Spectral Normalization for Generative Adversarial Networks:
+<a class="reference external" href="https://arxiv.org/abs/1802.05957">https://arxiv.org/abs/1802.05957</a>
+Takeru Miyato, Toshiki Kataoka, Masanori Koyama, Yuichi Yoshida (2018)
+SpectralNormalization wrapper works for keras and tf layers.
+<a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a>python</p>
+<blockquote>
+<div><dl class="simple">
+<dt>net = SpectralNormalization(</dt><dd><p>tf.keras.layers.Conv2D(2, 2, activation=”relu”),
+input_shape=(32, 32, 3))(x)</p>
+</dd>
+<dt>net = SpectralNormalization(</dt><dd><p>tf.keras.layers.Conv2D(16, 5, activation=”relu”))(net)</p>
+</dd>
+<dt>net = SpectralNormalization(</dt><dd><p>tf.keras.layers.Dense(120, activation=”relu”))(net)</p>
+</dd>
+<dt>net = SpectralNormalization(</dt><dd><p>tf.keras.layers.Dense(n_classes))(net)</p>
+</dd>
+</dl>
+</div></blockquote>
+<p><a href="#id5"><span class="problematic" id="id6">``</span></a>`
+:param layer: a layer instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>AssertionError</strong> – If not initialized with a <cite>Layer</cite> instance.</p></li>
+<li><p><strong>ValueError</strong> – If initialized with negative <cite>power_iterations</cite></p></li>
+<li><p><strong>AttributeError</strong> – If <cite>Layer</cite> does not contain a <cite>kernel</cite> or <cite>embeddings</cite> of weights</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="TFGENZOO.layers.spectral_normalization.SpectralNormalization.build">
+<code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_shape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.layers.spectral_normalization.SpectralNormalization.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build <cite>Layer</cite></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.layers.spectral_normalization.SpectralNormalization.call">
+<code class="sig-name descname">call</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inputs</span></em>, <em class="sig-param"><span class="n">training</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.layers.spectral_normalization.SpectralNormalization.call" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call <cite>Layer</cite></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.layers.spectral_normalization.SpectralNormalization.compute_output_shape">
+<code class="sig-name descname">compute_output_shape</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_shape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.layers.spectral_normalization.SpectralNormalization.compute_output_shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the output shape of the layer.</p>
+<p>If the layer has not been built, this method will call <cite>build</cite> on the
+layer. This assumes that the layer will later be used with inputs that
+match the input shape provided here.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>input_shape</strong> – Shape tuple (tuple of integers)
+or list of shape tuples (one per output tensor of the layer).
+Shape tuples can include None for free dimensions,
+instead of an integer.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An input shape tuple.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.layers.spectral_normalization.SpectralNormalization.get_config">
+<code class="sig-name descname">get_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.layers.spectral_normalization.SpectralNormalization.get_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the config of the layer.</p>
+<p>A layer config is a Python dictionary (serializable)
+containing the configuration of a layer.
+The same layer can be reinstantiated later
+(without its trained weights) from this configuration.</p>
+<p>The config of a layer does not include connectivity
+information, nor the layer class name. These are handled
+by <cite>Network</cite> (one layer of abstraction above).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Python dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.layers.spectral_normalization.SpectralNormalization.normalize_weights">
+<code class="sig-name descname">normalize_weights</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.layers.spectral_normalization.SpectralNormalization.normalize_weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate spectral normalized weights.
+This method will update the value of self.w with the
+spectral normalized value, so that the layer is ready for call().</p>
 </dd></dl>
 
 </dd></dl>
@@ -343,7 +554,7 @@ Weight Normalization: A Simple Reparameterization to Accelerate
 Training of Deep Neural Networks: <a class="reference external" href="https://arxiv.org/abs/1602.07868">https://arxiv.org/abs/1602.07868</a>
 Tim Salimans, Diederik P. Kingma (2016)
 WeightNormalization wrapper works for keras and tf layers.
-<a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a>python</p>
+<a href="#id7"><span class="problematic" id="id8">``</span></a><a href="#id9"><span class="problematic" id="id10">`</span></a>python</p>
 <blockquote>
 <div><dl class="simple">
 <dt>net = WeightNormalization(</dt><dd><p>tf.keras.layers.Conv2D(2, 2, activation=’relu’),
@@ -361,7 +572,7 @@ data_init=True)(net)</p>
 </dd>
 </dl>
 </div></blockquote>
-<p><a href="#id5"><span class="problematic" id="id6">``</span></a>`
+<p><a href="#id11"><span class="problematic" id="id12">``</span></a>`
 :param layer: a layer instance.
 :param data_init: If <cite>True</cite> use data dependent variable initialization</p>
 <dl class="field-list simple">
@@ -433,6 +644,178 @@ by <cite>Network</cite> (one layer of abstraction above).</p>
 </div>
 <div class="section" id="module-TFGENZOO.layers">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-TFGENZOO.layers" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="TFGENZOO.layers.ShallowResNet">
+<code class="sig-prename descclassname">TFGENZOO.layers.</code><code class="sig-name descname">ShallowResNet</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inputs</span><span class="p">:</span> <span class="n">tensorflow.python.keras.engine.input_layer.Input</span></em>, <em class="sig-param"><span class="n">cond</span><span class="p">:</span> <span class="n">tensorflow.python.keras.engine.input_layer.Input</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">width</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">512</span></em>, <em class="sig-param"><span class="n">out_scale</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.layers.ShallowResNet" title="Permalink to this definition">¶</a></dt>
+<dd><p>ResNet of OpenAI’s Glow
+:param inputs: input tensor rank == 4
+:type inputs: tf.Tensor
+:param cond: input tensor rank == 4 (optional)
+:type cond: tf.Tensor
+:param width: hidden width
+:type width: int
+:param out_scale: output channel width scale
+:type out_scale: int</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>tf.keras.Model</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>model</p>
+</dd>
+</dl>
+<p>Sources:</p>
+<blockquote>
+<div><p><a class="reference external" href="https://github.com/openai/glow/blob/master/model.py#L420-L426">https://github.com/openai/glow/blob/master/model.py#L420-L426</a></p>
+</div></blockquote>
+<p class="rubric">Notes</p>
+<p>This layer is not Residual Network
+because this layer does not have Skip connection</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">inputs</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Input</span><span class="p">([</span><span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cond</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sr</span> <span class="o">=</span> <span class="n">ShallowResNet</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sr</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+<span class="go">Model: &quot;model&quot;</span>
+<span class="go">_________________________________________________________________</span>
+<span class="go">Layer (type)                 Output Shape              Param #</span>
+<span class="go">=================================================================</span>
+<span class="go">input_1 (InputLayer)         [(None, 16, 16, 2)]       0</span>
+<span class="go">_________________________________________________________________</span>
+<span class="go">conv2d (Conv2D)              (None, 16, 16, 512)       10241</span>
+<span class="go">_________________________________________________________________</span>
+<span class="go">tf_op_layer_Relu (TensorFlow [(None, 16, 16, 512)]     0</span>
+<span class="go">_________________________________________________________________</span>
+<span class="go">conv2d_1 (Conv2D)            (None, 16, 16, 512)       2360321</span>
+<span class="go">_________________________________________________________________</span>
+<span class="go">tf_op_layer_Relu_1 (TensorFl [(None, 16, 16, 512)]     0</span>
+<span class="go">_________________________________________________________________</span>
+<span class="go">conv2d_zeros (Conv2DZeros)   (None, 16, 16, 4)         18440</span>
+<span class="go">=================================================================</span>
+<span class="go">Total params: 2,389,002</span>
+<span class="go">Trainable params: 2,389,000</span>
+<span class="go">Non-trainable params: 2</span>
+<span class="go">_________________________________________________________________</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cond</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Input</span><span class="p">([</span><span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">128</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sr</span> <span class="o">=</span> <span class="n">ShallowResNet</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sr</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+<span class="go">Model: &quot;model_1&quot;</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">Layer (type)                    Output Shape         Param #     Connected to</span>
+<span class="go">==================================================================================================</span>
+<span class="go">input_1 (InputLayer)            [(None, 16, 16, 2)]  0</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">input_3 (InputLayer)            [(None, 16, 16, 128) 0</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">tf_op_layer_concat_1 (TensorFlo [(None, 16, 16, 130) 0           input_1[0][0]</span>
+<span class="go">                                                                input_3[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">conv2d_2 (Conv2D)               (None, 16, 16, 512)  600065      tf_op_layer_concat_1[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">tf_op_layer_Relu_2 (TensorFlowO [(None, 16, 16, 512) 0           conv2d_2[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">conv2d_3 (Conv2D)               (None, 16, 16, 512)  2360321     tf_op_layer_Relu_2[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">tf_op_layer_Relu_3 (TensorFlowO [(None, 16, 16, 512) 0           conv2d_3[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">conv2d_zeros_1 (Conv2DZeros)    (None, 16, 16, 4)    18440       tf_op_layer_Relu_3[0][0]</span>
+<span class="go">==================================================================================================</span>
+<span class="go">Total params: 2,978,826</span>
+<span class="go">Trainable params: 2,978,824</span>
+<span class="go">Non-trainable params: 2</span>
+<span class="go">__________________________________________________________________________________________________</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="TFGENZOO.layers.ShallowConnectedResNet">
+<code class="sig-prename descclassname">TFGENZOO.layers.</code><code class="sig-name descname">ShallowConnectedResNet</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inputs</span><span class="p">:</span> <span class="n">tensorflow.python.keras.engine.input_layer.Input</span></em>, <em class="sig-param"><span class="n">cond</span><span class="p">:</span> <span class="n">tensorflow.python.keras.engine.input_layer.Input</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">width</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">512</span></em>, <em class="sig-param"><span class="n">out_scale</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">2</span></em>, <em class="sig-param"><span class="n">connect_type</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'whole'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.layers.ShallowConnectedResNet" title="Permalink to this definition">¶</a></dt>
+<dd><p>ResNet of OpenAI’s Glow with Connection
+:param inputs: input tensor rank == 4
+:type inputs: tf.Tensor
+:param cond: input tensor rank == 4 (optional)
+:type cond: tf.Tensor
+:param width: hidden width
+:type width: int
+:param out_scale: output channel width scale
+:type out_scale: int</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>tf.keras.Model</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>model</p>
+</dd>
+</dl>
+<p>Sources:</p>
+<blockquote>
+<div><p><a class="reference external" href="https://github.com/openai/glow/blob/master/model.py#L420-L426">https://github.com/openai/glow/blob/master/model.py#L420-L426</a></p>
+</div></blockquote>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">inputs</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Input</span><span class="p">([</span><span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cond</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sr</span> <span class="o">=</span> <span class="n">ShallowConnectedResNet</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sr</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+<span class="go">Model: &quot;model&quot;</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">Layer (type)                    Output Shape         Param #     Connected to</span>
+<span class="go">==================================================================================================</span>
+<span class="go">input_1 (InputLayer)            [(None, 16, 16, 2)]  0</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">conv2d_8 (Conv2D)               (None, 16, 16, 512)  10241       input_1[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">tf_op_layer_Relu_8 (TensorFlowO [(None, 16, 16, 512) 0           conv2d_8[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">conv2d_9 (Conv2D)               (None, 16, 16, 512)  2360321     tf_op_layer_Relu_8[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">tf_op_layer_Relu_9 (TensorFlowO [(None, 16, 16, 512) 0           conv2d_9[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">tf_op_layer_concat (TensorFlowO [(None, 16, 16, 514) 0           tf_op_layer_Relu_9[0][0]</span>
+<span class="go">                                                                input_1[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">conv2d_zeros_4 (Conv2DZeros)    (None, 16, 16, 4)    18512       tf_op_layer_concat[0][0]</span>
+<span class="go">==================================================================================================</span>
+<span class="go">Total params: 2,389,074</span>
+<span class="go">Trainable params: 2,389,072</span>
+<span class="go">Non-trainable params: 2</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cond</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Input</span><span class="p">([</span><span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">128</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sr</span> <span class="o">=</span> <span class="n">ShallowResNet</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">cond</span><span class="p">,</span> <span class="n">connect_type</span><span class="o">=</span><span class="s2">&quot;cond&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sr</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+<span class="go">sr.summary()</span>
+<span class="go">Model: &quot;model_4&quot;</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">Layer (type)                    Output Shape         Param #     Connected to</span>
+<span class="go">==================================================================================================</span>
+<span class="go">input_1 (InputLayer)            [(None, 16, 16, 2)]  0</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">input_2 (InputLayer)            [(None, 16, 16, 128) 0</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">tf_op_layer_concat_3 (TensorFlo [(None, 16, 16, 130) 0           input_1[0][0]</span>
+<span class="go">                                                                input_2[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">conv2d_14 (Conv2D)              (None, 16, 16, 512)  600065      tf_op_layer_concat_3[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">tf_op_layer_Relu_14 (TensorFlow [(None, 16, 16, 512) 0           conv2d_14[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">conv2d_15 (Conv2D)              (None, 16, 16, 512)  2360321     tf_op_layer_Relu_14[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">tf_op_layer_Relu_15 (TensorFlow [(None, 16, 16, 512) 0           conv2d_15[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">tf_op_layer_concat_4 (TensorFlo [(None, 16, 16, 640) 0           tf_op_layer_Relu_15[0][0]</span>
+<span class="go">                                                                input_2[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">conv2d_zeros_7 (Conv2DZeros)    (None, 16, 16, 4)    23048       tf_op_layer_concat_4[0][0]</span>
+<span class="go">==================================================================================================</span>
+<span class="go">Total params: 2,983,434</span>
+<span class="go">Trainable params: 2,983,432</span>
+<span class="go">Non-trainable params: 2</span>
+<span class="go">__________________________________________________________________________________________________</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </div>
 </div>
 

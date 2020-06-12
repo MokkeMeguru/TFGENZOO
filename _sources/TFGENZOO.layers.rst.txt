@@ -12,6 +12,22 @@ TFGENZOO.layers.resnet module
    :undoc-members:
    :show-inheritance:
 
+TFGENZOO.layers.spadebn module
+------------------------------
+
+.. automodule:: TFGENZOO.layers.spadebn
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+TFGENZOO.layers.spectral\_normalization module
+----------------------------------------------
+
+.. automodule:: TFGENZOO.layers.spectral_normalization
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 TFGENZOO.layers.weight\_norm module
 -----------------------------------
 

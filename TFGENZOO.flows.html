@@ -98,13 +98,16 @@
 <li class="toctree-l4"><a class="reference internal" href="#module-TFGENZOO.flows.actnorm_test">TFGENZOO.flows.actnorm_test module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-TFGENZOO.flows.affine_coupling">TFGENZOO.flows.affine_coupling module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-TFGENZOO.flows.affine_coupling_test">TFGENZOO.flows.affine_coupling_test module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-TFGENZOO.flows.cond_affine_coupling">TFGENZOO.flows.cond_affine_coupling module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-TFGENZOO.flows.cond_factor_out">TFGENZOO.flows.cond_factor_out module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-TFGENZOO.flows.factor_out">TFGENZOO.flows.factor_out module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-TFGENZOO.flows.flatten">TFGENZOO.flows.flatten module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-TFGENZOO.flows.flowbase">TFGENZOO.flows.flowbase module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#tfgenzoo-flows-flowmodel-module">TFGENZOO.flows.flowmodel module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-TFGENZOO.flows.inv1x1conv">TFGENZOO.flows.inv1x1conv module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-TFGENZOO.flows.inv1x1conv_test">TFGENZOO.flows.inv1x1conv_test module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-TFGENZOO.flows.quantize">TFGENZOO.flows.quantize module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-TFGENZOO.flows.quantize_test">TFGENZOO.flows.quantize_test module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-TFGENZOO.flows.squeeze">TFGENZOO.flows.squeeze module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-TFGENZOO.flows">Module contents</a></li>
 </ul>
@@ -290,6 +293,32 @@ initialize batch’s variance scaling</p>
 barrier log value to - Inf</p>
 </dd></dl>
 
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">TFGENZOO.flows</span> <span class="kn">import</span> <span class="nn">Actnorm</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ac</span> <span class="o">=</span> <span class="n">Actnorm</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ac</span><span class="o">.</span><span class="n">build</span><span class="p">([</span><span class="kc">None</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ac</span><span class="o">.</span><span class="n">get_config</span><span class="p">()</span>
+<span class="go">{&#39;name&#39;: &#39;actnorm_1&#39;, ... }</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">inputs</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Input</span><span class="p">([</span><span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ac</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+<span class="go">(&lt;tf.Tensor &#39;actnorm_1_2/Identity:0&#39; shape=(None, 16, 16, 4) dtype=float32&gt;,</span>
+<span class="go"> &lt;tf.Tensor &#39;actnorm_1_2/Identity_1:0&#39; shape=(None,) dtype=float32&gt;)</span>
+<span class="gp">&gt;&gt;&gt; </span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">ac</span><span class="p">(</span><span class="n">inputs</span><span class="p">))</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+<span class="go">Model: &quot;model_5&quot;</span>
+<span class="go">_________________________________________________________________</span>
+<span class="go">Layer (type)                 Output Shape              Param #</span>
+<span class="go">=================================================================</span>
+<span class="go">input_3 (InputLayer)         [(None, 16, 16, 4)]       0</span>
+<span class="go">_________________________________________________________________</span>
+<span class="go">actnorm_1 (Actnorm)          ((None, 16, 16, 4), (None 9</span>
+<span class="go">=================================================================</span>
+<span class="go">Total params: 9</span>
+<span class="go">Trainable params: 0</span>
+<span class="go">Non-trainable params: 9</span>
+<span class="go">_________________________________________________________________</span>
+</pre></div>
+</div>
 <dl class="py method">
 <dt id="TFGENZOO.flows.actnorm.Actnorm.build">
 <code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_shape</span><span class="p">:</span> <span class="n">tensorflow.python.framework.tensor_shape.TensorShape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.actnorm.Actnorm.build" title="Permalink to this definition">¶</a></dt>
@@ -316,6 +345,24 @@ layer instantiation and layer call.</p>
 <dt id="TFGENZOO.flows.actnorm.Actnorm.forward">
 <code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.actnorm.Actnorm.forward" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.actnorm.Actnorm.get_config">
+<code class="sig-name descname">get_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.actnorm.Actnorm.get_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the config of the layer.</p>
+<p>A layer config is a Python dictionary (serializable)
+containing the configuration of a layer.
+The same layer can be reinstantiated later
+(without its trained weights) from this configuration.</p>
+<p>The config of a layer does not include connectivity
+information, nor the layer class name. These are handled
+by <cite>Network</cite> (one layer of abstraction above).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Python dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt id="TFGENZOO.flows.actnorm.Actnorm.inverse">
@@ -393,7 +440,7 @@ layer instantiation and layer call.</p>
 <span id="tfgenzoo-flows-affine-coupling-module"></span><h2>TFGENZOO.flows.affine_coupling module<a class="headerlink" href="#module-TFGENZOO.flows.affine_coupling" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt id="TFGENZOO.flows.affine_coupling.AffineCoupling">
-<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.affine_coupling.</code><code class="sig-name descname">AffineCoupling</code><span class="sig-paren">(</span><em class="sig-param">mask_type: TFGENZOO.flows.affine_coupling.AffineCouplingMask = &lt;AffineCouplingMask.ChannelWise: 1&gt;</em>, <em class="sig-param">scale_shift_net: tensorflow.python.keras.engine.base_layer.Layer = None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.affine_coupling.AffineCoupling" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.affine_coupling.</code><code class="sig-name descname">AffineCoupling</code><span class="sig-paren">(</span><em class="sig-param">mask_type: TFGENZOO.flows.affine_coupling.AffineCouplingMask = &lt;AffineCouplingMask.ChannelWise: 1&gt;, scale_shift_net: tensorflow.python.keras.engine.base_layer.Layer = None, scale_shift_net_template: Callable[[tensorflow.python.keras.engine.input_layer.Input], tensorflow.python.keras.engine.training.Model] = None, **kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.affine_coupling.AffineCoupling" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#TFGENZOO.flows.flowbase.FlowComponent" title="TFGENZOO.flows.flowbase.FlowComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TFGENZOO.flows.flowbase.FlowComponent</span></code></a></p>
 <p>Affine Coupling Layer</p>
 <dl class="simple">
@@ -439,6 +486,33 @@ layer instantiation and layer call.</p>
 </li>
 </ul>
 </div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">TFGENZOO.flows.affine_coupling</span> <span class="kn">import</span> <span class="n">AffineCoupling</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">TFGENZOO.layers.resnet</span> <span class="kn">import</span> <span class="n">ShallowResNet</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">af</span> <span class="o">=</span> <span class="n">AffineCoupling</span><span class="p">(</span><span class="n">scale_shift_net_template</span><span class="o">=</span><span class="n">ShallowResNet</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">af</span><span class="o">.</span><span class="n">build</span><span class="p">([</span><span class="kc">None</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">af</span><span class="o">.</span><span class="n">get_config</span><span class="p">()</span>
+<span class="go">    {&#39;name&#39;: &#39;affine_coupling_1&#39;, ...}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">inputs</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Input</span><span class="p">([</span><span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">af</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+<span class="go">(&lt;tf.Tensor &#39;affine_coupling_3_2/Identity:0&#39; shape=(None, 16, 16, 4) dtype=float32&gt;,</span>
+<span class="go"> &lt;tf.Tensor &#39;affine_coupling_3_2/Identity_1:0&#39; shape=(None,) dtype=float32&gt;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">af</span><span class="p">(</span><span class="n">inputs</span><span class="p">))</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+<span class="go">Model: &quot;model_1&quot;</span>
+<span class="go">_________________________________________________________________</span>
+<span class="go">Layer (type)                 Output Shape              Param #</span>
+<span class="go">=================================================================</span>
+<span class="go">input_3 (InputLayer)         [(None, 16, 16, 4)]       0</span>
+<span class="go">_________________________________________________________________</span>
+<span class="go">affine_coupling (AffineCoupl ((None, 16, 16, 4), (None 2389003</span>
+<span class="go">=================================================================</span>
+<span class="go">Total params: 2,389,003</span>
+<span class="go">Trainable params: 0</span>
+<span class="go">Non-trainable params: 2,389,003</span>
+<span class="go">_________________________________________________________________</span>
+</pre></div>
+</div>
 <dl class="py method">
 <dt id="TFGENZOO.flows.affine_coupling.AffineCoupling.build">
 <code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_shape</span><span class="p">:</span> <span class="n">tensorflow.python.framework.tensor_shape.TensorShape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.affine_coupling.AffineCoupling.build" title="Permalink to this definition">¶</a></dt>
@@ -460,6 +534,24 @@ layer instantiation and layer call.</p>
 <dt id="TFGENZOO.flows.affine_coupling.AffineCoupling.forward">
 <code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.affine_coupling.AffineCoupling.forward" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.affine_coupling.AffineCoupling.get_config">
+<code class="sig-name descname">get_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.affine_coupling.AffineCoupling.get_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the config of the layer.</p>
+<p>A layer config is a Python dictionary (serializable)
+containing the configuration of a layer.
+The same layer can be reinstantiated later
+(without its trained weights) from this configuration.</p>
+<p>The config of a layer does not include connectivity
+information, nor the layer class name. These are handled
+by <cite>Network</cite> (one layer of abstraction above).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Python dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt id="TFGENZOO.flows.affine_coupling.AffineCoupling.inverse">
@@ -518,6 +610,24 @@ layer instantiation and layer call.</p>
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt id="TFGENZOO.flows.affine_coupling.LogScale.get_config">
+<code class="sig-name descname">get_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.affine_coupling.LogScale.get_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the config of the layer.</p>
+<p>A layer config is a Python dictionary (serializable)
+containing the configuration of a layer.
+The same layer can be reinstantiated later
+(without its trained weights) from this configuration.</p>
+<p>The config of a layer does not include connectivity
+information, nor the layer class name. These are handled
+by <cite>Network</cite> (one layer of abstraction above).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Python dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -541,6 +651,113 @@ layer instantiation and layer call.</p>
 <dl class="py method">
 <dt id="TFGENZOO.flows.affine_coupling_test.AffineCouplingTest.testAffineCouplingInv">
 <code class="sig-name descname">testAffineCouplingInv</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.affine_coupling_test.AffineCouplingTest.testAffineCouplingInv" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-TFGENZOO.flows.cond_affine_coupling">
+<span id="tfgenzoo-flows-cond-affine-coupling-module"></span><h2>TFGENZOO.flows.cond_affine_coupling module<a class="headerlink" href="#module-TFGENZOO.flows.cond_affine_coupling" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCoupling">
+<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.cond_affine_coupling.</code><code class="sig-name descname">ConditionalAffineCoupling</code><span class="sig-paren">(</span><em class="sig-param">mask_type: TFGENZOO.flows.affine_coupling.AffineCouplingMask = &lt;AffineCouplingMask.ChannelWise: 1&gt;</em>, <em class="sig-param">scale_shift_net: tensorflow.python.keras.engine.base_layer.Layer = None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCoupling" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#TFGENZOO.flows.flowbase.FlowComponent" title="TFGENZOO.flows.flowbase.FlowComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TFGENZOO.flows.flowbase.FlowComponent</span></code></a></p>
+<p>Affine Coupling Layer</p>
+<dl class="simple">
+<dt>Sources:</dt><dd><p><a class="reference external" href="https://github.com/masa-su/pixyz/blob/master/pixyz/flows/coupling.py">https://github.com/masa-su/pixyz/blob/master/pixyz/flows/coupling.py</a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul>
+<li><dl>
+<dt>forward formula</dt><dd><div class="line-block">
+<div class="line">[x1, x2] = split(x)</div>
+<div class="line">log_scale, shift = NN([x1, c])</div>
+<div class="line">scale = sigmoid(log_scale + 2.0)</div>
+<div class="line">z1 = x1</div>
+<div class="line">z2 = (x2 + shift) * scale</div>
+<div class="line">z = concat([z1, z2])</div>
+<div class="line">LogDetJacobian = sum(log(scale))</div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>inverse formula</dt><dd><div class="line-block">
+<div class="line">[z1, z2] = split(x)</div>
+<div class="line">log_scale, shift = NN([z1, c])</div>
+<div class="line">scale = sigmoid(log_scale + 2.0)</div>
+<div class="line">x1 = z1</div>
+<div class="line">x2 = z2 / scale - shift</div>
+<div class="line">z = concat([x1, x2])</div>
+<div class="line">InverseLogDetJacobian = - sum(log(scale))</div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>implementation notes</dt><dd><div class="line-block">
+<div class="line">in Glow’s Paper, scale is calculated by exp(log_scale),</div>
+<div class="line">but IN IMPLEMENTATION, scale is done by sigmoid(log_scale + 2.0)</div>
+<div class="line">where c is the conditional input for WaveGlow or cINN</div>
+<div class="line"><a class="reference external" href="https://arxiv.org/abs/1907.02392">https://arxiv.org/abs/1907.02392</a></div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>TODO notes</dt><dd><div class="line-block">
+<div class="line">cINN uses double coupling, but our coupling is single coupling</div>
+</div>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<dl class="py method">
+<dt id="TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCoupling.build">
+<code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_shape</span><span class="p">:</span> <span class="n">tensorflow.python.framework.tensor_shape.TensorShape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCoupling.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates the variables of the layer (optional, for subclass implementers).</p>
+<p>This is a method that implementers of subclasses of <cite>Layer</cite> or <cite>Model</cite>
+can override if they need a state-creation step in-between
+layer instantiation and layer call.</p>
+<p>This is typically used to create the weights of <cite>Layer</cite> subclasses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>input_shape</strong> – Instance of <cite>TensorShape</cite>, or list of instances of
+<cite>TensorShape</cite> if the layer expects a list of inputs
+(one instance per input).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCoupling.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="n">cond</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCoupling.forward" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCoupling.get_config">
+<code class="sig-name descname">get_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCoupling.get_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the config of the layer.</p>
+<p>A layer config is a Python dictionary (serializable)
+containing the configuration of a layer.
+The same layer can be reinstantiated later
+(without its trained weights) from this configuration.</p>
+<p>The config of a layer does not include connectivity
+information, nor the layer class name. These are handled
+by <cite>Network</cite> (one layer of abstraction above).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Python dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCoupling.inverse">
+<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">z</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="n">cond</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCoupling.inverse" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -613,6 +830,24 @@ layer instantiation and layer call.</p>
 <dt id="TFGENZOO.flows.cond_factor_out.ConditionalFactorOut.forward">
 <code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="n">zaux</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.cond_factor_out.ConditionalFactorOut.forward" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.cond_factor_out.ConditionalFactorOut.get_config">
+<code class="sig-name descname">get_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.cond_factor_out.ConditionalFactorOut.get_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the config of the layer.</p>
+<p>A layer config is a Python dictionary (serializable)
+containing the configuration of a layer.
+The same layer can be reinstantiated later
+(without its trained weights) from this configuration.</p>
+<p>The config of a layer does not include connectivity
+information, nor the layer class name. These are handled
+by <cite>Network</cite> (one layer of abstraction above).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Python dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt id="TFGENZOO.flows.cond_factor_out.ConditionalFactorOut.inverse">
@@ -704,6 +939,24 @@ layer instantiation and layer call.</p>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt id="TFGENZOO.flows.factor_out.FactorOut.get_config">
+<code class="sig-name descname">get_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.factor_out.FactorOut.get_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the config of the layer.</p>
+<p>A layer config is a Python dictionary (serializable)
+containing the configuration of a layer.
+The same layer can be reinstantiated later
+(without its trained weights) from this configuration.</p>
+<p>The config of a layer does not include connectivity
+information, nor the layer class name. These are handled
+by <cite>Network</cite> (one layer of abstraction above).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Python dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="TFGENZOO.flows.factor_out.FactorOut.inverse">
 <code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">z</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="n">zaux</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">temparature</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.2</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.factor_out.FactorOut.inverse" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -721,8 +974,154 @@ layer instantiation and layer call.</p>
 <dd></dd></dl>
 
 </div>
+<div class="section" id="module-TFGENZOO.flows.flatten">
+<span id="tfgenzoo-flows-flatten-module"></span><h2>TFGENZOO.flows.flatten module<a class="headerlink" href="#module-TFGENZOO.flows.flatten" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="TFGENZOO.flows.flatten.Flatten">
+<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.flatten.</code><code class="sig-name descname">Flatten</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flatten.Flatten" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#TFGENZOO.flows.flowbase.FlowComponent" title="TFGENZOO.flows.flowbase.FlowComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TFGENZOO.flows.flowbase.FlowComponent</span></code></a></p>
+<p>Flatten Layer
+Sources:</p>
+<blockquote>
+<div><p><a class="reference external" href="https://github.com/VLL-HD/FrEIA/blob/26a5d4a901831a7f0130c6059b9d50ac72ae6f47/FrEIA/modules/reshapes.py#L204-L221">https://github.com/VLL-HD/FrEIA/blob/26a5d4a901831a7f0130c6059b9d50ac72ae6f47/FrEIA/modules/reshapes.py#L204-L221</a></p>
+</div></blockquote>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">tenosorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">TFGENZOO.flows</span> <span class="kn">import</span> <span class="n">Flatten</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fl</span> <span class="o">=</span> <span class="n">Flatten</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fl</span><span class="o">.</span><span class="n">build</span><span class="p">([</span><span class="kc">None</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fl</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+<span class="go">(&lt;tf.Tensor &#39;flatten_2_2/Identity:0&#39; shape=(None, 512) dtype=float32&gt;,</span>
+<span class="go"> &lt;tf.Tensor &#39;flatten_2_2/Identity_1:0&#39; shape=(None,) dtype=float32&gt;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">fl</span><span class="p">(</span><span class="n">inputs</span><span class="p">))</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+<span class="go">Model: &quot;model&quot;</span>
+<span class="go">_________________________________________________________________</span>
+<span class="go">Layer (type)                 Output Shape              Param #</span>
+<span class="go">=================================================================</span>
+<span class="go">input_1 (InputLayer)         [(None, 16, 16, 2)]       0</span>
+<span class="go">_________________________________________________________________</span>
+<span class="go">flatten_2 (Flatten)          ((None, 512), (None,))    1</span>
+<span class="go">=================================================================</span>
+<span class="go">Total params: 1</span>
+<span class="go">Trainable params: 0</span>
+<span class="go">Non-trainable params: 1</span>
+<span class="go">_________________________________________________________________</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span><span class="p">,</span> <span class="n">ldj</span> <span class="o">=</span> <span class="n">fl</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">([</span><span class="mi">1024</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">2</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span> <span class="n">ildj</span> <span class="o">=</span> <span class="n">fl</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">invere</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">TensorShape([1024, 16, 16, 2])</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt id="TFGENZOO.flows.flatten.Flatten.build">
+<code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_shape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flatten.Flatten.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates the variables of the layer (optional, for subclass implementers).</p>
+<p>This is a method that implementers of subclasses of <cite>Layer</cite> or <cite>Model</cite>
+can override if they need a state-creation step in-between
+layer instantiation and layer call.</p>
+<p>This is typically used to create the weights of <cite>Layer</cite> subclasses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>input_shape</strong> – Instance of <cite>TensorShape</cite>, or list of instances of
+<cite>TensorShape</cite> if the layer expects a list of inputs
+(one instance per input).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.flatten.Flatten.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flatten.Flatten.forward" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.flatten.Flatten.get_config">
+<code class="sig-name descname">get_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flatten.Flatten.get_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the config of the layer.</p>
+<p>A layer config is a Python dictionary (serializable)
+containing the configuration of a layer.
+The same layer can be reinstantiated later
+(without its trained weights) from this configuration.</p>
+<p>The config of a layer does not include connectivity
+information, nor the layer class name. These are handled
+by <cite>Network</cite> (one layer of abstraction above).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Python dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.flatten.Flatten.inverse">
+<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flatten.Flatten.inverse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="module-TFGENZOO.flows.flowbase">
 <span id="tfgenzoo-flows-flowbase-module"></span><h2>TFGENZOO.flows.flowbase module<a class="headerlink" href="#module-TFGENZOO.flows.flowbase" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="TFGENZOO.flows.flowbase.ConditionalFlowModule">
+<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.flowbase.</code><code class="sig-name descname">ConditionalFlowModule</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">components</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#TFGENZOO.flows.flowbase.FlowComponent" title="TFGENZOO.flows.flowbase.FlowComponent">TFGENZOO.flows.flowbase.FlowComponent</a><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flowbase.ConditionalFlowModule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#TFGENZOO.flows.flowbase.FlowBase" title="TFGENZOO.flows.flowbase.FlowBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">TFGENZOO.flows.flowbase.FlowBase</span></code></a></p>
+<p>Sequential Layer for FlowBase’s Layer</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">layers</span> <span class="o">=</span> <span class="p">[</span><span class="n">FlowBase</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">module</span> <span class="o">=</span> <span class="n">FlowModule</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span> <span class="o">=</span> <span class="n">module</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x_hat</span> <span class="o">=</span> <span class="n">module</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="n">x_hat</span><span class="p">)</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="mf">1e-3</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt id="TFGENZOO.flows.flowbase.ConditionalFlowModule.build">
+<code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_shape</span><span class="p">:</span> <span class="n">tensorflow.python.framework.tensor_shape.TensorShape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flowbase.ConditionalFlowModule.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates the variables of the layer (optional, for subclass implementers).</p>
+<p>This is a method that implementers of subclasses of <cite>Layer</cite> or <cite>Model</cite>
+can override if they need a state-creation step in-between
+layer instantiation and layer call.</p>
+<p>This is typically used to create the weights of <cite>Layer</cite> subclasses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>input_shape</strong> – Instance of <cite>TensorShape</cite>, or list of instances of
+<cite>TensorShape</cite> if the layer expects a list of inputs
+(one instance per input).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.flowbase.ConditionalFlowModule.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="n">cond</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flowbase.ConditionalFlowModule.forward" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.flowbase.ConditionalFlowModule.get_config">
+<code class="sig-name descname">get_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flowbase.ConditionalFlowModule.get_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the config of the layer.</p>
+<p>A layer config is a Python dictionary (serializable)
+containing the configuration of a layer.
+The same layer can be reinstantiated later
+(without its trained weights) from this configuration.</p>
+<p>The config of a layer does not include connectivity
+information, nor the layer class name. These are handled
+by <cite>Network</cite> (one layer of abstraction above).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Python dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.flowbase.ConditionalFlowModule.inverse">
+<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">z</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="n">cond</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flowbase.ConditionalFlowModule.inverse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 <dl class="py class">
 <dt id="TFGENZOO.flows.flowbase.FactorOutBase">
 <em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.flowbase.</code><code class="sig-name descname">FactorOutBase</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">with_zaux</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flowbase.FactorOutBase" title="Permalink to this definition">¶</a></dt>
@@ -777,6 +1176,24 @@ layer instantiation and layer call.</p>
 <dt id="TFGENZOO.flows.flowbase.FactorOutBase.forward">
 <em class="property">abstract </em><code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="n">zaux</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flowbase.FactorOutBase.forward" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.flowbase.FactorOutBase.get_config">
+<code class="sig-name descname">get_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flowbase.FactorOutBase.get_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the config of the layer.</p>
+<p>A layer config is a Python dictionary (serializable)
+containing the configuration of a layer.
+The same layer can be reinstantiated later
+(without its trained weights) from this configuration.</p>
+<p>The config of a layer does not include connectivity
+information, nor the layer class name. These are handled
+by <cite>Network</cite> (one layer of abstraction above).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Python dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt id="TFGENZOO.flows.flowbase.FactorOutBase.inverse">
@@ -861,6 +1278,16 @@ layer instantiation and layer call.</p>
 <dt id="TFGENZOO.flows.flowbase.FlowComponent.assert_log_det_jacobian">
 <code class="sig-name descname">assert_log_det_jacobian</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">log_det_jacobian</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flowbase.FlowComponent.assert_log_det_jacobian" title="Permalink to this definition">¶</a></dt>
 <dd><p>assert log_det_jacobian’s shape</p>
+<p class="rubric">Notes</p>
+<div class="line-block">
+<div class="line">tf-2.0’s bug</div>
+<div class="line">tf.debugging.assert_shapes([(tf.constant(1.0), (None, ))])</div>
+<div class="line"># =&gt; None (true)</div>
+<div class="line">tf.debugging.assert_shapes([(tf.constant([1.0, 1.0]), (None, ))])</div>
+<div class="line"># =&gt; None (true)</div>
+<div class="line">tf.debugging.assert_shapes([(tf.constant([[1.0], [1.0]]), (None, ))])</div>
+<div class="line"># =&gt; Error</div>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -916,6 +1343,24 @@ layer instantiation and layer call.</p>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt id="TFGENZOO.flows.flowbase.FlowModule.get_config">
+<code class="sig-name descname">get_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flowbase.FlowModule.get_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the config of the layer.</p>
+<p>A layer config is a Python dictionary (serializable)
+containing the configuration of a layer.
+The same layer can be reinstantiated later
+(without its trained weights) from this configuration.</p>
+<p>The config of a layer does not include connectivity
+information, nor the layer class name. These are handled
+by <cite>Network</cite> (one layer of abstraction above).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Python dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="TFGENZOO.flows.flowbase.FlowModule.inverse">
 <code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">z</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flowbase.FlowModule.inverse" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -932,12 +1377,12 @@ layer instantiation and layer call.</p>
 <dt id="TFGENZOO.flows.inv1x1conv.Inv1x1Conv">
 <em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.inv1x1conv.</code><code class="sig-name descname">Inv1x1Conv</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.inv1x1conv.Inv1x1Conv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#TFGENZOO.flows.flowbase.FlowComponent" title="TFGENZOO.flows.flowbase.FlowComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TFGENZOO.flows.flowbase.FlowComponent</span></code></a></p>
-<p>Invertible 1x1 Convolution Layer
-Sources:</p>
-<blockquote>
-<div><p><a class="reference external" href="https://arxiv.org/pdf/1807.03039.pdf">https://arxiv.org/pdf/1807.03039.pdf</a>
+<p>Invertible 1x1 Convolution Layer</p>
+<dl class="simple">
+<dt>Sources:</dt><dd><p><a class="reference external" href="https://arxiv.org/pdf/1807.03039.pdf">https://arxiv.org/pdf/1807.03039.pdf</a>
 <a class="reference external" href="https://github.com/openai/glow/blob/master/model.py#L457-L472">https://github.com/openai/glow/blob/master/model.py#L457-L472</a></p>
-</div></blockquote>
+</dd>
+</dl>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <ul>
@@ -965,6 +1410,27 @@ x &amp;\in \mathbb{R}^{b \times h\times w \times c}\ \ \
 </li>
 </ul>
 </div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">TFGENZOO.flows</span> <span class="kn">import</span> <span class="n">Inv1x1Conv</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ic</span> <span class="o">=</span> <span class="n">Inv1x1Conv</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ic</span><span class="o">.</span><span class="n">build</span><span class="p">([</span><span class="kc">None</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ic</span><span class="o">.</span><span class="n">get_config</span><span class="p">()</span>
+<span class="go">{&#39;name&#39;: &#39;inv1x1_conv_1&#39;, &#39;trainable&#39;: {}, &#39;dtype&#39;: &#39;float32&#39;}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">inputs</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Input</span><span class="p">([</span><span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">ic</span><span class="p">(</span><span class="n">inputs</span><span class="p">))</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+<span class="go">Layer (type)                 Output Shape              Param #</span>
+<span class="go">=================================================================</span>
+<span class="go">input_3 (InputLayer)         [(None, 16, 16, 4)]       0</span>
+<span class="go">_________________________________________________________________</span>
+<span class="go">inv1x1_conv_1 (Inv1x1Conv)   ((None, 16, 16, 4), (None 17</span>
+<span class="go">=================================================================</span>
+<span class="go">Total params: 17</span>
+<span class="go">Trainable params: 0</span>
+<span class="go">Non-trainable params: 17</span>
+<span class="go">_________________________________________________________________</span>
+</pre></div>
+</div>
 <dl class="py method">
 <dt id="TFGENZOO.flows.inv1x1conv.Inv1x1Conv.build">
 <code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_shape</span><span class="p">:</span> <span class="n">tensorflow.python.framework.tensor_shape.TensorShape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.inv1x1conv.Inv1x1Conv.build" title="Permalink to this definition">¶</a></dt>
@@ -986,6 +1452,24 @@ layer instantiation and layer call.</p>
 <dt id="TFGENZOO.flows.inv1x1conv.Inv1x1Conv.forward">
 <code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.inv1x1conv.Inv1x1Conv.forward" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.inv1x1conv.Inv1x1Conv.get_config">
+<code class="sig-name descname">get_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.inv1x1conv.Inv1x1Conv.get_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the config of the layer.</p>
+<p>A layer config is a Python dictionary (serializable)
+containing the configuration of a layer.
+The same layer can be reinstantiated later
+(without its trained weights) from this configuration.</p>
+<p>The config of a layer does not include connectivity
+information, nor the layer class name. These are handled
+by <cite>Network</cite> (one layer of abstraction above).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Python dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt id="TFGENZOO.flows.inv1x1conv.Inv1x1Conv.inverse">
@@ -1100,6 +1584,32 @@ InverseLogDetJacobian &amp;= sum(-2 \log(logistic(z)) - z)\end{split}\]</div>
 </li>
 </ul>
 </div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">TFGENZOO.flows</span> <span class="kn">import</span> <span class="n">LogitifyImage</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">li</span> <span class="o">=</span> <span class="n">LogitifyImage</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">li</span><span class="o">.</span><span class="n">build</span><span class="p">([</span><span class="kc">None</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">li</span><span class="o">.</span><span class="n">get_config</span><span class="p">()</span>
+<span class="go">{&#39;name&#39;: &#39;logitify_image_1&#39;, ...}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">inputs</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Input</span><span class="p">([</span><span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">li</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+<span class="go">(&lt;tf.Tensor &#39;logitify_image/Identity:0&#39; shape=(None, 32, 32, 1) dtype=float32&gt;,</span>
+<span class="go">&lt;tf.Tensor &#39;logitify_image/Identity_1:0&#39; shape=(None,) dtype=float32&gt;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">li</span><span class="p">(</span><span class="n">inputs</span><span class="p">))</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+<span class="go">Model: &quot;model&quot;</span>
+<span class="go">_________________________________________________________________</span>
+<span class="go">Layer (type)                 Output Shape              Param #</span>
+<span class="go">=================================================================</span>
+<span class="go">input_1 (InputLayer)         [(None, 32, 32, 1)]       0</span>
+<span class="go">_________________________________________________________________</span>
+<span class="go">logitify_image (LogitifyImag ((None, 32, 32, 1), (None 1</span>
+<span class="go">=================================================================</span>
+<span class="go">Total params: 1</span>
+<span class="go">Trainable params: 0</span>
+<span class="go">Non-trainable params: 1</span>
+<span class="go">_________________________________________________________________</span>
+</pre></div>
+</div>
 <dl class="py method">
 <dt id="TFGENZOO.flows.quantize.LogitifyImage.build">
 <code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_shape</span><span class="p">:</span> <span class="n">tensorflow.python.framework.tensor_shape.TensorShape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.quantize.LogitifyImage.build" title="Permalink to this definition">¶</a></dt>
@@ -1123,8 +1633,51 @@ layer instantiation and layer call.</p>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt id="TFGENZOO.flows.quantize.LogitifyImage.get_config">
+<code class="sig-name descname">get_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.quantize.LogitifyImage.get_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the config of the layer.</p>
+<p>A layer config is a Python dictionary (serializable)
+containing the configuration of a layer.
+The same layer can be reinstantiated later
+(without its trained weights) from this configuration.</p>
+<p>The config of a layer does not include connectivity
+information, nor the layer class name. These are handled
+by <cite>Network</cite> (one layer of abstraction above).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Python dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="TFGENZOO.flows.quantize.LogitifyImage.inverse">
 <code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">z</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.quantize.LogitifyImage.inverse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-TFGENZOO.flows.quantize_test">
+<span id="tfgenzoo-flows-quantize-test-module"></span><h2>TFGENZOO.flows.quantize_test module<a class="headerlink" href="#module-TFGENZOO.flows.quantize_test" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="TFGENZOO.flows.quantize_test.LogitifyImageTest">
+<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.quantize_test.</code><code class="sig-name descname">LogitifyImageTest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">methodName</span><span class="o">=</span><span class="default_value">'runTest'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.quantize_test.LogitifyImageTest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tensorflow.python.framework.test_util.TensorFlowTestCase</span></code></p>
+<dl class="py method">
+<dt id="TFGENZOO.flows.quantize_test.LogitifyImageTest.setUp">
+<code class="sig-name descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.quantize_test.LogitifyImageTest.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hook method for setting up the test fixture before exercising it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.quantize_test.LogitifyImageTest.testLogitifyImageOutput">
+<code class="sig-name descname">testLogitifyImageOutput</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.quantize_test.LogitifyImageTest.testLogitifyImageOutput" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.quantize_test.LogitifyImageTest.testLogitifyImageOutputShape">
+<code class="sig-name descname">testLogitifyImageOutputShape</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.quantize_test.LogitifyImageTest.testLogitifyImageOutputShape" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -1193,6 +1746,24 @@ layer instantiation and layer call.</p>
 <dt id="TFGENZOO.flows.squeeze.Squeezing.forward">
 <code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="n">zaux</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.squeeze.Squeezing.forward" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.squeeze.Squeezing.get_config">
+<code class="sig-name descname">get_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.squeeze.Squeezing.get_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the config of the layer.</p>
+<p>A layer config is a Python dictionary (serializable)
+containing the configuration of a layer.
+The same layer can be reinstantiated later
+(without its trained weights) from this configuration.</p>
+<p>The config of a layer does not include connectivity
+information, nor the layer class name. These are handled
+by <cite>Network</cite> (one layer of abstraction above).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Python dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt id="TFGENZOO.flows.squeeze.Squeezing.inverse">
@@ -1265,6 +1836,24 @@ layer instantiation and layer call.</p>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt id="TFGENZOO.flows.FactorOutBase.get_config">
+<code class="sig-name descname">get_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.FactorOutBase.get_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the config of the layer.</p>
+<p>A layer config is a Python dictionary (serializable)
+containing the configuration of a layer.
+The same layer can be reinstantiated later
+(without its trained weights) from this configuration.</p>
+<p>The config of a layer does not include connectivity
+information, nor the layer class name. These are handled
+by <cite>Network</cite> (one layer of abstraction above).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Python dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="TFGENZOO.flows.FactorOutBase.inverse">
 <em class="property">abstract </em><code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="n">zaux</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.FactorOutBase.inverse" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -1279,6 +1868,16 @@ layer instantiation and layer call.</p>
 <dt id="TFGENZOO.flows.FlowComponent.assert_log_det_jacobian">
 <code class="sig-name descname">assert_log_det_jacobian</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">log_det_jacobian</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.FlowComponent.assert_log_det_jacobian" title="Permalink to this definition">¶</a></dt>
 <dd><p>assert log_det_jacobian’s shape</p>
+<p class="rubric">Notes</p>
+<div class="line-block">
+<div class="line">tf-2.0’s bug</div>
+<div class="line">tf.debugging.assert_shapes([(tf.constant(1.0), (None, ))])</div>
+<div class="line"># =&gt; None (true)</div>
+<div class="line">tf.debugging.assert_shapes([(tf.constant([1.0, 1.0]), (None, ))])</div>
+<div class="line"># =&gt; None (true)</div>
+<div class="line">tf.debugging.assert_shapes([(tf.constant([[1.0], [1.0]]), (None, ))])</div>
+<div class="line"># =&gt; Error</div>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -1332,6 +1931,24 @@ layer instantiation and layer call.</p>
 <dt id="TFGENZOO.flows.FlowModule.forward">
 <code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.FlowModule.forward" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.FlowModule.get_config">
+<code class="sig-name descname">get_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.FlowModule.get_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the config of the layer.</p>
+<p>A layer config is a Python dictionary (serializable)
+containing the configuration of a layer.
+The same layer can be reinstantiated later
+(without its trained weights) from this configuration.</p>
+<p>The config of a layer does not include connectivity
+information, nor the layer class name. These are handled
+by <cite>Network</cite> (one layer of abstraction above).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Python dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt id="TFGENZOO.flows.FlowModule.inverse">
@@ -1405,6 +2022,32 @@ initialize batch’s variance scaling</p>
 barrier log value to - Inf</p>
 </dd></dl>
 
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">TFGENZOO.flows</span> <span class="kn">import</span> <span class="nn">Actnorm</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ac</span> <span class="o">=</span> <span class="n">Actnorm</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ac</span><span class="o">.</span><span class="n">build</span><span class="p">([</span><span class="kc">None</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ac</span><span class="o">.</span><span class="n">get_config</span><span class="p">()</span>
+<span class="go">{&#39;name&#39;: &#39;actnorm_1&#39;, ... }</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">inputs</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Input</span><span class="p">([</span><span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ac</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+<span class="go">(&lt;tf.Tensor &#39;actnorm_1_2/Identity:0&#39; shape=(None, 16, 16, 4) dtype=float32&gt;,</span>
+<span class="go"> &lt;tf.Tensor &#39;actnorm_1_2/Identity_1:0&#39; shape=(None,) dtype=float32&gt;)</span>
+<span class="gp">&gt;&gt;&gt; </span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">ac</span><span class="p">(</span><span class="n">inputs</span><span class="p">))</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+<span class="go">Model: &quot;model_5&quot;</span>
+<span class="go">_________________________________________________________________</span>
+<span class="go">Layer (type)                 Output Shape              Param #</span>
+<span class="go">=================================================================</span>
+<span class="go">input_3 (InputLayer)         [(None, 16, 16, 4)]       0</span>
+<span class="go">_________________________________________________________________</span>
+<span class="go">actnorm_1 (Actnorm)          ((None, 16, 16, 4), (None 9</span>
+<span class="go">=================================================================</span>
+<span class="go">Total params: 9</span>
+<span class="go">Trainable params: 0</span>
+<span class="go">Non-trainable params: 9</span>
+<span class="go">_________________________________________________________________</span>
+</pre></div>
+</div>
 <dl class="py method">
 <dt id="TFGENZOO.flows.Actnorm.build">
 <code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_shape</span><span class="p">:</span> <span class="n">tensorflow.python.framework.tensor_shape.TensorShape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.Actnorm.build" title="Permalink to this definition">¶</a></dt>
@@ -1433,6 +2076,24 @@ layer instantiation and layer call.</p>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt id="TFGENZOO.flows.Actnorm.get_config">
+<code class="sig-name descname">get_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.Actnorm.get_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the config of the layer.</p>
+<p>A layer config is a Python dictionary (serializable)
+containing the configuration of a layer.
+The same layer can be reinstantiated later
+(without its trained weights) from this configuration.</p>
+<p>The config of a layer does not include connectivity
+information, nor the layer class name. These are handled
+by <cite>Network</cite> (one layer of abstraction above).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Python dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="TFGENZOO.flows.Actnorm.inverse">
 <code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">z</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.Actnorm.inverse" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -1453,7 +2114,7 @@ layer instantiation and layer call.</p>
 
 <dl class="py class">
 <dt id="TFGENZOO.flows.AffineCoupling">
-<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.</code><code class="sig-name descname">AffineCoupling</code><span class="sig-paren">(</span><em class="sig-param">mask_type: TFGENZOO.flows.affine_coupling.AffineCouplingMask = &lt;AffineCouplingMask.ChannelWise: 1&gt;</em>, <em class="sig-param">scale_shift_net: tensorflow.python.keras.engine.base_layer.Layer = None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.AffineCoupling" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.</code><code class="sig-name descname">AffineCoupling</code><span class="sig-paren">(</span><em class="sig-param">mask_type: TFGENZOO.flows.affine_coupling.AffineCouplingMask = &lt;AffineCouplingMask.ChannelWise: 1&gt;, scale_shift_net: tensorflow.python.keras.engine.base_layer.Layer = None, scale_shift_net_template: Callable[[tensorflow.python.keras.engine.input_layer.Input], tensorflow.python.keras.engine.training.Model] = None, **kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.AffineCoupling" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#TFGENZOO.flows.flowbase.FlowComponent" title="TFGENZOO.flows.flowbase.FlowComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TFGENZOO.flows.flowbase.FlowComponent</span></code></a></p>
 <p>Affine Coupling Layer</p>
 <dl class="simple">
@@ -1499,6 +2160,33 @@ layer instantiation and layer call.</p>
 </li>
 </ul>
 </div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">TFGENZOO.flows.affine_coupling</span> <span class="kn">import</span> <span class="n">AffineCoupling</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">TFGENZOO.layers.resnet</span> <span class="kn">import</span> <span class="n">ShallowResNet</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">af</span> <span class="o">=</span> <span class="n">AffineCoupling</span><span class="p">(</span><span class="n">scale_shift_net_template</span><span class="o">=</span><span class="n">ShallowResNet</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">af</span><span class="o">.</span><span class="n">build</span><span class="p">([</span><span class="kc">None</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">af</span><span class="o">.</span><span class="n">get_config</span><span class="p">()</span>
+<span class="go">    {&#39;name&#39;: &#39;affine_coupling_1&#39;, ...}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">inputs</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Input</span><span class="p">([</span><span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">af</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+<span class="go">(&lt;tf.Tensor &#39;affine_coupling_3_2/Identity:0&#39; shape=(None, 16, 16, 4) dtype=float32&gt;,</span>
+<span class="go"> &lt;tf.Tensor &#39;affine_coupling_3_2/Identity_1:0&#39; shape=(None,) dtype=float32&gt;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">af</span><span class="p">(</span><span class="n">inputs</span><span class="p">))</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+<span class="go">Model: &quot;model_1&quot;</span>
+<span class="go">_________________________________________________________________</span>
+<span class="go">Layer (type)                 Output Shape              Param #</span>
+<span class="go">=================================================================</span>
+<span class="go">input_3 (InputLayer)         [(None, 16, 16, 4)]       0</span>
+<span class="go">_________________________________________________________________</span>
+<span class="go">affine_coupling (AffineCoupl ((None, 16, 16, 4), (None 2389003</span>
+<span class="go">=================================================================</span>
+<span class="go">Total params: 2,389,003</span>
+<span class="go">Trainable params: 0</span>
+<span class="go">Non-trainable params: 2,389,003</span>
+<span class="go">_________________________________________________________________</span>
+</pre></div>
+</div>
 <dl class="py method">
 <dt id="TFGENZOO.flows.AffineCoupling.build">
 <code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_shape</span><span class="p">:</span> <span class="n">tensorflow.python.framework.tensor_shape.TensorShape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.AffineCoupling.build" title="Permalink to this definition">¶</a></dt>
@@ -1520,6 +2208,24 @@ layer instantiation and layer call.</p>
 <dt id="TFGENZOO.flows.AffineCoupling.forward">
 <code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.AffineCoupling.forward" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.AffineCoupling.get_config">
+<code class="sig-name descname">get_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.AffineCoupling.get_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the config of the layer.</p>
+<p>A layer config is a Python dictionary (serializable)
+containing the configuration of a layer.
+The same layer can be reinstantiated later
+(without its trained weights) from this configuration.</p>
+<p>The config of a layer does not include connectivity
+information, nor the layer class name. These are handled
+by <cite>Network</cite> (one layer of abstraction above).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Python dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt id="TFGENZOO.flows.AffineCoupling.inverse">
@@ -1566,18 +2272,36 @@ layer instantiation and layer call.</p>
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt id="TFGENZOO.flows.LogScale.get_config">
+<code class="sig-name descname">get_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.LogScale.get_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the config of the layer.</p>
+<p>A layer config is a Python dictionary (serializable)
+containing the configuration of a layer.
+The same layer can be reinstantiated later
+(without its trained weights) from this configuration.</p>
+<p>The config of a layer does not include connectivity
+information, nor the layer class name. These are handled
+by <cite>Network</cite> (one layer of abstraction above).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Python dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
 <dt id="TFGENZOO.flows.Inv1x1Conv">
 <em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.</code><code class="sig-name descname">Inv1x1Conv</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.Inv1x1Conv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#TFGENZOO.flows.flowbase.FlowComponent" title="TFGENZOO.flows.flowbase.FlowComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TFGENZOO.flows.flowbase.FlowComponent</span></code></a></p>
-<p>Invertible 1x1 Convolution Layer
-Sources:</p>
-<blockquote>
-<div><p><a class="reference external" href="https://arxiv.org/pdf/1807.03039.pdf">https://arxiv.org/pdf/1807.03039.pdf</a>
+<p>Invertible 1x1 Convolution Layer</p>
+<dl class="simple">
+<dt>Sources:</dt><dd><p><a class="reference external" href="https://arxiv.org/pdf/1807.03039.pdf">https://arxiv.org/pdf/1807.03039.pdf</a>
 <a class="reference external" href="https://github.com/openai/glow/blob/master/model.py#L457-L472">https://github.com/openai/glow/blob/master/model.py#L457-L472</a></p>
-</div></blockquote>
+</dd>
+</dl>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <ul>
@@ -1605,6 +2329,27 @@ x &amp;\in \mathbb{R}^{b \times h\times w \times c}\ \ \
 </li>
 </ul>
 </div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">TFGENZOO.flows</span> <span class="kn">import</span> <span class="n">Inv1x1Conv</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ic</span> <span class="o">=</span> <span class="n">Inv1x1Conv</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ic</span><span class="o">.</span><span class="n">build</span><span class="p">([</span><span class="kc">None</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ic</span><span class="o">.</span><span class="n">get_config</span><span class="p">()</span>
+<span class="go">{&#39;name&#39;: &#39;inv1x1_conv_1&#39;, &#39;trainable&#39;: {}, &#39;dtype&#39;: &#39;float32&#39;}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">inputs</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Input</span><span class="p">([</span><span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">ic</span><span class="p">(</span><span class="n">inputs</span><span class="p">))</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+<span class="go">Layer (type)                 Output Shape              Param #</span>
+<span class="go">=================================================================</span>
+<span class="go">input_3 (InputLayer)         [(None, 16, 16, 4)]       0</span>
+<span class="go">_________________________________________________________________</span>
+<span class="go">inv1x1_conv_1 (Inv1x1Conv)   ((None, 16, 16, 4), (None 17</span>
+<span class="go">=================================================================</span>
+<span class="go">Total params: 17</span>
+<span class="go">Trainable params: 0</span>
+<span class="go">Non-trainable params: 17</span>
+<span class="go">_________________________________________________________________</span>
+</pre></div>
+</div>
 <dl class="py method">
 <dt id="TFGENZOO.flows.Inv1x1Conv.build">
 <code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_shape</span><span class="p">:</span> <span class="n">tensorflow.python.framework.tensor_shape.TensorShape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.Inv1x1Conv.build" title="Permalink to this definition">¶</a></dt>
@@ -1626,6 +2371,24 @@ layer instantiation and layer call.</p>
 <dt id="TFGENZOO.flows.Inv1x1Conv.forward">
 <code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.Inv1x1Conv.forward" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.Inv1x1Conv.get_config">
+<code class="sig-name descname">get_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.Inv1x1Conv.get_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the config of the layer.</p>
+<p>A layer config is a Python dictionary (serializable)
+containing the configuration of a layer.
+The same layer can be reinstantiated later
+(without its trained weights) from this configuration.</p>
+<p>The config of a layer does not include connectivity
+information, nor the layer class name. These are handled
+by <cite>Network</cite> (one layer of abstraction above).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Python dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt id="TFGENZOO.flows.Inv1x1Conv.inverse">
@@ -1656,6 +2419,216 @@ layer instantiation and layer call.</p>
 <dd class="field-odd"><p>np.array</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py class">
+<dt id="TFGENZOO.flows.LogitifyImage">
+<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.</code><code class="sig-name descname">LogitifyImage</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">corruption_level</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">alpha</span><span class="o">=</span><span class="default_value">0.05</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.LogitifyImage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#TFGENZOO.flows.flowbase.FlowBase" title="TFGENZOO.flows.flowbase.FlowBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">TFGENZOO.flows.flowbase.FlowBase</span></code></a></p>
+<p>Apply Tapani Raiko’s dequantization and express image in terms of logits</p>
+<p>Sources:</p>
+<blockquote>
+<div><p><a class="reference external" href="https://github.com/taesungp/real-nvp/blob/master/real_nvp/model.py">https://github.com/taesungp/real-nvp/blob/master/real_nvp/model.py</a>
+<a class="reference external" href="https://github.com/taesungp/real-nvp/blob/master/real_nvp/model.py#L42-L54">https://github.com/taesungp/real-nvp/blob/master/real_nvp/model.py#L42-L54</a>
+<a class="reference external" href="https://github.com/tensorflow/models/blob/fe4e6b653141a197779d752b422419493e5d9128/research/real_nvp/real_nvp_multiscale_dataset.py#L1073-L1077">https://github.com/tensorflow/models/blob/fe4e6b653141a197779d752b422419493e5d9128/research/real_nvp/real_nvp_multiscale_dataset.py#L1073-L1077</a>
+<a class="reference external" href="https://github.com/masa-su/pixyz/blob/master/pixyz/flows/operations.py#L253-L254">https://github.com/masa-su/pixyz/blob/master/pixyz/flows/operations.py#L253-L254</a>
+<a class="reference external" href="https://github.com/fmu2/realNVP/blob/8d36691df215af3678440ccb7c01a13d2b441a4a/data_utils.py#L112-L119">https://github.com/fmu2/realNVP/blob/8d36691df215af3678440ccb7c01a13d2b441a4a/data_utils.py#L112-L119</a></p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>corrupution_level</strong> (<em>float</em>) – power of added random variable.</p></li>
+<li><p><strong>alpha</strong> (<em>float</em>) – parameter about transform close interval to open interval
+[0, 1] to (1, 0)</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>We know many implementation on this quantization, but we use this formula.
+since many implementations use it.</p>
+<ul>
+<li><dl>
+<dt>forward preprocess (add noise)</dt><dd><div class="math notranslate nohighlight">
+\[\begin{split}x &amp;\leftarrow 255.0 x  \ \because [0, 1] \rightarrow [0, 255] \\
+x &amp;\leftarrow x + \text{corruption_level} \times  \epsilon \ where\ \epsilon \sim N(0, 1)\\
+x &amp;\leftarrow x / (\text{corruption_level} + 255.0)\\
+x &amp;\leftarrow x  (1 - \alpha) + 0.5 \alpha \ \because \ [0, 1] \rightarrow (0, 1)\end{split}\]</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>forward formula</dt><dd><div class="math notranslate nohighlight">
+\[\begin{split}z &amp;= logit(x)\\
+  &amp;= \log(x) - \log(1 - x)\\
+LogDetJacobian &amp;= sum(softplus(z) + softplus(-z) - softplus(\log(\cfrac{\alpha}{1 - \alpha})))\end{split}\]</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>inverse formula</dt><dd><div class="math notranslate nohighlight">
+\[\begin{split}x &amp;= logisitic(z)\\
+  &amp;= 1 / (1 + exp( -z )) \\
+InverseLogDetJacobian &amp;= sum(-2 \log(logistic(z)) - z)\end{split}\]</div>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">TFGENZOO.flows</span> <span class="kn">import</span> <span class="n">LogitifyImage</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">li</span> <span class="o">=</span> <span class="n">LogitifyImage</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">li</span><span class="o">.</span><span class="n">build</span><span class="p">([</span><span class="kc">None</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">li</span><span class="o">.</span><span class="n">get_config</span><span class="p">()</span>
+<span class="go">{&#39;name&#39;: &#39;logitify_image_1&#39;, ...}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">inputs</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Input</span><span class="p">([</span><span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">li</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+<span class="go">(&lt;tf.Tensor &#39;logitify_image/Identity:0&#39; shape=(None, 32, 32, 1) dtype=float32&gt;,</span>
+<span class="go">&lt;tf.Tensor &#39;logitify_image/Identity_1:0&#39; shape=(None,) dtype=float32&gt;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">li</span><span class="p">(</span><span class="n">inputs</span><span class="p">))</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+<span class="go">Model: &quot;model&quot;</span>
+<span class="go">_________________________________________________________________</span>
+<span class="go">Layer (type)                 Output Shape              Param #</span>
+<span class="go">=================================================================</span>
+<span class="go">input_1 (InputLayer)         [(None, 32, 32, 1)]       0</span>
+<span class="go">_________________________________________________________________</span>
+<span class="go">logitify_image (LogitifyImag ((None, 32, 32, 1), (None 1</span>
+<span class="go">=================================================================</span>
+<span class="go">Total params: 1</span>
+<span class="go">Trainable params: 0</span>
+<span class="go">Non-trainable params: 1</span>
+<span class="go">_________________________________________________________________</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt id="TFGENZOO.flows.LogitifyImage.build">
+<code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_shape</span><span class="p">:</span> <span class="n">tensorflow.python.framework.tensor_shape.TensorShape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.LogitifyImage.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates the variables of the layer (optional, for subclass implementers).</p>
+<p>This is a method that implementers of subclasses of <cite>Layer</cite> or <cite>Model</cite>
+can override if they need a state-creation step in-between
+layer instantiation and layer call.</p>
+<p>This is typically used to create the weights of <cite>Layer</cite> subclasses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>input_shape</strong> – Instance of <cite>TensorShape</cite>, or list of instances of
+<cite>TensorShape</cite> if the layer expects a list of inputs
+(one instance per input).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.LogitifyImage.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.LogitifyImage.forward" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.LogitifyImage.get_config">
+<code class="sig-name descname">get_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.LogitifyImage.get_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the config of the layer.</p>
+<p>A layer config is a Python dictionary (serializable)
+containing the configuration of a layer.
+The same layer can be reinstantiated later
+(without its trained weights) from this configuration.</p>
+<p>The config of a layer does not include connectivity
+information, nor the layer class name. These are handled
+by <cite>Network</cite> (one layer of abstraction above).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Python dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.LogitifyImage.inverse">
+<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">z</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.LogitifyImage.inverse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="TFGENZOO.flows.Flatten">
+<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.</code><code class="sig-name descname">Flatten</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.Flatten" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#TFGENZOO.flows.flowbase.FlowComponent" title="TFGENZOO.flows.flowbase.FlowComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TFGENZOO.flows.flowbase.FlowComponent</span></code></a></p>
+<p>Flatten Layer
+Sources:</p>
+<blockquote>
+<div><p><a class="reference external" href="https://github.com/VLL-HD/FrEIA/blob/26a5d4a901831a7f0130c6059b9d50ac72ae6f47/FrEIA/modules/reshapes.py#L204-L221">https://github.com/VLL-HD/FrEIA/blob/26a5d4a901831a7f0130c6059b9d50ac72ae6f47/FrEIA/modules/reshapes.py#L204-L221</a></p>
+</div></blockquote>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">tenosorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">TFGENZOO.flows</span> <span class="kn">import</span> <span class="n">Flatten</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fl</span> <span class="o">=</span> <span class="n">Flatten</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fl</span><span class="o">.</span><span class="n">build</span><span class="p">([</span><span class="kc">None</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fl</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+<span class="go">(&lt;tf.Tensor &#39;flatten_2_2/Identity:0&#39; shape=(None, 512) dtype=float32&gt;,</span>
+<span class="go"> &lt;tf.Tensor &#39;flatten_2_2/Identity_1:0&#39; shape=(None,) dtype=float32&gt;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">fl</span><span class="p">(</span><span class="n">inputs</span><span class="p">))</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+<span class="go">Model: &quot;model&quot;</span>
+<span class="go">_________________________________________________________________</span>
+<span class="go">Layer (type)                 Output Shape              Param #</span>
+<span class="go">=================================================================</span>
+<span class="go">input_1 (InputLayer)         [(None, 16, 16, 2)]       0</span>
+<span class="go">_________________________________________________________________</span>
+<span class="go">flatten_2 (Flatten)          ((None, 512), (None,))    1</span>
+<span class="go">=================================================================</span>
+<span class="go">Total params: 1</span>
+<span class="go">Trainable params: 0</span>
+<span class="go">Non-trainable params: 1</span>
+<span class="go">_________________________________________________________________</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">z</span><span class="p">,</span> <span class="n">ldj</span> <span class="o">=</span> <span class="n">fl</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">([</span><span class="mi">1024</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">2</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span> <span class="n">ildj</span> <span class="o">=</span> <span class="n">fl</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">invere</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">TensorShape([1024, 16, 16, 2])</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt id="TFGENZOO.flows.Flatten.build">
+<code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_shape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.Flatten.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates the variables of the layer (optional, for subclass implementers).</p>
+<p>This is a method that implementers of subclasses of <cite>Layer</cite> or <cite>Model</cite>
+can override if they need a state-creation step in-between
+layer instantiation and layer call.</p>
+<p>This is typically used to create the weights of <cite>Layer</cite> subclasses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>input_shape</strong> – Instance of <cite>TensorShape</cite>, or list of instances of
+<cite>TensorShape</cite> if the layer expects a list of inputs
+(one instance per input).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.Flatten.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.Flatten.forward" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.Flatten.get_config">
+<code class="sig-name descname">get_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.Flatten.get_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the config of the layer.</p>
+<p>A layer config is a Python dictionary (serializable)
+containing the configuration of a layer.
+The same layer can be reinstantiated later
+(without its trained weights) from this configuration.</p>
+<p>The config of a layer does not include connectivity
+information, nor the layer class name. These are handled
+by <cite>Network</cite> (one layer of abstraction above).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Python dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.Flatten.inverse">
+<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.Flatten.inverse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </div>

@@ -98,13 +98,16 @@
 <li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.actnorm_test">TFGENZOO.flows.actnorm_test module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.affine_coupling">TFGENZOO.flows.affine_coupling module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.affine_coupling_test">TFGENZOO.flows.affine_coupling_test module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.cond_affine_coupling">TFGENZOO.flows.cond_affine_coupling module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.cond_factor_out">TFGENZOO.flows.cond_factor_out module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.factor_out">TFGENZOO.flows.factor_out module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.flatten">TFGENZOO.flows.flatten module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.flowbase">TFGENZOO.flows.flowbase module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#tfgenzoo-flows-flowmodel-module">TFGENZOO.flows.flowmodel module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.inv1x1conv">TFGENZOO.flows.inv1x1conv module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.inv1x1conv_test">TFGENZOO.flows.inv1x1conv_test module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.quantize">TFGENZOO.flows.quantize module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.quantize_test">TFGENZOO.flows.quantize_test module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.squeeze">TFGENZOO.flows.squeeze module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows">Module contents</a></li>
 </ul>
@@ -300,6 +303,24 @@ layer instantiation and layer call.</p>
 <code class="sig-name descname">data_dep_initialize</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.utils.actnorm_activation.ActnormActivation.data_dep_initialize" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="py method">
+<dt id="TFGENZOO.flows.utils.actnorm_activation.ActnormActivation.get_config">
+<code class="sig-name descname">get_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.utils.actnorm_activation.ActnormActivation.get_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the config of the layer.</p>
+<p>A layer config is a Python dictionary (serializable)
+containing the configuration of a layer.
+The same layer can be reinstantiated later
+(without its trained weights) from this configuration.</p>
+<p>The config of a layer does not include connectivity
+information, nor the layer class name. These are handled
+by <cite>Network</cite> (one layer of abstraction above).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Python dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py function">
@@ -362,6 +383,24 @@ layer instantiation and layer call.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>A tensor or list/tuple of tensors.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.utils.conv.Conv2D.get_config">
+<code class="sig-name descname">get_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.utils.conv.Conv2D.get_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the config of the layer.</p>
+<p>A layer config is a Python dictionary (serializable)
+containing the configuration of a layer.
+The same layer can be reinstantiated later
+(without its trained weights) from this configuration.</p>
+<p>The config of a layer does not include connectivity
+information, nor the layer class name. These are handled
+by <cite>Network</cite> (one layer of abstraction above).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Python dictionary.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -454,6 +493,24 @@ layer instantiation and layer call.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>A tensor or list/tuple of tensors.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.utils.conv_zeros.Conv2DZeros.get_config">
+<code class="sig-name descname">get_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.utils.conv_zeros.Conv2DZeros.get_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the config of the layer.</p>
+<p>A layer config is a Python dictionary (serializable)
+containing the configuration of a layer.
+The same layer can be reinstantiated later
+(without its trained weights) from this configuration.</p>
+<p>The config of a layer does not include connectivity
+information, nor the layer class name. These are handled
+by <cite>Network</cite> (one layer of abstraction above).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Python dictionary.</p>
 </dd>
 </dl>
 </dd></dl>

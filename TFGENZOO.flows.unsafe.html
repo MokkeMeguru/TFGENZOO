@@ -98,13 +98,16 @@
 <li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.actnorm_test">TFGENZOO.flows.actnorm_test module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.affine_coupling">TFGENZOO.flows.affine_coupling module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.affine_coupling_test">TFGENZOO.flows.affine_coupling_test module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.cond_affine_coupling">TFGENZOO.flows.cond_affine_coupling module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.cond_factor_out">TFGENZOO.flows.cond_factor_out module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.factor_out">TFGENZOO.flows.factor_out module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.flatten">TFGENZOO.flows.flatten module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.flowbase">TFGENZOO.flows.flowbase module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#tfgenzoo-flows-flowmodel-module">TFGENZOO.flows.flowmodel module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.inv1x1conv">TFGENZOO.flows.inv1x1conv module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.inv1x1conv_test">TFGENZOO.flows.inv1x1conv_test module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.quantize">TFGENZOO.flows.quantize module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.quantize_test">TFGENZOO.flows.quantize_test module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows.squeeze">TFGENZOO.flows.squeeze module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows">Module contents</a></li>
 </ul>
@@ -291,6 +294,24 @@ layer instantiation and layer call.</p>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt id="TFGENZOO.flows.unsafe.actnorm.Actnorm.get_config">
+<code class="sig-name descname">get_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.unsafe.actnorm.Actnorm.get_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the config of the layer.</p>
+<p>A layer config is a Python dictionary (serializable)
+containing the configuration of a layer.
+The same layer can be reinstantiated later
+(without its trained weights) from this configuration.</p>
+<p>The config of a layer does not include connectivity
+information, nor the layer class name. These are handled
+by <cite>Network</cite> (one layer of abstraction above).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Python dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="TFGENZOO.flows.unsafe.actnorm.Actnorm.inverse">
 <code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">z</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.unsafe.actnorm.Actnorm.inverse" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -369,6 +390,134 @@ layer instantiation and layer call.</p>
 </div>
 <div class="section" id="module-TFGENZOO.flows.unsafe">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-TFGENZOO.flows.unsafe" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="TFGENZOO.flows.unsafe.Actnorm">
+<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.unsafe.</code><code class="sig-name descname">Actnorm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">scale</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">logscale_factor</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">3.0</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.unsafe.Actnorm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="TFGENZOO.flows.html#TFGENZOO.flows.flowbase.FlowComponent" title="TFGENZOO.flows.flowbase.FlowComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TFGENZOO.flows.flowbase.FlowComponent</span></code></a></p>
+<p>Actnorm Layer</p>
+<p>This layer can SyncBatch Normalization, but may crash frequently.</p>
+<p>Sources:</p>
+<blockquote>
+<div><p><a class="reference external" href="https://github.com/openai/glow/blob/master/tfops.py#L71-L163">https://github.com/openai/glow/blob/master/tfops.py#L71-L163</a></p>
+</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul>
+<li><dl>
+<dt>initialize</dt><dd><div class="line-block">
+<div class="line">mean = mean(first_batch)</div>
+<div class="line">var = variance(first_batch)</div>
+<div class="line">logs = log(scale / sqrt(var)) / logscale_factor</div>
+<div class="line">bias = - mean</div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>forward formula</dt><dd><div class="line-block">
+<div class="line">logs = logs * logscale_factor</div>
+<div class="line">scale = exp(logs)</div>
+</div>
+<p>z = (x + bias) * scale
+log_det_jacobain = sum(logs) * H * W</p>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>inverse formula</dt><dd><div class="line-block">
+<div class="line">logs = logs * logsscale_factor</div>
+<div class="line">inv_scale = exp(-logs)</div>
+<div class="line">z = x * inv_scale - bias</div>
+<div class="line">inverse_log_det_jacobian = sum(- logs) * H * W</div>
+</div>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<dl class="py attribute">
+<dt id="TFGENZOO.flows.unsafe.Actnorm.calc_ldj">
+<code class="sig-name descname">calc_ldj</code><a class="headerlink" href="#TFGENZOO.flows.unsafe.Actnorm.calc_ldj" title="Permalink to this definition">¶</a></dt>
+<dd><p>bool
+flag of calculate log det jacobian</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="TFGENZOO.flows.unsafe.Actnorm.scale">
+<code class="sig-name descname">scale</code><a class="headerlink" href="#TFGENZOO.flows.unsafe.Actnorm.scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>float
+initialize batch’s variance scaling</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="TFGENZOO.flows.unsafe.Actnorm.logscale_factor">
+<code class="sig-name descname">logscale_factor</code><a class="headerlink" href="#TFGENZOO.flows.unsafe.Actnorm.logscale_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>float
+barrier log value to - Inf</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.unsafe.Actnorm.bias">
+<em class="property">property </em><code class="sig-name descname">bias</code><a class="headerlink" href="#TFGENZOO.flows.unsafe.Actnorm.bias" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.unsafe.Actnorm.build">
+<code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_shape</span><span class="p">:</span> <span class="n">tensorflow.python.framework.tensor_shape.TensorShape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.unsafe.Actnorm.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates the variables of the layer (optional, for subclass implementers).</p>
+<p>This is a method that implementers of subclasses of <cite>Layer</cite> or <cite>Model</cite>
+can override if they need a state-creation step in-between
+layer instantiation and layer call.</p>
+<p>This is typically used to create the weights of <cite>Layer</cite> subclasses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>input_shape</strong> – Instance of <cite>TensorShape</cite>, or list of instances of
+<cite>TensorShape</cite> if the layer expects a list of inputs
+(one instance per input).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.unsafe.Actnorm.data_dep_initialize">
+<code class="sig-name descname">data_dep_initialize</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.unsafe.Actnorm.data_dep_initialize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.unsafe.Actnorm.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.unsafe.Actnorm.forward" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.unsafe.Actnorm.get_config">
+<code class="sig-name descname">get_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.unsafe.Actnorm.get_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the config of the layer.</p>
+<p>A layer config is a Python dictionary (serializable)
+containing the configuration of a layer.
+The same layer can be reinstantiated later
+(without its trained weights) from this configuration.</p>
+<p>The config of a layer does not include connectivity
+information, nor the layer class name. These are handled
+by <cite>Network</cite> (one layer of abstraction above).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Python dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.unsafe.Actnorm.inverse">
+<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">z</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.unsafe.Actnorm.inverse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.unsafe.Actnorm.logs">
+<em class="property">property </em><code class="sig-name descname">logs</code><a class="headerlink" href="#TFGENZOO.flows.unsafe.Actnorm.logs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </div>
 </div>
 

@@ -7,7 +7,7 @@ from TFGENZOO.flows.utils.conv_zeros import Conv2DZeros
 Layer = layers.Layer
 
 
-def ShallowResNet(inputs, width: int = 512, out_scale: int = 2):
+def ShallowResNet(inputs: tf.keras.Input, width: int = 512, out_scale: int = 2):
     """ResNet of OpenAI's Glow
     Sources:
         https://github.com/openai/glow/blob/master/model.py#L420-L426
@@ -18,7 +18,7 @@ def ShallowResNet(inputs, width: int = 512, out_scale: int = 2):
 
     conv1 = Conv2D(width=width)
     conv2 = Conv2D(width=width)
-    conv_out = Conv2DZeros(width_scale=out_scale)
+    conv_out = Conv2DZeros(width=int(inputs.shape[-1] * out_scale))
 
     outputs = inputs
     outputs = tf.nn.relu(conv1(outputs))

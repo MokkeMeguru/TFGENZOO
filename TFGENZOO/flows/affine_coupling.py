@@ -65,6 +65,30 @@ class AffineCoupling(FlowComponent):
         * implementation notes
            | in Glow's Paper, scale is calculated by exp(log_scale),
            | but IN IMPLEMENTATION, scale is done by sigmoid(log_scale + 2.0)
+
+    Examples:
+
+        >>> import tensorflow as tf
+        >>> from TFGENZOO.flows.affine_coupling import AffineCoupling
+        >>> from TFGENZOO.layers.resnet import ShallowResNet
+        >>> af = AffineCoupling(scale_shift_net_template=ShallowResNet)
+        >>> af.build([16, 16, 4])
+        >>> af.get_config()
+            {'name': 'affine_coupling_1', ...}
+        >>> inputs = tf.keras.Input([16, 16, 4])
+        >>> tf.keras.Model(inputs, af(inputs)).summary()
+        Model: "model_1"
+        _________________________________________________________________
+        Layer (type)                 Output Shape              Param #
+        =================================================================
+        input_3 (InputLayer)         [(None, 16, 16, 4)]       0
+        _________________________________________________________________
+        affine_coupling (AffineCoupl ((None, 16, 16, 4), (None 2389003
+        =================================================================
+        Total params: 2,389,003
+        Trainable params: 0
+        Non-trainable params: 2,389,003
+        _________________________________________________________________
     """
 
     def __init__(
@@ -100,7 +124,7 @@ class AffineCoupling(FlowComponent):
         return config
 
     def build(self, input_shape: tf.TensorShape):
-        self.reduce_axis = list(range(len(input_shape)))[1:]
+        self.reduce_axis = list(range(len(input_shape) + 1))[1:]
         if self.scale_shift_net is None:
             resnet_inputs = list(input_shape)
             resnet_inputs[-1] = int(resnet_inputs[-1] / 2)

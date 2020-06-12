@@ -89,6 +89,7 @@ class LogitifyImage(FlowBase):
 
         # 2-2. transform pixel values with logit to be unconstrained
         # ([0, 1]->(0, 1)).
+        # TODO: Will this function polutes the image?
         z = z * (1 - self.alpha) + self.alpha * 0.5
 
         # 2-3. apply the logit function ((0, 1)->(-inf, inf)).

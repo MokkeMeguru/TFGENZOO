@@ -2,7 +2,7 @@
 [[https://img.shields.io/badge/License-MIT-yellow.svg]]
 [[file:https://img.shields.io/badge/python-3.7-blue.svg]]
 [[file:https://img.shields.io/badge/tensorflow-%3E%3D2.2.0-brightgreen.svg]]
-
+#+TITLE: TFGENZOO (Generative Model x Tensorflow 2.x)
 ** News [2020/6/12]
 - Implement SPADE Layer
 - Implement Invertible Flatten Layer

@@ -33,6 +33,6 @@ class SpadeBN(tf.keras.layers.Layer):
 
     def get_config(self):
         config = super().get_config()
-        config_update = {"width": width, "kernel_size": 3}
+        config_update = {"width": self.width, "kernel_size": 3}
         config.update(config_update)
         return config

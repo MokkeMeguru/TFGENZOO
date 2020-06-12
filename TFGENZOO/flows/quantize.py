@@ -106,8 +106,11 @@ class LogitifyImage(FlowBase):
     def inverse(self, z: tf.Tensor, **kwargs):
         """
         """
+
         denominator = 1 + tf.exp(-z)
         x = 1 / denominator
+
+        x = (x - 0.5 * self.alpha) / (1.0 - self.alpha)
 
         inverse_log_det_jacobian = -1 * (
             tf.math.softplus(z)

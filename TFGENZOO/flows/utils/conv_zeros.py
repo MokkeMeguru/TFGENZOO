@@ -56,7 +56,9 @@ class Conv2DZeros(Layer):
             "stride": self.stride,
             "padding": self.padding,
             "log_scale_factor": self.logscale_factor,
-            "initializer": self.initializer.get_config(),
+            "initializer": tf.keras.initializers.serialize(
+                tf.keras.initializers.get(self.initializer)
+            ),
         }
         config.update(config_update)
         return config

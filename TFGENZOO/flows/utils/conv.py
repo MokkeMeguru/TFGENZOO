@@ -43,7 +43,7 @@ class Conv2D(Layer):
         ),
         bias_initializer: tf.keras.initializers.Initializer = "zeros",
     ):
-        super(Conv2D, self).__init__()
+        super().__init__()
         self.width = width
         self.width_scale = width_scale
         self.kernel_size = list(kernel_size)
@@ -65,7 +65,9 @@ class Conv2D(Layer):
             "padding": self.padding,
             "do_actnorm": self.do_actnorm,
             "do_weightnorm": self.do_weightnorm,
-            "initializer": self.initializer.get_config,
+            "initializer": tf.keras.initializers.serialize(
+                tf.keras.initializers.get(self.initializer)
+            ),
         }
         if self.do_actnorm:
             config_update.update({"activation": self.activation.get_config()})

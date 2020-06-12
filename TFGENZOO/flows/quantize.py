@@ -46,7 +46,31 @@ class LogitifyImage(FlowBase):
                  x &= logisitic(z)\\\\
                    &= 1 / (1 + exp( -z )) \\\\
                  InverseLogDetJacobian &= sum(-2 \\log(logistic(z)) - z)
+    Examples:
 
+        >>> import tensorflow as tf
+        >>> from TFGENZOO.flows import LogitifyImage
+        >>> li = LogitifyImage()
+        >>> li.build([None, 32, 32, 1])
+        >>> li.get_config()
+        {'name': 'logitify_image_1', ...}
+        >>> inputs = tf.keras.Input([32, 32, 1])
+        >>> li(inputs)
+        (<tf.Tensor 'logitify_image/Identity:0' shape=(None, 32, 32, 1) dtype=float32>,
+        <tf.Tensor 'logitify_image/Identity_1:0' shape=(None,) dtype=float32>)
+        >>> tf.keras.Model(inputs, li(inputs)).summary()
+        Model: "model"
+        _________________________________________________________________
+        Layer (type)                 Output Shape              Param #
+        =================================================================
+        input_1 (InputLayer)         [(None, 32, 32, 1)]       0
+        _________________________________________________________________
+        logitify_image (LogitifyImag ((None, 32, 32, 1), (None 1
+        =================================================================
+        Total params: 1
+        Trainable params: 0
+        Non-trainable params: 1
+        _________________________________________________________________
     """
 
     def build(self, input_shape: tf.TensorShape):
@@ -89,6 +113,7 @@ class LogitifyImage(FlowBase):
 
         # 2-2. transform pixel values with logit to be unconstrained
         # ([0, 1]->(0, 1)).
+        # TODO: Will this function polutes the image?
         z = z * (1 - self.alpha) + self.alpha * 0.5
 
         # 2-3. apply the logit function ((0, 1)->(-inf, inf)).
@@ -106,46 +131,23 @@ class LogitifyImage(FlowBase):
     def inverse(self, z: tf.Tensor, **kwargs):
         """
         """
+
         denominator = 1 + tf.exp(-z)
         x = 1 / denominator
 
+        x = (x - 0.5 * self.alpha) / (1.0 - self.alpha)
+
+        inverse_log_det_jacobian = -1 * (
+            tf.math.softplus(z)
+            + tf.math.softplus(-z)
+            - tf.math.softplus(self.pre_logit_scale)
+        )
+
+        # inverse_log_det_jacobian = tf.reduce_sum(
+        #     -2 * tf.math.log(denominator) - z, self.reduce_axis
+        # )
+
         inverse_log_det_jacobian = tf.reduce_sum(
-            -2 * tf.math.log(denominator) - z, self.reduce_axis
+            inverse_log_det_jacobian, self.reduce_axis
         )
         return x, inverse_log_det_jacobian
-
-
-# TODO: move to quantize_test.py
-def _main():
-    layer = LogitifyImage()  # BasicGlow()
-    x = tf.keras.Input((32, 32, 1))
-    y = layer(x, training=True)
-    model = tf.keras.Model(x, y)
-
-    train, test = tf.keras.datasets.mnist.load_data()
-    train_image = train[0] / 255.0
-    train_image = train_image[..., tf.newaxis]
-    # forward -> inverse
-    train_image = train_image[0:12]
-    forward, ldj = layer.forward(train_image)
-    inverse, ildj = layer.inverse(forward)
-    print(ldj)
-    print(ildj)
-    print(ldj + ildj)
-    print(tf.reduce_mean(ldj + ildj))
-    print(tf.reduce_mean(train_image - inverse))
-    train_image = inverse
-    print(train_image.shape)
-    import matplotlib.pyplot as plt
-
-    fig = plt.figure(figsize=(18, 18))
-    for i in range(9):
-        img = tf.squeeze(train_image[i])
-        fig.add_subplot(3, 3, i + 1)
-        plt.title(train[1][i])
-        plt.tick_params(bottom=False, left=False, labelbottom=False, labelleft=False)
-        plt.imshow(img, cmap="gray_r")
-    plt.show(block=True)
-
-    model.summary()
-    return model

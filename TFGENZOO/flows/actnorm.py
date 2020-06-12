@@ -37,6 +37,32 @@ class Actnorm(FlowComponent):
             initialize batch's variance scaling
         logscale_factor: float
             barrier log value to - Inf
+
+    Examples:
+
+        >>> import tensorflow as tf
+        >>> import TFGENZOO.flows import Actnorm
+        >>> ac = Actnorm()
+        >>> ac.build([None, 16, 16, 4])
+        >>> ac.get_config()
+        {'name': 'actnorm_1', ... }
+        >>> inputs = tf.keras.Input([16, 16, 4])
+        >>> ac(inputs)
+        (<tf.Tensor 'actnorm_1_2/Identity:0' shape=(None, 16, 16, 4) dtype=float32>,
+         <tf.Tensor 'actnorm_1_2/Identity_1:0' shape=(None,) dtype=float32>)
+        >>>  tf.keras.Model(inputs, ac(inputs)).summary()
+        Model: "model_5"
+        _________________________________________________________________
+        Layer (type)                 Output Shape              Param #
+        =================================================================
+        input_3 (InputLayer)         [(None, 16, 16, 4)]       0
+        _________________________________________________________________
+        actnorm_1 (Actnorm)          ((None, 16, 16, 4), (None 9
+        =================================================================
+        Total params: 9
+        Trainable params: 0
+        Non-trainable params: 9
+        _________________________________________________________________
     """
 
     def __init__(self, scale: float = 1.0, logscale_factor: float = 3.0, **kwargs):

@@ -26,6 +26,7 @@ class FlowBase(Layer, metaclass=ABCMeta):
     @abstractmethod
     def __init__(self, **kwargs):
         super(FlowBase, self).__init__(kwargs)
+        self.conditional_input = False
 
     def data_dep_initialize(self, x: tf.Tensor):
         self.initialized.assign(True)
@@ -141,6 +142,60 @@ class FlowModule(FlowBase):
         inverse_log_det_jacobian = []
         for component in reversed(self.components):
             x, ildj = component(x, inverse=True, **kwargs)
+            inverse_log_det_jacobian.append(ildj)
+        inverse_log_det_jacobian = sum(inverse_log_det_jacobian)
+        return x, inverse_log_det_jacobian
+
+
+class ConditionalFlowModule(FlowBase):
+    """Sequential Layer for FlowBase's Layer
+
+    Examples:
+
+         >>> layers = [FlowBase() for _ in range(10)]
+         >>> module = FlowModule(layers)
+         >>> z = module(x, inverse=False)
+         >>> x_hat = module(z, inverse=True)
+         >>> assert ((x - x_hat)^2) << 1e-3
+    """
+
+    def build(self, input_shape: tf.TensorShape):
+        super(FlowModule, self).build(input_shape=input_shape)
+        self.conditional_input = True
+
+    def __init__(self, components: List[FlowComponent]):
+        super(FlowModule, self).__init__()
+        self.components = components
+
+    def get_config(self):
+        config = super().get_config()
+        config_update_layer = []
+        for comp in self.components:
+            config_update_layer.append(comp.get_config())
+        config_update = {"components", config_update_layer}
+        config.update(config_update)
+        return config
+
+    def forward(self, x: tf.Tensor, cond: tf.Tensor, **kwargs):
+        z = x
+        log_det_jacobian = []
+        for component in self.components:
+            if component.conditional_input:
+                z, ldj = component(z, inverse=False, cond=cond, **kwargs)
+            else:
+                z, ldj = component(z, inverse=False, **kwargs)
+            log_det_jacobian.append(ldj)
+        log_det_jacobian = sum(log_det_jacobian)
+        return z, log_det_jacobian
+
+    def inverse(self, z: tf.Tensor, cond: tf.Tensor, **kwargs):
+        x = z
+        inverse_log_det_jacobian = []
+        for component in reversed(self.components):
+            if component.conditional_input:
+                x, ildj = component(x, inverse=True, cond=cond, **kwargs)
+            else:
+                x, ildj = component(x, inverse=True, **kwargs)
             inverse_log_det_jacobian.append(ildj)
         inverse_log_det_jacobian = sum(inverse_log_det_jacobian)
         return x, inverse_log_det_jacobian

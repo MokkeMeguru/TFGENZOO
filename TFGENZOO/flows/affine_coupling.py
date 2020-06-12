@@ -2,6 +2,7 @@ from enum import Enum
 
 import tensorflow as tf
 from tensorflow.keras import Model, Sequential, layers, regularizers
+from typing import Callable
 
 from TFGENZOO.flows.actnorm import Actnorm
 from TFGENZOO.flows.flowbase import FlowComponent
@@ -64,18 +65,56 @@ class AffineCoupling(FlowComponent):
         * implementation notes
            | in Glow's Paper, scale is calculated by exp(log_scale),
            | but IN IMPLEMENTATION, scale is done by sigmoid(log_scale + 2.0)
+
+    Examples:
+
+        >>> import tensorflow as tf
+        >>> from TFGENZOO.flows.affine_coupling import AffineCoupling
+        >>> from TFGENZOO.layers.resnet import ShallowResNet
+        >>> af = AffineCoupling(scale_shift_net_template=ShallowResNet)
+        >>> af.build([None, 16, 16, 4])
+        >>> af.get_config()
+            {'name': 'affine_coupling_1', ...}
+        >>> inputs = tf.keras.Input([16, 16, 4])
+        >>> af(inputs)
+        (<tf.Tensor 'affine_coupling_3_2/Identity:0' shape=(None, 16, 16, 4) dtype=float32>,
+         <tf.Tensor 'affine_coupling_3_2/Identity_1:0' shape=(None,) dtype=float32>)
+        >>> tf.keras.Model(inputs, af(inputs)).summary()
+        Model: "model_1"
+        _________________________________________________________________
+        Layer (type)                 Output Shape              Param #
+        =================================================================
+        input_3 (InputLayer)         [(None, 16, 16, 4)]       0
+        _________________________________________________________________
+        affine_coupling (AffineCoupl ((None, 16, 16, 4), (None 2389003
+        =================================================================
+        Total params: 2,389,003
+        Trainable params: 0
+        Non-trainable params: 2,389,003
+        _________________________________________________________________
     """
 
     def __init__(
         self,
         mask_type: AffineCouplingMask = AffineCouplingMask.ChannelWise,
         scale_shift_net: Layer = None,
+        scale_shift_net_template: Callable[[tf.keras.Input], tf.keras.Model] = None,
         **kwargs
     ):
-        super(AffineCoupling, self).__init__(**kwargs)
-        if not scale_shift_net:
+        """
+        Args:
+            mask_type       (AffineCouplingMask: AffineCoupling Mask type
+            scale_shift_net (tf.keras.Layer): NN in the fomula (Deprecated)
+            scale_shift_net_template (Callable[[tf.keras.Input], [tf.keras.Model]]): NN in the formula (for tf.keras.Model without Input Shape)
+        """
+        super().__init__(**kwargs)
+        if not scale_shift_net_template and not scale_shift_net:
             raise ValueError
-        self.scale_shift_net = scale_shift_net
+        if scale_shift_net_template is not None:
+            self.scale_shift_net_template = scale_shift_net_template
+            self.scale_shift_net = None
+        elif scale_shift_net is not None:
+            self.scale_shift_net = scale_shift_net
         self.mask_type = mask_type
 
     def get_config(self):
@@ -89,7 +128,14 @@ class AffineCoupling(FlowComponent):
 
     def build(self, input_shape: tf.TensorShape):
         self.reduce_axis = list(range(len(input_shape)))[1:]
-        super(AffineCoupling, self).build(input_shape)
+        if self.scale_shift_net is None:
+            resnet_inputs = list(input_shape)[1:]
+            resnet_inputs[-1] = int(resnet_inputs[-1] / 2)
+            self.scale_shift_net = self.scale_shift_net_template(
+                tf.keras.Input(resnet_inputs)
+            )
+
+        super().build(input_shape)
 
     def forward(self, x: tf.Tensor, **kwargs):
         x1, x2 = tf.split(x, 2, axis=-1)

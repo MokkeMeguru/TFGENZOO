@@ -3,106 +3,259 @@ from tensorflow.keras import Model, layers
 
 from TFGENZOO.flows.utils.conv import Conv2D
 from TFGENZOO.flows.utils.conv_zeros import Conv2DZeros
+from TFGENZOO.layers.spadebn import SpadeBN
 
 Layer = layers.Layer
 
 
-def ShallowResNet(inputs: tf.keras.Input, width: int = 512, out_scale: int = 2):
+def ShallowResNet(
+    inputs: tf.keras.Input,
+    cond: tf.keras.Input = None,
+    width: int = 512,
+    out_scale: int = 2,
+):
     """ResNet of OpenAI's Glow
+    Args:
+        inputs (tf.Tensor): input tensor rank == 4
+        cond   (tf.Tensor): input tensor rank == 4 (optional)
+        width        (int): hidden width
+        out_scale    (int): output channel width scale
+
+    Returns:
+        model: tf.keras.Model
+
     Sources:
+
         https://github.com/openai/glow/blob/master/model.py#L420-L426
+
     Notes:
+
         This layer is not Residual Network
         because this layer does not have Skip connection
+
+
+    Examples:
+
+        >>> inputs = tf.keras.Input([16, 16, 2])
+        >>> cond = None
+        >>> sr = ShallowResNet(inputs)
+        >>> sr.summary()
+        Model: "model"
+        _________________________________________________________________
+        Layer (type)                 Output Shape              Param #
+        =================================================================
+        input_1 (InputLayer)         [(None, 16, 16, 2)]       0
+        _________________________________________________________________
+        conv2d (Conv2D)              (None, 16, 16, 512)       10241
+        _________________________________________________________________
+        tf_op_layer_Relu (TensorFlow [(None, 16, 16, 512)]     0
+        _________________________________________________________________
+        conv2d_1 (Conv2D)            (None, 16, 16, 512)       2360321
+        _________________________________________________________________
+        tf_op_layer_Relu_1 (TensorFl [(None, 16, 16, 512)]     0
+        _________________________________________________________________
+        conv2d_zeros (Conv2DZeros)   (None, 16, 16, 4)         18440
+        =================================================================
+        Total params: 2,389,002
+        Trainable params: 2,389,000
+        Non-trainable params: 2
+        _________________________________________________________________
+        >>> cond = tf.keras.Input([16, 16, 128])
+        >>> sr = ShallowResNet(inputs)
+        >>> sr.summary()
+        Model: "model_1"
+        __________________________________________________________________________________________________
+        Layer (type)                    Output Shape         Param #     Connected to
+        ==================================================================================================
+        input_1 (InputLayer)            [(None, 16, 16, 2)]  0
+        __________________________________________________________________________________________________
+        input_3 (InputLayer)            [(None, 16, 16, 128) 0
+        __________________________________________________________________________________________________
+        tf_op_layer_concat_1 (TensorFlo [(None, 16, 16, 130) 0           input_1[0][0]
+                                                                        input_3[0][0]
+        __________________________________________________________________________________________________
+        conv2d_2 (Conv2D)               (None, 16, 16, 512)  600065      tf_op_layer_concat_1[0][0]
+        __________________________________________________________________________________________________
+        tf_op_layer_Relu_2 (TensorFlowO [(None, 16, 16, 512) 0           conv2d_2[0][0]
+        __________________________________________________________________________________________________
+        conv2d_3 (Conv2D)               (None, 16, 16, 512)  2360321     tf_op_layer_Relu_2[0][0]
+        __________________________________________________________________________________________________
+        tf_op_layer_Relu_3 (TensorFlowO [(None, 16, 16, 512) 0           conv2d_3[0][0]
+        __________________________________________________________________________________________________
+        conv2d_zeros_1 (Conv2DZeros)    (None, 16, 16, 4)    18440       tf_op_layer_Relu_3[0][0]
+        ==================================================================================================
+        Total params: 2,978,826
+        Trainable params: 2,978,824
+        Non-trainable params: 2
+        __________________________________________________________________________________________________
+
     """
+    _inputs = inputs if cond is None else tf.concat([inputs, cond], axis=-1)
 
     conv1 = Conv2D(width=width)
     conv2 = Conv2D(width=width)
     conv_out = Conv2DZeros(width=int(inputs.shape[-1] * out_scale))
 
-    outputs = inputs
+    outputs = _inputs
     outputs = tf.nn.relu(conv1(outputs))
     outputs = tf.nn.relu(conv2(outputs))
     outputs = conv_out(outputs)
-    return tf.keras.Model(inputs, outputs)
-
-    # class ShallowResNet(Model):
-    #     """ResNet of OpenAI's Glow
-    #     Sources:
-    #         https://github.com/openai/glow/blob/master/model.py#L420-L426
-    #     Notes:
-    #         This layer is not Residual Network
-    #         because this layer does not have Skip connection
-    #     """
-
-    #     def build(self, input_shape: tf.TensorShape):
-    #         self.conv_out = Conv2DZeros(width=input_shape[-1] * self.out_scale)
-    #         self.built = True
-
-    #     def __init__(self, width: int = 512, out_scale: int = 2):
-    #         super().__init__()
-    #         self.out_scale = out_scale
-    #         self.width = width
-    #         self.conv1 = Conv2D(width=self.width)
-    #         self.conv2 = Conv2D(width=self.width, kernel_size=[1, 1])
-
-    #     def get_config(self):
-    #         config = super().get_config().copy()
-    #         config_update = {
-    #             "width": self.width,
-    #             "conv1": self.conv1.get_config(),
-    #             "conv2": self.conv2.get_config(),
-    #             "conv_out": self.conv_out.get_config(),
-    #         }
-    #         config.update(config_update)
-    #         return config
-
-    # def call(self, x: tf.Tensor, cond: tf.Tensor = None):
-    #     if cond is not None:
-    #         x = tf.concat([x, cond], axis=-1)
-    #     x = tf.nn.relu(self.conv1(x))
-    #     x = tf.nn.relu(self.conv2(x))
-    #     x = self.conv_out(x)
-    #     return x
+    return tf.keras.Model(inputs if cond is None else [inputs, cond], outputs)
 
 
-class ShallowConnectedResNet(Model):
-    """ResNet of OpenAI's Glow + Skip Connection
+def ShallowConnectedResNet(
+    inputs: tf.keras.Input,
+    cond: tf.keras.Input = None,
+    width: int = 512,
+    out_scale: int = 2,
+    connect_type: str = "whole",
+):
+    """ResNet of OpenAI's Glow with Connection
+    Args:
+        inputs (tf.Tensor): input tensor rank == 4
+        cond   (tf.Tensor): input tensor rank == 4 (optional)
+        width        (int): hidden width
+        out_scale    (int): output channel width scale
+
+    Returns:
+        model: tf.keras.Model
+
     Sources:
+
         https://github.com/openai/glow/blob/master/model.py#L420-L426
-    Notes:
-        This layer is not Residual Network
-        because this layer does not have shortcut connection
+
+    Examples:
+
+        >>> inputs = tf.keras.Input([16, 16, 2])
+        >>> cond = None
+        >>> sr = ShallowConnectedResNet(inputs)
+        >>> sr.summary()
+        Model: "model"
+        __________________________________________________________________________________________________
+        Layer (type)                    Output Shape         Param #     Connected to
+        ==================================================================================================
+        input_1 (InputLayer)            [(None, 16, 16, 2)]  0
+        __________________________________________________________________________________________________
+        conv2d_8 (Conv2D)               (None, 16, 16, 512)  10241       input_1[0][0]
+        __________________________________________________________________________________________________
+        tf_op_layer_Relu_8 (TensorFlowO [(None, 16, 16, 512) 0           conv2d_8[0][0]
+        __________________________________________________________________________________________________
+        conv2d_9 (Conv2D)               (None, 16, 16, 512)  2360321     tf_op_layer_Relu_8[0][0]
+        __________________________________________________________________________________________________
+        tf_op_layer_Relu_9 (TensorFlowO [(None, 16, 16, 512) 0           conv2d_9[0][0]
+        __________________________________________________________________________________________________
+        tf_op_layer_concat (TensorFlowO [(None, 16, 16, 514) 0           tf_op_layer_Relu_9[0][0]
+                                                                        input_1[0][0]
+        __________________________________________________________________________________________________
+        conv2d_zeros_4 (Conv2DZeros)    (None, 16, 16, 4)    18512       tf_op_layer_concat[0][0]
+        ==================================================================================================
+        Total params: 2,389,074
+        Trainable params: 2,389,072
+        Non-trainable params: 2
+        __________________________________________________________________________________________________
+        >>> cond = tf.keras.Input([16, 16, 128])
+        >>> sr = ShallowResNet(inputs, cond, connect_type="cond")
+        >>> sr.summary()
+        sr.summary()
+        Model: "model_4"
+        __________________________________________________________________________________________________
+        Layer (type)                    Output Shape         Param #     Connected to
+        ==================================================================================================
+        input_1 (InputLayer)            [(None, 16, 16, 2)]  0
+        __________________________________________________________________________________________________
+        input_2 (InputLayer)            [(None, 16, 16, 128) 0
+        __________________________________________________________________________________________________
+        tf_op_layer_concat_3 (TensorFlo [(None, 16, 16, 130) 0           input_1[0][0]
+                                                                        input_2[0][0]
+        __________________________________________________________________________________________________
+        conv2d_14 (Conv2D)              (None, 16, 16, 512)  600065      tf_op_layer_concat_3[0][0]
+        __________________________________________________________________________________________________
+        tf_op_layer_Relu_14 (TensorFlow [(None, 16, 16, 512) 0           conv2d_14[0][0]
+        __________________________________________________________________________________________________
+        conv2d_15 (Conv2D)              (None, 16, 16, 512)  2360321     tf_op_layer_Relu_14[0][0]
+        __________________________________________________________________________________________________
+        tf_op_layer_Relu_15 (TensorFlow [(None, 16, 16, 512) 0           conv2d_15[0][0]
+        __________________________________________________________________________________________________
+        tf_op_layer_concat_4 (TensorFlo [(None, 16, 16, 640) 0           tf_op_layer_Relu_15[0][0]
+                                                                        input_2[0][0]
+        __________________________________________________________________________________________________
+        conv2d_zeros_7 (Conv2DZeros)    (None, 16, 16, 4)    23048       tf_op_layer_concat_4[0][0]
+        ==================================================================================================
+        Total params: 2,983,434
+        Trainable params: 2,983,432
+        Non-trainable params: 2
+        __________________________________________________________________________________________________
     """
+    if cond is None and connect_type == "cond":
+        raise ValueError("cond is none, but you want to connect with cond...")
+    _inputs = inputs if cond is None else tf.concat([inputs, cond], axis=-1)
 
-    def build(self, input_shape: tf.TensorShape):
-        self.conv_out = Conv2DZeros(width=input_shape[-1] * self.out_scale)
-        self.built = True
+    conv1 = Conv2D(width=width)
+    conv2 = Conv2D(width=width)
+    conv_out = Conv2DZeros(width=int(inputs.shape[-1] * out_scale))
 
-    def __init__(self, width: int = 512, out_scale: int = 2):
-        super().__init__()
-        self.out_scale = out_scale
-        self.width = width
-        self.conv1 = Conv2D(width=self.width)
-        self.conv2 = Conv2D(width=self.width, kernel_size=[1, 1])
+    outputs = _inputs
+    shortcut = outputs
+    outputs = tf.nn.relu(conv1(outputs))
+    outputs = tf.nn.relu(conv2(outputs))
+    # MokkeMeguru's skip-connection
+    if connect_type == "whole":
+        outputs = conv_out(tf.concat([outputs, _inputs], axis=-1))
+    elif connect_type == "conditional":
+        # conditional works too hevy work, so we help with skip-connection
+        outputs = conv_out(tf.concat([outputs, cond], axis=-1))
+    elif connect_type == "base":
+        outputs = conv_out(tf.concat([outputs, inputs], axis=-1))
+    else:
+        outputs = conv_out(outputs)
+    return tf.keras.Model(inputs if cond is None else [inputs, cond], outputs)
 
-    def get_config(self):
-        config = super().get_config().copy()
-        config_update = {
-            "width": self.width,
-            "conv1": self.conv1.get_config(),
-            "conv2": self.conv2.get_config(),
-            "conv_out": self.conv_out.get_config(),
-        }
-        config.update(config_update)
-        return config
 
-    def call(self, x: tf.Tensor, cond: tf.Tensor = None):
-        if cond is not None:
-            x = tf.concat([x, cond], axis=-1)
-        shortcut = x
-        x = tf.nn.relu(self.conv1(x))
-        x = tf.nn.relu(self.conv2(x))
-        x = tf.nn.relu(x + shortcut)
-        x = self.conv_out(x)
-        return x
+def ShallowConnectedResNetlikeSPADE(
+    inputs: tf.keras.Input,
+    cond: tf.keras.Input,
+    width: int = 512,
+    out_scale: int = 2,
+    connect_type: str = "whole",
+):
+    """ResNet of OpenAI's Glow with Connection
+    Note:
+
+        WIP now...
+   
+    Args:
+        inputs (tf.Tensor): input tensor rank == 4
+        cond   (tf.Tensor): input tensor rank == 4 (optional)
+        width        (int): hidden width
+        out_scale    (int): output channel width scale
+
+    Returns:
+        model: tf.keras.Model
+
+    Sources:
+
+        https://github.com/openai/glow/blob/master/model.py#L420-L426
+        https://github.com/NVlabs/SPADE
+
+    Examples:
+
+   """
+    conv1 = Conv2D(width=width)
+    spade1 = SpadeBN()
+    conv2 = Conv2D(width=width)
+    conv_out = Conv2DZeros(width=int(inputs.shape[-1] * out_scale))
+    spade_conn = SpadeBN()
+
+    outputs = inputs
+
+    shortcut = outputs
+    shortcut = spade_conn(shortcut, cond)
+
+    outputs = tf.nn.relu(conv1(outputs))
+    outputs = spade1(outputs, cond)
+    outputs = tf.nn.relu(conv2(outputs))
+
+    # MokkeMeguru's skip-connection
+    outputs = conv_out(tf.concat([outputs, shortcut], axis=-1))
+
+    return tf.keras.Model(inputs if cond is None else [inputs, cond], outputs)

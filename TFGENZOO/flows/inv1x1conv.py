@@ -29,6 +29,7 @@ def regular_matrix_init(shape: Tuple[int, int], dtype=None):
 
 class Inv1x1Conv(FlowComponent):
     """Invertible 1x1 Convolution Layer
+
     Sources:
         https://arxiv.org/pdf/1807.03039.pdf
         https://github.com/openai/glow/blob/master/model.py#L457-L472
@@ -54,7 +55,6 @@ class Inv1x1Conv(FlowComponent):
                 W &\\in \\mathbb{R}^{c\\times c}\\\\
                 x &\\in \\mathbb{R}^{b \\times h\\times w \\times c}\\ \\ \\
                 ({\\rm batch, height, width, channel})
-
 
     Examples:
 

@@ -45,6 +45,14 @@ TFGENZOO.flows.affine\_coupling\_test module
    :undoc-members:
    :show-inheritance:
 
+TFGENZOO.flows.cond\_affine\_coupling module
+--------------------------------------------
+
+.. automodule:: TFGENZOO.flows.cond_affine_coupling
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 TFGENZOO.flows.cond\_factor\_out module
 ---------------------------------------
 
@@ -57,6 +65,14 @@ TFGENZOO.flows.factor\_out module
 ---------------------------------
 
 .. automodule:: TFGENZOO.flows.factor_out
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+TFGENZOO.flows.flatten module
+-----------------------------
+
+.. automodule:: TFGENZOO.flows.flatten
    :members:
    :undoc-members:
    :show-inheritance:
@@ -97,6 +113,14 @@ TFGENZOO.flows.quantize module
 ------------------------------
 
 .. automodule:: TFGENZOO.flows.quantize
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+TFGENZOO.flows.quantize\_test module
+------------------------------------
+
+.. automodule:: TFGENZOO.flows.quantize_test
    :members:
    :undoc-members:
    :show-inheritance:

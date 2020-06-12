@@ -2,6 +2,11 @@
 [[https://img.shields.io/badge/License-MIT-yellow.svg]]
 [[file:https://img.shields.io/badge/python-3.7-blue.svg]]
 [[file:https://img.shields.io/badge/tensorflow-%3E%3D2.2.0-brightgreen.svg]]
+
+** News [2020/6/12]
+- Implement SPADE Layer
+- Implement Invertible Flatten Layer
+- Update document with Some Example
 ** News [2020/5/29]
 New training results [[https://www.tensorflow.org/datasets/catalog/oxford_flowers102][Oxford-flower102]] with only 4 hours! (Quadro P6000 x 1)
 

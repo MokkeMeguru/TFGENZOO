@@ -86,8 +86,7 @@ class FlowComponent(FlowBase):
     def assert_log_det_jacobian(self, log_det_jacobian: tf.Tensor):
         """assert log_det_jacobian's shape
        
-        TODO:
-
+        Notes:
             | tf-2.0's bug
             | tf.debugging.assert_shapes([(tf.constant(1.0), (None, ))])
             | # => None (true)

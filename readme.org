@@ -7,17 +7,7 @@
 - Implement SPADE Layer
 - Implement Invertible Flatten Layer
 - Update document with Some Example
-** News [2020/5/29]
-New training results [[https://www.tensorflow.org/datasets/catalog/oxford_flowers102][Oxford-flower102]] with only 4 hours! (Quadro P6000 x 1)
 
-|-------+-------+------------+--------------|
- | data  |   NLL(val) | epoch      | pretrained   |
- |-------+-------+------------+--------------|
- | MNIST | 4.640194892883301 | 512 | --- |
- |-------+-------+------------+--------------|
-
-[[https://github.com/MokkeMeguru/seminar/blob/master/TFGENZOO/512epoch.png]]
-  
 * What's this repository?
   This is a repository for some researcher to build some Generative models using Tensorflow 2.0.
 
@@ -33,18 +23,14 @@ We should Implement correct codes with well-documented(tested).
 ** by Install
 - pipenv
    #+begin_src
-   pipenv install git+https://github.com/MokkeMeguru/TFGENZOO.git@v1.0#egg=TFGENZOO
+   pipenv install git+https://github.com/MokkeMeguru/TFGENZOO.git@v1.1.0#egg=TFGENZOO
    # or pipenv install TFGENZOO
    #+end_src
   
 - pip
    #+begin_src
-   pip install git+https://github.com/MokkeMeguru/TFGENZOO.git@v1.0#egg=TFGENZOO
+   pip install git+https://github.com/MokkeMeguru/TFGENZOO.git@v1.1.0#egg=TFGENZOO
    # or pip install TFGENZOO
-   #+end_src
-- conda
-   #+begin_src
-   conda skeleton pypi TFGENZOO
    #+end_src
 ** Source build for development
 
@@ -113,3 +99,13 @@ python 3.6 > trainer.main()
  |-------+-------+------------+--------------|
  | MNIST | 1.33 | 64 | --- |
  |-------+-------+------------+--------------|
+** News [2020/5/29]
+New training results [[https://www.tensorflow.org/datasets/catalog/oxford_flowers102][Oxford-flower102]] with only 4 hours! (Quadro P6000 x 1)
+
+|-------+-------+------------+--------------|
+ | data  |   NLL(val) | epoch      | pretrained   |
+ |-------+-------+------------+--------------|
+ | MNIST | 4.640194892883301 | 512 | --- |
+ |-------+-------+------------+--------------|
+
+[[https://github.com/MokkeMeguru/seminar/blob/master/TFGENZOO/512epoch.png]]

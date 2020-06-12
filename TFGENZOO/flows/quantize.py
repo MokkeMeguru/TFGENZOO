@@ -127,39 +127,3 @@ class LogitifyImage(FlowBase):
             inverse_log_det_jacobian, self.reduce_axis
         )
         return x, inverse_log_det_jacobian
-
-
-# TODO: move to quantize_test.py
-def _main():
-    layer = LogitifyImage()  # BasicGlow()
-    x = tf.keras.Input((32, 32, 1))
-    y = layer(x, training=True)
-    model = tf.keras.Model(x, y)
-
-    train, test = tf.keras.datasets.mnist.load_data()
-    train_image = train[0] / 255.0
-    train_image = train_image[..., tf.newaxis]
-    # forward -> inverse
-    train_image = train_image[0:12]
-    forward, ldj = layer.forward(train_image)
-    inverse, ildj = layer.inverse(forward)
-    print(ldj)
-    print(ildj)
-    print(ldj + ildj)
-    print(tf.reduce_mean(ldj + ildj))
-    print(tf.reduce_mean(train_image - inverse))
-    train_image = inverse
-    print(train_image.shape)
-    import matplotlib.pyplot as plt
-
-    fig = plt.figure(figsize=(18, 18))
-    for i in range(9):
-        img = tf.squeeze(train_image[i])
-        fig.add_subplot(3, 3, i + 1)
-        plt.title(train[1][i])
-        plt.tick_params(bottom=False, left=False, labelbottom=False, labelleft=False)
-        plt.imshow(img, cmap="gray_r")
-    plt.show(block=True)
-
-    model.summary()
-    return model

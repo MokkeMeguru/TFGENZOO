@@ -61,7 +61,7 @@ def ShallowResNet(
         Non-trainable params: 2
         _________________________________________________________________
         >>> cond = tf.keras.Input([16, 16, 128])
-        >>> sr = ShallowResNet(inputs)
+        >>> sr = ShallowResNet(inputs, cond)
         >>> sr.summary()
         Model: "model_1"
         __________________________________________________________________________________________________

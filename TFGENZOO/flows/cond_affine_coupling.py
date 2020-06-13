@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from enum import Enum
+from typing import Dict
 
 import tensorflow as tf
 from tensorflow.keras import Model, Sequential, layers, regularizers
@@ -12,6 +13,13 @@ from TFGENZOO.flows.affine_coupling import AffineCouplingMask, LogScale
 
 Layer = layers.Layer
 Conv2D = layers.Conv2D
+
+
+def filter_kwargs(d: Dict):
+    # utility function for Tensorflow's crasy constraint
+    training = d.get(["training"], None)
+    mask = d.get(["mask"], None)
+    return {"training": training, "mask": mask}
 
 
 class ConditionalAffineCoupling(FlowComponent):
@@ -78,7 +86,7 @@ class ConditionalAffineCoupling(FlowComponent):
     def forward(self, x: tf.Tensor, cond: tf.Tensor, **kwargs):
         x1, x2 = tf.split(x, 2, axis=-1)
         z1 = x1
-        h = self.scale_shift_net(x1, cond=cond, **kwargs)
+        h = self.scale_shift_net([x1, cond], **filter_kwargs(kwargs))
         if self.mask_type == AffineCouplingMask.ChannelWise:
             shift = h[..., 0::2]
             log_scale = h[..., 1::2]
@@ -97,7 +105,7 @@ class ConditionalAffineCoupling(FlowComponent):
     def inverse(self, z: tf.Tensor, cond: tf.Tensor, **kwargs):
         z1, z2 = tf.split(z, 2, axis=-1)
         x1 = z1
-        h = self.scale_shift_net(z1, cond=cond, **kwargs)
+        h = self.scale_shift_net([z1, cond], **filter_kwargs(kwargs))
         if self.mask_type == AffineCouplingMask.ChannelWise:
             shift = h[..., 0::2]
             log_scale = h[..., 1::2]

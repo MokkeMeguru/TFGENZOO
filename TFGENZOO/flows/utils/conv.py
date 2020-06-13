@@ -86,7 +86,7 @@ class Conv2D(Layer):
             self.bias = self.add_weight(
                 name="bias",
                 shape=[1 for _ in range(len(input_shape) - 1)] + [n_out],
-                initializer="zerose",
+                initializer="zeros",
             )
         self.built = True
 

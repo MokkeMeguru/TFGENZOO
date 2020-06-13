@@ -71,7 +71,9 @@ class Conv2DZeros(Layer):
             name="kernel", initializer=self.initializer, shape=filters, dtype=tf.float32
         )
         self.bias = self.add_weight(
-            name="bias", shape=[1 for _ in range(len(input_shape) - 1)] + [n_out]
+            name="bias",
+            shape=[1 for _ in range(len(input_shape) - 1)] + [n_out],
+            initializer="zeros",
         )
         self.logs = self.add_weight(
             name="logs", shape=[1, n_out], initializer=self.initializer

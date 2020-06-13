@@ -17,8 +17,8 @@ Conv2D = layers.Conv2D
 
 def filter_kwargs(d: Dict):
     # utility function for Tensorflow's crasy constraint
-    training = d.get(["training"], None)
-    mask = d.get(["mask"], None)
+    training = d.get("training", None)
+    mask = d.get("mask", None)
     return {"training": training, "mask": mask}
 
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from enum import Enum
-from typing import Dict
+from typing import Dict, Callable
 
 import tensorflow as tf
 from tensorflow.keras import Model, Sequential, layers, regularizers
@@ -61,13 +61,24 @@ class ConditionalAffineCoupling(FlowComponent):
         self,
         mask_type: AffineCouplingMask = AffineCouplingMask.ChannelWise,
         scale_shift_net: Layer = None,
+        scale_shift_net_template: Callable[[tf.keras.Input], tf.keras.Model] = None,
         **kwargs
     ):
+        """
+        Args:
+            mask_type       (AffineCouplingMask: AffineCoupling Mask type
+            scale_shift_net (tf.keras.Layer): NN in the fomula (Deprecated)
+            scale_shift_net_template (Callable[[tf.keras.Input], [tf.keras.Model]]): NN in the formula (for tf.keras.Model without Input Shape)
+        """
         super().__init__(**kwargs)
         self.conditional_input = True
-        if not scale_shift_net:
+        if not scale_shift_net_template and not scale_shift_net:
             raise ValueError
-        self.scale_shift_net = scale_shift_net
+        if scale_shift_net_template is not None:
+            self.scale_shift_net_template = scale_shift_net_template
+            self.scale_shift_net = None
+        elif scale_shift_net is not None:
+            self.scale_shift_net = scale_shift_net
         self.mask_type = mask_type
 
     def get_config(self):
@@ -81,6 +92,12 @@ class ConditionalAffineCoupling(FlowComponent):
 
     def build(self, input_shape: tf.TensorShape):
         self.reduce_axis = list(range(len(input_shape)))[1:]
+        if self.scale_shift_net is None:
+            resnet_inputs = list(input_shape)[1:]
+            resnet_inputs[-1] = int(resnet_inputs[-1] / 2)
+            self.scale_shift_net = self.scale_shift_net_template(
+                tf.keras.Input(resnet_inputs)
+            )
         super().build(input_shape)
 
     def forward(self, x: tf.Tensor, cond: tf.Tensor, **kwargs):

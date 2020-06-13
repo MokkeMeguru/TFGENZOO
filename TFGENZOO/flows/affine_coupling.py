@@ -99,6 +99,7 @@ class AffineCoupling(FlowComponent):
         mask_type: AffineCouplingMask = AffineCouplingMask.ChannelWise,
         scale_shift_net: Layer = None,
         scale_shift_net_template: Callable[[tf.keras.Input], tf.keras.Model] = None,
+        scale_type="safe_exp",
         **kwargs
     ):
         """
@@ -117,11 +118,24 @@ class AffineCoupling(FlowComponent):
             self.scale_shift_net = scale_shift_net
         self.mask_type = mask_type
 
+        self.scale_type = scale_type
+        if self.scale_type not in ["safe_exp", "exp", "sigmoid"]:
+            raise ValueError
+        if self.scale_type == "safe_exp":
+            self.scale_func = lambda log_scale: tf.exp(
+                tf.clip_by_value(log_scale, -15.0, 15.0)
+            )
+        elif self.scale_type == "exp":
+            self.scale_func = lambda log_scale: tf.exp(log_scale)
+        else:
+            self.scale_func = lambda log_scale: tf.nn.sigmoid(log_scale + 2.0)
+
     def get_config(self):
         config = super().get_config()
         config_update = {
             "scale_shit_net": self.scale_shift_net.get_config(),
             "mask_type": self.mask_type,
+            "scale_type": self.scale_type,
         }
         config.update(config_update)
         return config
@@ -145,8 +159,7 @@ class AffineCoupling(FlowComponent):
             shift = h[..., 0::2]
             log_scale = h[..., 1::2]
 
-            scale = tf.nn.sigmoid(log_scale + 2.0)
-            # scale = tf.exp(tf.clip_by_value(log_scale, -15.0, 15.0))
+            scale = self.scale_func(log_scale)
             z2 = (x2 + shift) * scale
 
             # scale's shape is [B, H, W, C]
@@ -163,8 +176,8 @@ class AffineCoupling(FlowComponent):
         if self.mask_type == AffineCouplingMask.ChannelWise:
             shift = h[..., 0::2]
             log_scale = h[..., 1::2]
-            scale = tf.nn.sigmoid(log_scale + 2.0)
-            # scale = tf.exp(- tf.clip_by_value(log_scale, -15.0, 15.0))
+
+            scale = self.scale_func(log_scale)
             x2 = (z2 / scale) - shift
 
             # scale's shape is [B, H, W, C // 2]

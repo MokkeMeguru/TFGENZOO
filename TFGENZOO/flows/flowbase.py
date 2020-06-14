@@ -25,7 +25,7 @@ class FlowBase(Layer, metaclass=ABCMeta):
 
     @abstractmethod
     def __init__(self, **kwargs):
-        super(FlowBase, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.conditional_input = False
 
     def data_dep_initialize(self, x: tf.Tensor):
@@ -65,7 +65,7 @@ class FlowBase(Layer, metaclass=ABCMeta):
 class FlowComponent(FlowBase):
     @abstractmethod
     def __init__(self, **kwargs):
-        super(FlowComponent, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     @abstractmethod
     def forward(self, x, **kwargs):
@@ -112,10 +112,10 @@ class FlowModule(FlowBase):
     """
 
     def build(self, input_shape: tf.TensorShape):
-        super(FlowModule, self).build(input_shape=input_shape)
+        super().build(input_shape=input_shape)
 
     def __init__(self, components: List[FlowComponent], **kwargs):
-        super(FlowModule, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.components = components
 
     def get_config(self):
@@ -159,11 +159,11 @@ class ConditionalFlowModule(FlowBase):
     """
 
     def build(self, input_shape: tf.TensorShape):
-        super(FlowModule, self).build(input_shape=input_shape)
+        super().build(input_shape=input_shape)
         self.conditional_input = True
 
     def __init__(self, components: List[FlowComponent], **kwargs):
-        super(FlowModule, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.components = components
 
     def get_config(self):
@@ -216,7 +216,7 @@ class FactorOutBase(FlowBase):
 
     @abstractmethod
     def __init__(self, with_zaux: bool = False, **kwargs):
-        super(FactorOutBase, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.with_zaux = with_zaux
 
     def get_config(self):
@@ -226,7 +226,7 @@ class FactorOutBase(FlowBase):
         return config
 
     def build(self, input_shape: tf.TensorShape):
-        super(FactorOutBase, self).build(input_shape)
+        super().build(input_shape)
 
     def call(self, x: tf.Tensor, zaux: tf.Tensor = None, inverse=False, **kwargs):
         if inverse and not self.initialized:

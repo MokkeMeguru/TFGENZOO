@@ -25,7 +25,7 @@ class FlowBase(Layer, metaclass=ABCMeta):
 
     @abstractmethod
     def __init__(self, **kwargs):
-        super(FlowBase, self).__init__(kwargs)
+        super(FlowBase, self).__init__(**kwargs)
         self.conditional_input = False
 
     def data_dep_initialize(self, x: tf.Tensor):
@@ -114,8 +114,8 @@ class FlowModule(FlowBase):
     def build(self, input_shape: tf.TensorShape):
         super(FlowModule, self).build(input_shape=input_shape)
 
-    def __init__(self, components: List[FlowComponent]):
-        super(FlowModule, self).__init__()
+    def __init__(self, components: List[FlowComponent], **kwargs):
+        super(FlowModule, self).__init__(**kwargs)
         self.components = components
 
     def get_config(self):
@@ -162,8 +162,8 @@ class ConditionalFlowModule(FlowBase):
         super(FlowModule, self).build(input_shape=input_shape)
         self.conditional_input = True
 
-    def __init__(self, components: List[FlowComponent]):
-        super(FlowModule, self).__init__()
+    def __init__(self, components: List[FlowComponent], **kwargs):
+        super(FlowModule, self).__init__(**kwargs)
         self.components = components
 
     def get_config(self):

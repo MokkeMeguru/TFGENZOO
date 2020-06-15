@@ -1,6 +1,7 @@
 MANIFEST.in
 setup.py
 TFGENZOO/__init__.py
+TFGENZOO/__version__.py
 TFGENZOO.egg-info/PKG-INFO
 TFGENZOO.egg-info/SOURCES.txt
 TFGENZOO.egg-info/dependency_links.txt

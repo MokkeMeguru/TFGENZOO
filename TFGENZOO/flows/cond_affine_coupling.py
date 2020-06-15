@@ -1,15 +1,11 @@
 #!/usr/bin/env python3
 
-from enum import Enum
-from typing import Dict, Callable
+from typing import Callable, Dict
 
 import tensorflow as tf
-from tensorflow.keras import Model, Sequential, layers, regularizers
-
-from TFGENZOO.flows.actnorm import Actnorm
+from tensorflow.keras import layers
+from TFGENZOO.flows.affine_coupling import AffineCouplingMask
 from TFGENZOO.flows.flowbase import FlowComponent
-from TFGENZOO.flows.utils.actnorm_activation import ActnormActivation
-from TFGENZOO.flows.affine_coupling import AffineCouplingMask, LogScale
 
 Layer = layers.Layer
 Conv2D = layers.Conv2D

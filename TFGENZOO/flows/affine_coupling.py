@@ -1,12 +1,10 @@
 from enum import Enum
 
 import tensorflow as tf
-from tensorflow.keras import Model, Sequential, layers, regularizers
+from tensorflow.keras import layers
 from typing import Callable
 
-from TFGENZOO.flows.actnorm import Actnorm
 from TFGENZOO.flows.flowbase import FlowComponent
-from TFGENZOO.flows.utils.actnorm_activation import ActnormActivation
 
 Layer = layers.Layer
 Conv2D = layers.Conv2D

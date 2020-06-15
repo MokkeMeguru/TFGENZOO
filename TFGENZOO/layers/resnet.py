@@ -1,5 +1,5 @@
 import tensorflow as tf
-from tensorflow.keras import Model, layers
+from tensorflow.keras import layers
 
 from TFGENZOO.flows.utils.conv import Conv2D
 from TFGENZOO.flows.utils.conv_zeros import Conv2DZeros
@@ -198,7 +198,6 @@ def ShallowConnectedResNet(
     conv_out = Conv2DZeros(width=int(inputs.shape[-1] * out_scale))
 
     outputs = _inputs
-    shortcut = outputs
     outputs = tf.nn.relu(conv1(outputs))
     outputs = tf.nn.relu(conv2(outputs))
     # MokkeMeguru's skip-connection

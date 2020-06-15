@@ -112,9 +112,9 @@ class BasicGlow(Model):
         layers.append(LogitifyImage())
         for l in range(self.L):
             if l == 0:
-                layers.append(Squeezing(with_zaux=False))
+                layers.append(Squeeze(with_zaux=False))
             else:
-                layers.append(Squeezing(with_zaux=True))
+                layers.append(Squeeze(with_zaux=True))
             fml = []
             for k in range(self.K):
                 fml.append(Actnorm())

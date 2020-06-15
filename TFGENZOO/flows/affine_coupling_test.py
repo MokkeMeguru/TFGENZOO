@@ -1,8 +1,7 @@
 import numpy as np
-import tensorflow as tf
 
+import tensorflow as tf
 from TFGENZOO.flows.affine_coupling import AffineCoupling
-from TFGENZOO.flows.flowbase import FlowComponent
 from TFGENZOO.layers.resnet import ShallowResNet
 
 

@@ -35,12 +35,12 @@ class FactorOut(FactorOutBase):
 
     def build(self, input_shape: tf.TensorShape):
         self.split_size = input_shape[-1] // 2
-        super(FactorOut, self).build(input_shape)
+        super().build(input_shape)
 
     def __init__(
         self, with_zaux: bool = False, conditional: bool = False, dims: int = 4
     ):
-        super(FactorOut, self).__init__()
+        super().__init__()
         self.with_zaux = with_zaux
         self.conditional = conditional
         self.dims = dims

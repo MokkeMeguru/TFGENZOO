@@ -99,7 +99,7 @@ def ShallowResNet(
     conv_out = Conv2DZeros(width=int(inputs.shape[-1] * out_scale))
 
     outputs = _inputs
-    outputs = tf.keras.layers.ReLU()(conv2(outputs))
+    outputs = tf.keras.layers.ReLU()(conv1(outputs))
     outputs = tf.keras.layers.ReLU()(conv2(outputs))
     outputs = conv_out(outputs)
     return tf.keras.Model(inputs if cond is None else [inputs, cond], outputs)

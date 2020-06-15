@@ -1,10 +1,18 @@
 import setuptools
+import os
+
+PACKAGE = "TFGENZOO"
+
+about = {}
+here = os.path.abspath(os.path.dirname(__file__))
+with open(os.path.join(here, PACKAGE, "__version__.py")) as f:
+    exec(f.read(), about)
 
 setuptools.setup(
-    name="TFGENZOO",
+    name=PACKAGE,
     packages=setuptools.find_packages(),
     install_requires=["tensorflow>=2.1.0", "tensorflow_probability>=0.9.0", "pandas"],
-    version="1.2.0",
+    version=about["__version__"],
     author="MokkeMeguru",
     author_email="meguru.mokke@gmail.com",
     description="helper of building generative model with Tensorflow 2.x",

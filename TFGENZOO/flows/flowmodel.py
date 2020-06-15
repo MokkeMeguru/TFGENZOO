@@ -120,7 +120,7 @@ class BasicGlow(Model):
                 fml.append(Actnorm())
                 fml.append(Inv1x1Conv())
                 fml.append(
-                    AffineCoupling(scale_shift_net=ResidualNet(**self.resblk_kwargs))
+                    AffineCoupling(scale_shift_net=ShallowResNet(**self.resblk_kwargs))
                 )
             layers.append(FlowModule(fml))
             if l == 0:

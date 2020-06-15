@@ -8,9 +8,8 @@ Layer = layers.Layer
 
 class Conv2DZeros(Layer):
     """Convolution layer for NHWC image with zero initialization
-
     Sources:
-
+   
         https://github.com/openai/glow/blob/master/tfops.py#L292-L313
 
     Note:

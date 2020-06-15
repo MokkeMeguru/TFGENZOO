@@ -5,12 +5,13 @@ from TFGENZOO.flows.flowbase import FlowComponent
 
 class Actnorm(FlowComponent):
     """Actnorm Layer
+
     Sources:
 
         https://github.com/openai/glow/blob/master/tfops.py#L71-L163
 
     Note:
-
+   
         * initialize
             | mean = mean(first_batch)
             | var = variance(first_batch)
@@ -20,9 +21,8 @@ class Actnorm(FlowComponent):
         * forward formula
             | logs = logs * logscale_factor
             | scale = exp(logs)
-            z = (x + bias) * scale
-            log_det_jacobain = sum(logs) * H * W
-
+            | z = (x + bias) * scale
+            | log_det_jacobain = sum(logs) * H * W
 
         * inverse formula
             | logs = logs * logsscale_factor
@@ -31,10 +31,13 @@ class Actnorm(FlowComponent):
             | inverse_log_det_jacobian = sum(- logs) * H * W
 
     Attributes:
+
         calc_ldj: bool
             flag of calculate log det jacobian
+
         scale: float
             initialize batch's variance scaling
+   
         logscale_factor: float
             barrier log value to - Inf
 
@@ -63,6 +66,7 @@ class Actnorm(FlowComponent):
         Trainable params: 0
         Non-trainable params: 9
         _________________________________________________________________
+
     """
 
     def __init__(self, scale: float = 1.0, logscale_factor: float = 3.0, **kwargs):

@@ -4,7 +4,7 @@ from TFGENZOO.flows.flowbase import FlowBase
 
 
 class Squeeze(FlowBase):
-    """Squeezing Layer
+    """Squeeze Layer
 
     Sources:
 

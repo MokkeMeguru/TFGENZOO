@@ -10,7 +10,6 @@ TFGENZOO/flows/__init__.py
 TFGENZOO/flows/actnorm.py
 TFGENZOO/flows/affine_coupling.py
 TFGENZOO/flows/cond_affine_coupling.py
-TFGENZOO/flows/cond_factor_out.py
 TFGENZOO/flows/factor_out.py
 TFGENZOO/flows/flatten.py
 TFGENZOO/flows/flowbase.py
@@ -30,6 +29,7 @@ TFGENZOO/flows/utils/unsafe/__init__.py
 TFGENZOO/flows/utils/unsafe/actnorm_activation.py
 TFGENZOO/gans/__init__.py
 TFGENZOO/layers/__init__.py
+TFGENZOO/layers/flowtts_coupling.py
 TFGENZOO/layers/resnet.py
 TFGENZOO/layers/spadebn.py
 TFGENZOO/layers/spectral_normalization.py

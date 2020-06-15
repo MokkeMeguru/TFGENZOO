@@ -15,6 +15,7 @@ def ShallowResNet(
     out_scale: int = 2,
 ):
     """ResNet of OpenAI's Glow
+
     Args:
         inputs (tf.Tensor): input tensor rank == 4
         cond   (tf.Tensor): input tensor rank == 4 (optional)
@@ -22,13 +23,14 @@ def ShallowResNet(
         out_scale    (int): output channel width scale
 
     Returns:
+
         model: tf.keras.Model
 
     Sources:
 
         https://github.com/openai/glow/blob/master/model.py#L420-L426
 
-    Notes:
+    Note:
 
         This layer is not Residual Network
         because this layer does not have Skip connection
@@ -111,6 +113,7 @@ def ShallowConnectedResNet(
     connect_type: str = "whole",
 ):
     """ResNet of OpenAI's Glow with Connection
+
     Args:
         inputs (tf.Tensor): input tensor rank == 4
         cond   (tf.Tensor): input tensor rank == 4 (optional)

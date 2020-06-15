@@ -6,7 +6,7 @@ import tensorflow as tf
 class GTU(tf.keras.layers.Layer):
     """GTU layer proposed in Flow-TTS
 
-    Notes:
+    Note:
 
         * formula
             .. math::

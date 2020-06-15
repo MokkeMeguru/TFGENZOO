@@ -9,8 +9,8 @@ from TFGENZOO.flows.factor_out import FactorOut
 from TFGENZOO.flows.flowbase import FactorOutBase, FlowModule
 from TFGENZOO.flows.inv1x1conv import Inv1x1Conv
 from TFGENZOO.flows.quantize import LogitifyImage
-from TFGENZOO.flows.squeeze import Squeezing
-from TFGENZOO.flows.utils import ResidualNet
+from TFGENZOO.flows.squeeze import Squeeze
+from TFGENZOO.layers.resnet import ShallowResNet
 
 
 class SingleFlow(Model):
@@ -27,7 +27,7 @@ class SingleFlow(Model):
         layers = []
         layers.append(LogitifyImage())
         for _ in range(3):
-            layers.append(Squeezing())
+            layers.append(Squeeze())
             for _ in range(5):
                 layers.append(Actnorm())
                 layers.append(Inv1x1Conv())
@@ -56,7 +56,7 @@ class SingleFlow(Model):
     def inverse(self, x, zaux, training):
         inverse_log_det_jacobian = tf.zeros(tf.shape(x)[0:1])
         for flow in reversed(self.flows):
-            if isinstance(flow, Squeezing):
+            if isinstance(flow, Squeeze):
                 if flow.with_zaux:
                     x, zaux = flow(x, zaux=zaux, inverse=True)
                 else:
@@ -76,7 +76,7 @@ class SingleFlow(Model):
         log_det_jacobian = tf.zeros(tf.shape(x)[0:1])
         log_likelihood = tf.zeros(tf.shape(x)[0:1])
         for flow in self.flows:
-            if isinstance(flow, Squeezing):
+            if isinstance(flow, Squeeze):
                 if flow.with_zaux:
                     x, zaux = flow(x, zaux=zaux)
                 else:
@@ -149,7 +149,7 @@ class BasicGlow(Model):
     def inverse(self, x, zaux, training):
         inverse_log_det_jacobian = tf.zeros(tf.shape(x)[0:1])
         for flow in reversed(self.flows):
-            if isinstance(flow, Squeezing):
+            if isinstance(flow, Squeeze):
                 if flow.with_zaux:
                     x, zaux = flow(x, zaux=zaux, inverse=True)
                 else:
@@ -169,7 +169,7 @@ class BasicGlow(Model):
         log_det_jacobian = tf.zeros(tf.shape(x)[0:1])
         log_likelihood = tf.zeros(tf.shape(x)[0:1])
         for flow in self.flows:
-            if isinstance(flow, Squeezing):
+            if isinstance(flow, Squeeze):
                 if flow.with_zaux:
                     x, zaux = flow(x, zaux=zaux)
                 else:
@@ -188,11 +188,11 @@ class SqueezeFactorOut(Model):
         super(SqueezeFactorOut, self).__init__()
         self.flows = [
             LogitifyImage(),
-            Squeezing(),
+            Squeeze(),
             FactorOut(),
-            Squeezing(with_zaux=True),
+            Squeeze(with_zaux=True),
             FactorOut(with_zaux=True),
-            Squeezing(with_zaux=True),
+            Squeeze(with_zaux=True),
             FactorOut(with_zaux=True),
         ]
 
@@ -211,7 +211,7 @@ class SqueezeFactorOut(Model):
     def inverse(self, x, zaux):
         inverse_log_det_jacobian = tf.zeros(tf.shape(x)[0:1])
         for flow in reversed(self.flows):
-            if isinstance(flow, Squeezing):
+            if isinstance(flow, Squeeze):
                 if flow.with_zaux:
                     x, zaux = flow(x, zaux=zaux, inverse=True)
                 else:
@@ -231,7 +231,7 @@ class SqueezeFactorOut(Model):
         log_det_jacobian = tf.zeros(tf.shape(x)[0:1])
         log_likelihood = tf.zeros(tf.shape(x)[0:1])
         for flow in self.flows:
-            if isinstance(flow, Squeezing):
+            if isinstance(flow, Squeeze):
                 if flow.with_zaux:
                     x, zaux = flow(x, zaux=zaux)
                 else:

@@ -6,25 +6,33 @@ import tensorflow as tf
 
 class SpectralNormalization(tf.keras.layers.Wrapper):
     """This wrapper controls the Lipschitz constant of the layer by
-       constraining its spectral norm.
-    This stabilizes the training of GANs.
-    Spectral Normalization for Generative Adversarial Networks:
-    https://arxiv.org/abs/1802.05957
-    Takeru Miyato, Toshiki Kataoka, Masanori Koyama, Yuichi Yoshida (2018)
-    SpectralNormalization wrapper works for keras and tf layers.
-    ```python
-      net = SpectralNormalization(
-          tf.keras.layers.Conv2D(2, 2, activation="relu"),
-          input_shape=(32, 32, 3))(x)
-      net = SpectralNormalization(
-          tf.keras.layers.Conv2D(16, 5, activation="relu"))(net)
-      net = SpectralNormalization(
-          tf.keras.layers.Dense(120, activation="relu"))(net)
-      net = SpectralNormalization(
-          tf.keras.layers.Dense(n_classes))(net)
-    ```
-    Arguments:
-      layer: a layer instance.
+    constraining its spectral norm.
+
+    Note:
+        This stabilizes the training of GANs.
+        Spectral Normalization for Generative Adversarial Networks:
+        https://arxiv.org/abs/1802.05957
+        Takeru Miyato, Toshiki Kataoka, Masanori Koyama, Yuichi Yoshida (2018)
+        SpectralNormalization wrapper works for keras and tf layers.
+
+    Examples:
+
+        >>> net = SpectralNormalization(
+        >>>   tf.keras.layers.Conv2D(2, 2, activation="relu"),
+        >>>     input_shape=(32, 32, 3))(x)
+        >>> net = SpectralNormalization(
+        >>>   tf.keras.layers.Conv2D(16, 5, activation="relu"))(net)
+        >>> net = SpectralNormalization(
+        >>>   tf.keras.layers.Dense(120, activation="relu"))(net)
+        >>> net = SpectralNormalization(
+        >>>   tf.keras.layers.Dense(n_classes))(net)
+
+    Args:
+      layer (tf.keras.layersLayer): a layer instance.
+
+    Returns:
+      tf.keras.layers.Layer: Wrapped Layer
+
     Raises:
       AssertionError: If not initialized with a `Layer` instance.
       ValueError: If initialized with negative `power_iterations`

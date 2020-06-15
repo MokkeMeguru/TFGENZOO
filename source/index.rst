@@ -6,7 +6,7 @@
 Welcome to TFGENZOO's documentation!
 ====================================
 
-TFGENZOO is a library for constructing Generative Networks using Tensorflow 2.x more easily, and extentiable.
+TFGENZOO(==1.2.0) is a library for constructing Generative Networks using Tensorflow 2.x more easily, and extentiable.
 
 If you have any question, Please let me it via `Github Issues
 <https://github.com/MokkeMeguru/TFGENZOO/issues>`_ or `my Twitter

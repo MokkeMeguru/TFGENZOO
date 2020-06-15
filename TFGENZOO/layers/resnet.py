@@ -99,8 +99,8 @@ def ShallowResNet(
     conv_out = Conv2DZeros(width=int(inputs.shape[-1] * out_scale))
 
     outputs = _inputs
-    outputs = tf.nn.relu(conv1(outputs))
-    outputs = tf.nn.relu(conv2(outputs))
+    outputs = tf.keras.layers.ReLU()(conv2(outputs))
+    outputs = tf.keras.layers.ReLU()(conv2(outputs))
     outputs = conv_out(outputs)
     return tf.keras.Model(inputs if cond is None else [inputs, cond], outputs)
 
@@ -198,8 +198,8 @@ def ShallowConnectedResNet(
     conv_out = Conv2DZeros(width=int(inputs.shape[-1] * out_scale))
 
     outputs = _inputs
-    outputs = tf.nn.relu(conv1(outputs))
-    outputs = tf.nn.relu(conv2(outputs))
+    outputs = tf.keras.layers.ReLU()(conv1(outputs))
+    outputs = tf.keras.layers.ReLU()(conv2(outputs))
     # MokkeMeguru's skip-connection
     if connect_type == "whole":
         outputs = conv_out(tf.concat([outputs, _inputs], axis=-1))
@@ -224,7 +224,7 @@ def ShallowConnectedResNetlikeSPADE(
     Note:
 
         WIP now...
-   
+
     Args:
         inputs (tf.Tensor): input tensor rank == 4
         cond   (tf.Tensor): input tensor rank == 4 (optional)
@@ -253,9 +253,9 @@ def ShallowConnectedResNetlikeSPADE(
     shortcut = outputs
     shortcut = spade_conn(shortcut, cond)
 
-    outputs = tf.nn.relu(conv1(outputs))
+    outputs = tf.keras.layers.ReLU()(conv1(outputs))
     outputs = spade1(outputs, cond)
-    outputs = tf.nn.relu(conv2(outputs))
+    outputs = tf.keras.layers.ReLU()(conv2(outputs))
 
     # MokkeMeguru's skip-connection
     outputs = conv_out(tf.concat([outputs, shortcut], axis=-1))

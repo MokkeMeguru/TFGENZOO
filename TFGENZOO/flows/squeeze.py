@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-from TFGENZOO.flows.flowbase import FlowComponent
+from TFGENZOO.flows.flowbase import FlowBase
 
 
 class Squeeze(FlowBase):

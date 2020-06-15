@@ -9,7 +9,7 @@ Layer = layers.Layer
 
 class FlowBase(Layer, metaclass=ABCMeta):
     """Flow-based model's abstruct class
-   
+
     Examples:
 
         >>> layer = FlowBase()
@@ -21,6 +21,8 @@ class FlowBase(Layer, metaclass=ABCMeta):
 
         If you need data-dependent initialization (e.g. ActNorm),
         You can write it at #initialize_parameter.
+
+         This layer will be inheritanced by the invertible layer without log det jacobian
     """
 
     @abstractmethod
@@ -63,6 +65,12 @@ class FlowBase(Layer, metaclass=ABCMeta):
 
 
 class FlowComponent(FlowBase):
+    """Flow-based model's abstruct class
+
+    Notes:
+         This layer will be inheritanced by the invertible layer with log det jacobian
+    """
+
     @abstractmethod
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

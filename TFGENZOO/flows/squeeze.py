@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-from TFGENZOO.flows.flowbase import FlowBase
+from TFGENZOO.flows.flowbase import FlowComponent
 
 
 class Squeeze(FlowBase):
@@ -69,7 +69,7 @@ class Squeeze(FlowBase):
         return z
 
 
-class Squeeze2D(FlowComponent):
+class Squeeze2D(FlowBase):
     def __init__(self, with_zaux: bool = False):
         self.with_zaux = with_zaux
         super().__init__()

@@ -32,7 +32,7 @@ class SingleFlow(Model):
                 layers.append(Actnorm())
                 layers.append(Inv1x1Conv())
                 layers.append(
-                    AffineCoupling(scale_shift_net=ResidualNet(**self.resblk_kwargs))
+                    AffineCoupling(scale_shift_net=ShallowResNet(**self.resblk_kwargs))
                 )
         self.flows = layers
 

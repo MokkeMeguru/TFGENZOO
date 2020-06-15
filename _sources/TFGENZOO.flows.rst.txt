@@ -53,14 +53,6 @@ TFGENZOO.flows.cond\_affine\_coupling module
    :undoc-members:
    :show-inheritance:
 
-TFGENZOO.flows.cond\_factor\_out module
----------------------------------------
-
-.. automodule:: TFGENZOO.flows.cond_factor_out
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 TFGENZOO.flows.factor\_out module
 ---------------------------------
 
@@ -129,6 +121,14 @@ TFGENZOO.flows.squeeze module
 -----------------------------
 
 .. automodule:: TFGENZOO.flows.squeeze
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+TFGENZOO.flows.squeeze\_test module
+-----------------------------------
+
+.. automodule:: TFGENZOO.flows.squeeze_test
    :members:
    :undoc-members:
    :show-inheritance:

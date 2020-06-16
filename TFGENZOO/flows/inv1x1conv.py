@@ -99,7 +99,7 @@ class Inv1x1Conv(FlowComponent):
     def __init__(self, log_det_type: "slogdet", **kwargs):
         super().__init__()
         self.log_det_type = log_det_type
-        if self.log_det_type = "logdet":
+        if self.log_det_type == "logdet":
             self.log_det_func = lambda x: tf.linalg.logdet(x)
         else:
             self.log_det_func = lambda x: tf.linalg.slogdet(x)[1]

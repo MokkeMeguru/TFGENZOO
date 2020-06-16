@@ -96,7 +96,7 @@ class Inv1x1Conv(FlowComponent):
         )
         super().build(input_shape)
 
-    def __init__(self, log_det_type: "slogdet", **kwargs):
+    def __init__(self, log_det_type: str="slogdet", **kwargs):
         super().__init__()
         self.log_det_type = log_det_type
         if self.log_det_type == "logdet":

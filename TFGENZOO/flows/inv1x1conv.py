@@ -24,6 +24,11 @@ def regular_matrix_init(shape: Tuple[int, int], dtype=None):
     assert shape[0] == shape[1], "this initialization for 2D matrix, C \times C"
     c = shape[0]
     w_init = np.linalg.qr(np.random.randn(c, c))[0].astype("float32")
+    # https://github.com/jaywalnut310/glow-tts/issues/17#issuecomment-644478717
+    # https://github.com/NVIDIA/waveglow/blob/d18e0f3cc2ff6bdd41244d7391140accdc41142b/glow.py#L76
+    # Ensure determinant is 1.0 not -1.0
+    if np.linalg.det(w_init) < 0:
+        w_init[:,0] = -1 * w_init[:, 0]
     return w_init
 
 

@@ -18,6 +18,11 @@ def logit_ldj(z: tf.Tensor):
     return -tf.math.log(z) - tf.math.log(1 - z)
 
 
+# tf.math.softplus(z) + tf.math.softplus(
+#  -z
+# )
+
+
 class LogitifyImage(FlowBase):
     """Apply Tapani Raiko's dequantization and express image in terms of logits
 
@@ -133,22 +138,29 @@ class LogitifyImage(FlowBase):
         # 2-3. apply the logit function ((0, 1)->(-inf, inf)).
         z_3 = tf.math.log(z_2) - tf.math.log(1.0 - z_2)
 
-        logdet_jacobian = logit_ldj(z_2) - tf.math.softplus(self.pre_logit_scale)
+        logdet_jacobian = (
+            -tf.math.log(z_2)
+            - tf.math.log(1 - z_2)
+            - tf.math.softplus(self.pre_logit_scale)
+        )
 
         logdet_jacobian = tf.reduce_sum(logdet_jacobian, self.reduce_axis)
-        return z_3, logdet_jacobian
+        z = z_3
+        return z, logdet_jacobian
 
     def inverse(self, z: tf.Tensor, **kwargs):
         """
         """
-
-        denominator = 1 + tf.exp(-z)
+        z_3 = z
+        denominator = 1 + tf.exp(-z_3)
         z_2 = 1 / denominator
 
         z_1 = (z_2 - 0.5 * self.alpha) / (1.0 - self.alpha)
 
         inverse_log_det_jacobian = -1 * (
-            logit_ldj(z_2) - tf.math.softplus(self.pre_logit_scale)
+            -tf.math.log(z_2)
+            - tf.math.log(1 - z_2)
+            - tf.math.softplus(self.pre_logit_scale)
         )
 
         # inverse_log_det_jacobian = tf.reduce_sum(

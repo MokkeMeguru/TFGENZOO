@@ -96,12 +96,17 @@ class Inv1x1Conv(FlowComponent):
         )
         super().build(input_shape)
 
-    def __init__(self, **kwargs):
+    def __init__(self, log_det_type: "slogdet", **kwargs):
         super().__init__()
+        self.log_det_type = log_det_type
+        if self.log_det_type = "logdet":
+            self.log_det_func = lambda x: tf.linalg.logdet(x)
+        else:
+            self.log_det_func = lambda x: tf.linalg.slogdet(x)[1]
 
     def get_config(self):
         config = super().get_config()
-        config_update = {}
+        config_update = {"log_det_type": self.log_det_type}
         config.update(config_update)
         return config
 
@@ -111,7 +116,7 @@ class Inv1x1Conv(FlowComponent):
         z = tf.nn.conv2d(x, _W, [1, 1, 1, 1], "SAME")
         # scalar
         log_det_jacobian = tf.cast(
-            tf.linalg.slogdet(tf.cast(W, tf.float64))[1] * self.h * self.w, tf.float32,
+            self.log_det_func(tf.cast(W, tf.float64)) * self.h * self.w, tf.float32,
         )
         # expand as batch
         log_det_jacobian = tf.broadcast_to(log_det_jacobian, tf.shape(x)[0:1])
@@ -123,7 +128,7 @@ class Inv1x1Conv(FlowComponent):
         x = tf.nn.conv2d(z, _W, [1, 1, 1, 1], "SAME")
 
         inverse_log_det_jacobian = tf.cast(
-            -1 * tf.linalg.slogdet(tf.cast(W, tf.float64))[1] * self.h * self.w,
+            -1 * self.log_det_func(tf.cast(W, tf.float64)) * self.h * self.w,
             tf.float32,
         )
 

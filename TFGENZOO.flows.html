@@ -1662,7 +1662,7 @@ by <cite>Network</cite> (one layer of abstraction above).</p>
 <span id="tfgenzoo-flows-inv1x1conv-module"></span><h2>TFGENZOO.flows.inv1x1conv module<a class="headerlink" href="#module-TFGENZOO.flows.inv1x1conv" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt id="TFGENZOO.flows.inv1x1conv.Inv1x1Conv">
-<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.inv1x1conv.</code><code class="sig-name descname">Inv1x1Conv</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.inv1x1conv.Inv1x1Conv" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.inv1x1conv.</code><code class="sig-name descname">Inv1x1Conv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">log_det_type</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'slogdet'</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.inv1x1conv.Inv1x1Conv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#TFGENZOO.flows.flowbase.FlowComponent" title="TFGENZOO.flows.flowbase.FlowComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TFGENZOO.flows.flowbase.FlowComponent</span></code></a></p>
 <p>Invertible 1x1 Convolution Layer</p>
 <dl class="simple">
@@ -1846,10 +1846,11 @@ since many implementations use it.</p>
 <ul>
 <li><dl>
 <dt>forward preprocess (add noise)</dt><dd><div class="math notranslate nohighlight">
-\[\begin{split}x &amp;\leftarrow 255.0 x  \ \because [0, 1] \rightarrow [0, 255] \\
-x &amp;\leftarrow x + \text{corruption_level} \times  \epsilon \ where\ \epsilon \sim N(0, 1)\\
-x &amp;\leftarrow x / (\text{corruption_level} + 255.0)\\
-x &amp;\leftarrow x  (1 - \alpha) + 0.5 \alpha \ \because \ [0, 1] \rightarrow (0, 1)\end{split}\]</div>
+\[\begin{split}z &amp;\leftarrow 255.0 x  \ \because [0, 1] \rightarrow [0, 255] \\
+z &amp;\leftarrow z + \text{corruption_level} \times  \epsilon \ where\ \epsilon \sim N(0, 1)\\
+z &amp;\leftarrow z / (\text{corruption_level} + 255.0)\\
+z &amp;\leftarrow z (1 - \alpha) + 0.5 \alpha \ \because \ [0, 1] \rightarrow (0, 1) \\
+z &amp;\leftarrow \log(z) - \log(1 -z)\end{split}\]</div>
 </dd>
 </dl>
 </li>
@@ -1942,6 +1943,25 @@ by <cite>Network</cite> (one layer of abstraction above).</p>
 <code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">z</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.quantize.LogitifyImage.inverse" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+</dd></dl>
+
+<dl class="py function">
+<dt id="TFGENZOO.flows.quantize.logit_ldj">
+<code class="sig-prename descclassname">TFGENZOO.flows.quantize.</code><code class="sig-name descname">logit_ldj</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">z</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.quantize.logit_ldj" title="Permalink to this definition">¶</a></dt>
+<dd><div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul>
+<li><dl>
+<dt>formula</dt><dd><div class="math notranslate nohighlight">
+\[\begin{split}\tilde{z} &amp;= logit(z) \\
+          &amp;= log(z) - log(1-z)\\
+\log{\cfrac{\partial \tilde{z}}{\partial z}} &amp;= \log{\cfrac{1}{z}} + \log{\cfrac{1}{1 - z}} \\
+          &amp;= - \log{z} + \log{(1-z)}\end{split}\]</div>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
 </dd></dl>
 
 </div>
@@ -2672,7 +2692,7 @@ by <cite>Network</cite> (one layer of abstraction above).</p>
 
 <dl class="py class">
 <dt id="TFGENZOO.flows.Inv1x1Conv">
-<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.</code><code class="sig-name descname">Inv1x1Conv</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.Inv1x1Conv" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.</code><code class="sig-name descname">Inv1x1Conv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">log_det_type</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'slogdet'</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.Inv1x1Conv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#TFGENZOO.flows.flowbase.FlowComponent" title="TFGENZOO.flows.flowbase.FlowComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TFGENZOO.flows.flowbase.FlowComponent</span></code></a></p>
 <p>Invertible 1x1 Convolution Layer</p>
 <dl class="simple">
@@ -2828,10 +2848,11 @@ since many implementations use it.</p>
 <ul>
 <li><dl>
 <dt>forward preprocess (add noise)</dt><dd><div class="math notranslate nohighlight">
-\[\begin{split}x &amp;\leftarrow 255.0 x  \ \because [0, 1] \rightarrow [0, 255] \\
-x &amp;\leftarrow x + \text{corruption_level} \times  \epsilon \ where\ \epsilon \sim N(0, 1)\\
-x &amp;\leftarrow x / (\text{corruption_level} + 255.0)\\
-x &amp;\leftarrow x  (1 - \alpha) + 0.5 \alpha \ \because \ [0, 1] \rightarrow (0, 1)\end{split}\]</div>
+\[\begin{split}z &amp;\leftarrow 255.0 x  \ \because [0, 1] \rightarrow [0, 255] \\
+z &amp;\leftarrow z + \text{corruption_level} \times  \epsilon \ where\ \epsilon \sim N(0, 1)\\
+z &amp;\leftarrow z / (\text{corruption_level} + 255.0)\\
+z &amp;\leftarrow z (1 - \alpha) + 0.5 \alpha \ \because \ [0, 1] \rightarrow (0, 1) \\
+z &amp;\leftarrow \log(z) - \log(1 -z)\end{split}\]</div>
 </dd>
 </dl>
 </li>

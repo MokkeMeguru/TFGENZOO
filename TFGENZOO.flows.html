@@ -87,8 +87,6 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="news/index.html">News</a></li>
-<li class="toctree-l1"><a class="reference internal" href="usage/quickstart.html">Simple Tutorial</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="TFGENZOO.html">TFGENZOO package</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="TFGENZOO.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">TFGENZOO.flows package</a><ul>
@@ -99,6 +97,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#module-TFGENZOO.flows.affine_coupling">TFGENZOO.flows.affine_coupling module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-TFGENZOO.flows.affine_coupling_test">TFGENZOO.flows.affine_coupling_test module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-TFGENZOO.flows.cond_affine_coupling">TFGENZOO.flows.cond_affine_coupling module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-TFGENZOO.flows.cond_affine_coupling_test">TFGENZOO.flows.cond_affine_coupling_test module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-TFGENZOO.flows.factor_out">TFGENZOO.flows.factor_out module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-TFGENZOO.flows.flatten">TFGENZOO.flows.flatten module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-TFGENZOO.flows.flowbase">TFGENZOO.flows.flowbase module</a></li>
@@ -120,6 +119,9 @@
 <li class="toctree-l2"><a class="reference internal" href="TFGENZOO.html#module-TFGENZOO">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="discussions/index.html">Discussions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="discussions/index.html#indices-and-tables">Indices and tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage/quickstart.html">Simple Tutorial</a></li>
 </ul>
 
             
@@ -857,7 +859,8 @@ ldj  (tf.Tensor): log det jacobian [B]</p>
 <dd class="field-odd"><p>z    (tf.Tensor)</p>
 </dd>
 </dl>
-<p class="rubric">Notes</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
 <ul>
 <li><dl>
 <dt>mask’s example</dt><dd><div class="line-block">
@@ -872,6 +875,7 @@ ldj  (tf.Tensor): log det jacobian [B]</p>
 </dl>
 </li>
 </ul>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -885,6 +889,36 @@ ldj  (tf.Tensor): log det jacobian [B]</p>
 <dt id="TFGENZOO.flows.cond_affine_coupling.filter_kwargs">
 <code class="sig-prename descclassname">TFGENZOO.flows.cond_affine_coupling.</code><code class="sig-name descname">filter_kwargs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">d</span><span class="p">:</span> <span class="n">Dict</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.cond_affine_coupling.filter_kwargs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+</div>
+<div class="section" id="module-TFGENZOO.flows.cond_affine_coupling_test">
+<span id="tfgenzoo-flows-cond-affine-coupling-test-module"></span><h2>TFGENZOO.flows.cond_affine_coupling_test module<a class="headerlink" href="#module-TFGENZOO.flows.cond_affine_coupling_test" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="TFGENZOO.flows.cond_affine_coupling_test.ConditionalAffineCouplingTest">
+<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.cond_affine_coupling_test.</code><code class="sig-name descname">ConditionalAffineCouplingTest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">methodName</span><span class="o">=</span><span class="default_value">'runTest'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.cond_affine_coupling_test.ConditionalAffineCouplingTest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tensorflow.python.framework.test_util.TensorFlowTestCase</span></code></p>
+<dl class="py method">
+<dt id="TFGENZOO.flows.cond_affine_coupling_test.ConditionalAffineCouplingTest.setUp">
+<code class="sig-name descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.cond_affine_coupling_test.ConditionalAffineCouplingTest.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hook method for setting up the test fixture before exercising it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.cond_affine_coupling_test.ConditionalAffineCouplingTest.testConditionalAffineCouplingInv">
+<code class="sig-name descname">testConditionalAffineCouplingInv</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.cond_affine_coupling_test.ConditionalAffineCouplingTest.testConditionalAffineCouplingInv" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.cond_affine_coupling_test.ConditionalAffineCouplingTest.testConditionalAffineCouplingShape">
+<code class="sig-name descname">testConditionalAffineCouplingShape</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.cond_affine_coupling_test.ConditionalAffineCouplingTest.testConditionalAffineCouplingShape" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.cond_affine_coupling_test.ConditionalAffineCouplingTest.testConditonalAffineCouplingInitialize">
+<code class="sig-name descname">testConditonalAffineCouplingInitialize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.cond_affine_coupling_test.ConditionalAffineCouplingTest.testConditonalAffineCouplingInitialize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
 
 </div>
 <div class="section" id="module-TFGENZOO.flows.factor_out">
@@ -1365,13 +1399,16 @@ layer instantiation and layer call.</p>
 <em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.flowbase.</code><code class="sig-name descname">FlowComponent</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flowbase.FlowComponent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#TFGENZOO.flows.flowbase.FlowBase" title="TFGENZOO.flows.flowbase.FlowBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">TFGENZOO.flows.flowbase.FlowBase</span></code></a></p>
 <p>Flow-based model’s abstruct class</p>
-<p class="rubric">Notes</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
 <p>This layer will be inheritanced by the invertible layer with log det jacobian</p>
+</div>
 <dl class="py method">
 <dt id="TFGENZOO.flows.flowbase.FlowComponent.assert_log_det_jacobian">
 <code class="sig-name descname">assert_log_det_jacobian</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">log_det_jacobian</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flowbase.FlowComponent.assert_log_det_jacobian" title="Permalink to this definition">¶</a></dt>
 <dd><p>assert log_det_jacobian’s shape</p>
-<p class="rubric">Notes</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
 <div class="line-block">
 <div class="line">tf-2.0’s bug</div>
 <div class="line">tf.debugging.assert_shapes([(tf.constant(1.0), (None, ))])</div>
@@ -1380,6 +1417,7 @@ layer instantiation and layer call.</p>
 <div class="line"># =&gt; None (true)</div>
 <div class="line">tf.debugging.assert_shapes([(tf.constant([[1.0], [1.0]]), (None, ))])</div>
 <div class="line"># =&gt; Error</div>
+</div>
 </div>
 </dd></dl>
 
@@ -1765,6 +1803,120 @@ by <cite>Network</cite> (one layer of abstraction above).</p>
 
 </dd></dl>
 
+<dl class="py class">
+<dt id="TFGENZOO.flows.inv1x1conv.Inv1x1Conv2DWithMask">
+<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.inv1x1conv.</code><code class="sig-name descname">Inv1x1Conv2DWithMask</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.inv1x1conv.Inv1x1Conv2DWithMask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#TFGENZOO.flows.flowbase.FlowComponent" title="TFGENZOO.flows.flowbase.FlowComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TFGENZOO.flows.flowbase.FlowComponent</span></code></a></p>
+<p>Invertible 1x1 Convolution Layer (2D) with Mask</p>
+<dl class="simple">
+<dt>Sources:</dt><dd><p><a class="reference external" href="https://arxiv.org/pdf/1807.03039.pdf">https://arxiv.org/pdf/1807.03039.pdf</a>
+<a class="reference external" href="https://github.com/openai/glow/blob/master/model.py#L457-L472">https://github.com/openai/glow/blob/master/model.py#L457-L472</a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul>
+<li><dl>
+<dt>forward formula</dt><dd><div class="math notranslate nohighlight">
+\[\begin{split}\forall i: z_{i} &amp;= Wx_{i} \\
+LogDetJacobian &amp;= hw \log|det(W)|\\
+, where &amp;\\
+W &amp;\in \mathbb{R}^{c    imes c}\\
+    x &amp;\in \mathbb{R}^{b \times h\times w \times c}\ \ \
+({\rm batch, height, width, channel})\end{split}\]</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>inverse formula</dt><dd><div class="math notranslate nohighlight">
+\[\begin{split}\forall i: x_{i} &amp;= W^{-1} z_{i}\\
+InverseLogDetJacobian &amp;= - h w \log|det(W)|\\
+, where &amp;\\
+W &amp;\in \mathbb{R}^{c\times c}\\
+x &amp;\in \mathbb{R}^{b \times t\times c}\ \ \
+({\rm batch, timestep, channel})\end{split}\]</div>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<dl class="py method">
+<dt id="TFGENZOO.flows.inv1x1conv.Inv1x1Conv2DWithMask.build">
+<code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_shape</span><span class="p">:</span> <span class="n">tensorflow.python.framework.tensor_shape.TensorShape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.inv1x1conv.Inv1x1Conv2DWithMask.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates the variables of the layer (optional, for subclass implementers).</p>
+<p>This is a method that implementers of subclasses of <cite>Layer</cite> or <cite>Model</cite>
+can override if they need a state-creation step in-between
+layer instantiation and layer call.</p>
+<p>This is typically used to create the weights of <cite>Layer</cite> subclasses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>input_shape</strong> – Instance of <cite>TensorShape</cite>, or list of instances of
+<cite>TensorShape</cite> if the layer expects a list of inputs
+(one instance per input).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.inv1x1conv.Inv1x1Conv2DWithMask.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="n">mask</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.inv1x1conv.Inv1x1Conv2DWithMask.forward" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>tf.Tensor</em>) – base input tensor [B, T, C]</p></li>
+<li><p><strong>mask</strong> (<em>tf.Tensor</em>) – mask input tensor [B, T]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>latent variable tensor [B, T, C]
+ldj  (tf.Tensor): log det jacobian [B]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>z    (tf.Tensor)</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul>
+<li><dl>
+<dt>mask’s example</dt><dd><div class="line-block">
+<div class="line">[[True, True, True, False],</div>
+<div class="line-block">
+<div class="line">[True, False, False, False],</div>
+<div class="line">[True, True, True, True],</div>
+<div class="line">[True, True, True, True]]</div>
+</div>
+</div>
+</dd>
+</dl>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.inv1x1conv.Inv1x1Conv2DWithMask.get_config">
+<code class="sig-name descname">get_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.inv1x1conv.Inv1x1Conv2DWithMask.get_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the config of the layer.</p>
+<p>A layer config is a Python dictionary (serializable)
+containing the configuration of a layer.
+The same layer can be reinstantiated later
+(without its trained weights) from this configuration.</p>
+<p>The config of a layer does not include connectivity
+information, nor the layer class name. These are handled
+by <cite>Network</cite> (one layer of abstraction above).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Python dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.inv1x1conv.Inv1x1Conv2DWithMask.inverse">
+<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">z</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="n">mask</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.inv1x1conv.Inv1x1Conv2DWithMask.inverse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 <dl class="py function">
 <dt id="TFGENZOO.flows.inv1x1conv.regular_matrix_init">
 <code class="sig-prename descclassname">TFGENZOO.flows.inv1x1conv.</code><code class="sig-name descname">regular_matrix_init</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">shape</span><span class="p">:</span> <span class="n">Tuple<span class="p">[</span>int<span class="p">, </span>int<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.inv1x1conv.regular_matrix_init" title="Permalink to this definition">¶</a></dt>
@@ -1792,6 +1944,28 @@ by <cite>Network</cite> (one layer of abstraction above).</p>
 </div>
 <div class="section" id="module-TFGENZOO.flows.inv1x1conv_test">
 <span id="tfgenzoo-flows-inv1x1conv-test-module"></span><h2>TFGENZOO.flows.inv1x1conv_test module<a class="headerlink" href="#module-TFGENZOO.flows.inv1x1conv_test" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="TFGENZOO.flows.inv1x1conv_test.Inv1x1Conv2DTest">
+<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.inv1x1conv_test.</code><code class="sig-name descname">Inv1x1Conv2DTest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">methodName</span><span class="o">=</span><span class="default_value">'runTest'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.inv1x1conv_test.Inv1x1Conv2DTest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tensorflow.python.framework.test_util.TensorFlowTestCase</span></code></p>
+<dl class="py method">
+<dt id="TFGENZOO.flows.inv1x1conv_test.Inv1x1Conv2DTest.setUp">
+<code class="sig-name descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.inv1x1conv_test.Inv1x1Conv2DTest.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hook method for setting up the test fixture before exercising it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.inv1x1conv_test.Inv1x1Conv2DTest.testInv1x1Conv2DOutput">
+<code class="sig-name descname">testInv1x1Conv2DOutput</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.inv1x1conv_test.Inv1x1Conv2DTest.testInv1x1Conv2DOutput" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.inv1x1conv_test.Inv1x1Conv2DTest.testInv1x1Conv2DOutputShape">
+<code class="sig-name descname">testInv1x1Conv2DOutputShape</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.inv1x1conv_test.Inv1x1Conv2DTest.testInv1x1Conv2DOutputShape" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 <dl class="py class">
 <dt id="TFGENZOO.flows.inv1x1conv_test.Inv1x1ConvTest">
 <em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.inv1x1conv_test.</code><code class="sig-name descname">Inv1x1ConvTest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">methodName</span><span class="o">=</span><span class="default_value">'runTest'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.inv1x1conv_test.Inv1x1ConvTest" title="Permalink to this definition">¶</a></dt>
@@ -1856,7 +2030,7 @@ z &amp;\leftarrow \log(z) - \log(1 -z)\end{split}\]</div>
 </li>
 <li><dl>
 <dt>forward formula</dt><dd><div class="math notranslate nohighlight">
-\[\begin{split}z &amp;= logit(x)\\
+\[\begin{split}z &amp;= logit(x (1 - \alpha) + 0.5 \alpha)\\
   &amp;= \log(x) - \log(1 - x)\\
 LogDetJacobian &amp;= sum(softplus(z) + softplus(-z) - softplus(\log(\cfrac{\alpha}{1 - \alpha})))\end{split}\]</div>
 </dd>
@@ -1866,7 +2040,8 @@ LogDetJacobian &amp;= sum(softplus(z) + softplus(-z) - softplus(\log(\cfrac{\alp
 <dt>inverse formula</dt><dd><div class="math notranslate nohighlight">
 \[\begin{split}x &amp;= logisitic(z)\\
   &amp;= 1 / (1 + exp( -z )) \\
-InverseLogDetJacobian &amp;= sum(-2 \log(logistic(z)) - z)\end{split}\]</div>
+x &amp;= (x - 0.5 * \alpha) / (1.0 -  \alpha)\\
+InverseLogDetJacobian &amp;= sum(-2 \log(logistic(z)) - z) + softplus(\log(\cfrac{\alpha}{1 - \alpha})))\end{split}\]</div>
 </dd>
 </dl>
 </li>
@@ -1943,25 +2118,6 @@ by <cite>Network</cite> (one layer of abstraction above).</p>
 <code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">z</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.quantize.LogitifyImage.inverse" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-</dd></dl>
-
-<dl class="py function">
-<dt id="TFGENZOO.flows.quantize.logit_ldj">
-<code class="sig-prename descclassname">TFGENZOO.flows.quantize.</code><code class="sig-name descname">logit_ldj</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">z</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.quantize.logit_ldj" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition note">
-<p class="admonition-title">Note</p>
-<ul>
-<li><dl>
-<dt>formula</dt><dd><div class="math notranslate nohighlight">
-\[\begin{split}\tilde{z} &amp;= logit(z) \\
-          &amp;= log(z) - log(1-z)\\
-\log{\cfrac{\partial \tilde{z}}{\partial z}} &amp;= \log{\cfrac{1}{z}} + \log{\cfrac{1}{1 - z}} \\
-          &amp;= - \log{z} + \log{(1-z)}\end{split}\]</div>
-</dd>
-</dl>
-</li>
-</ul>
-</div>
 </dd></dl>
 
 </div>
@@ -2172,6 +2328,23 @@ tf.Tensor: mask tensor [B, T]</p>
 
 </dd></dl>
 
+<dl class="py class">
+<dt id="TFGENZOO.flows.squeeze_test.SqueezeTest">
+<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.squeeze_test.</code><code class="sig-name descname">SqueezeTest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">methodName</span><span class="o">=</span><span class="default_value">'runTest'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.squeeze_test.SqueezeTest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tensorflow.python.framework.test_util.TensorFlowTestCase</span></code></p>
+<dl class="py method">
+<dt id="TFGENZOO.flows.squeeze_test.SqueezeTest.setUp">
+<code class="sig-name descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.squeeze_test.SqueezeTest.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hook method for setting up the test fixture before exercising it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.squeeze_test.SqueezeTest.testSqueezeWithOutAnythng">
+<code class="sig-name descname">testSqueezeWithOutAnythng</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.squeeze_test.SqueezeTest.testSqueezeWithOutAnythng" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="module-TFGENZOO.flows">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-TFGENZOO.flows" title="Permalink to this headline">¶</a></h2>
@@ -2260,13 +2433,16 @@ by <cite>Network</cite> (one layer of abstraction above).</p>
 <em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.</code><code class="sig-name descname">FlowComponent</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.FlowComponent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#TFGENZOO.flows.flowbase.FlowBase" title="TFGENZOO.flows.flowbase.FlowBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">TFGENZOO.flows.flowbase.FlowBase</span></code></a></p>
 <p>Flow-based model’s abstruct class</p>
-<p class="rubric">Notes</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
 <p>This layer will be inheritanced by the invertible layer with log det jacobian</p>
+</div>
 <dl class="py method">
 <dt id="TFGENZOO.flows.FlowComponent.assert_log_det_jacobian">
 <code class="sig-name descname">assert_log_det_jacobian</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">log_det_jacobian</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.FlowComponent.assert_log_det_jacobian" title="Permalink to this definition">¶</a></dt>
 <dd><p>assert log_det_jacobian’s shape</p>
-<p class="rubric">Notes</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
 <div class="line-block">
 <div class="line">tf-2.0’s bug</div>
 <div class="line">tf.debugging.assert_shapes([(tf.constant(1.0), (None, ))])</div>
@@ -2275,6 +2451,7 @@ by <cite>Network</cite> (one layer of abstraction above).</p>
 <div class="line"># =&gt; None (true)</div>
 <div class="line">tf.debugging.assert_shapes([(tf.constant([[1.0], [1.0]]), (None, ))])</div>
 <div class="line"># =&gt; Error</div>
+</div>
 </div>
 </dd></dl>
 
@@ -2858,7 +3035,7 @@ z &amp;\leftarrow \log(z) - \log(1 -z)\end{split}\]</div>
 </li>
 <li><dl>
 <dt>forward formula</dt><dd><div class="math notranslate nohighlight">
-\[\begin{split}z &amp;= logit(x)\\
+\[\begin{split}z &amp;= logit(x (1 - \alpha) + 0.5 \alpha)\\
   &amp;= \log(x) - \log(1 - x)\\
 LogDetJacobian &amp;= sum(softplus(z) + softplus(-z) - softplus(\log(\cfrac{\alpha}{1 - \alpha})))\end{split}\]</div>
 </dd>
@@ -2868,7 +3045,8 @@ LogDetJacobian &amp;= sum(softplus(z) + softplus(-z) - softplus(\log(\cfrac{\alp
 <dt>inverse formula</dt><dd><div class="math notranslate nohighlight">
 \[\begin{split}x &amp;= logisitic(z)\\
   &amp;= 1 / (1 + exp( -z )) \\
-InverseLogDetJacobian &amp;= sum(-2 \log(logistic(z)) - z)\end{split}\]</div>
+x &amp;= (x - 0.5 * \alpha) / (1.0 -  \alpha)\\
+InverseLogDetJacobian &amp;= sum(-2 \log(logistic(z)) - z) + softplus(\log(\cfrac{\alpha}{1 - \alpha})))\end{split}\]</div>
 </dd>
 </dl>
 </li>

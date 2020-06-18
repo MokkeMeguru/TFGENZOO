@@ -53,6 +53,14 @@ TFGENZOO.flows.cond\_affine\_coupling module
    :undoc-members:
    :show-inheritance:
 
+TFGENZOO.flows.cond\_affine\_coupling\_test module
+--------------------------------------------------
+
+.. automodule:: TFGENZOO.flows.cond_affine_coupling_test
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 TFGENZOO.flows.factor\_out module
 ---------------------------------
 

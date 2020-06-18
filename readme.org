@@ -3,10 +3,18 @@
 [[file:https://img.shields.io/badge/python-3.7-blue.svg]]
 [[file:https://img.shields.io/badge/tensorflow-%3E%3D2.2.0-brightgreen.svg]]
 #+TITLE: TFGENZOO (Generative Model x Tensorflow 2.x)
-** News [2020/6/12]
-- Implement SPADE Layer
-- Implement Invertible Flatten Layer
-- Update document with Some Example
+* News [2020/6/16]
+New training results [[https://www.tensorflow.org/datasets/catalog/oxford_flowers102][Oxford-flower102]] with only 8 hours! (Quadro P6000 x 1)
+
+|------------------+-------------------+-------+------------|
+| data             |         NLL(test) | epoch | pretrained |
+|------------------+-------------------+-------+------------|
+| Oxford-flower102 | 4.590211391448975 |  1024 | ---        |
+|------------------+-------------------+-------+------------|
+
+[[./docs/oxford.png]]
+
+see more detail, you can see [[https://docs.google.com/presentation/d/12z6MZizIsytLxUb2ly7vYorFiKruIGZ2ckQ0-By4b6s/edit?usp=sharing][my internship's report]] (Japanese only, if you need translated version, please contact me.)
 
 * What's this repository?
   This is a repository for some researcher to build some Generative models using Tensorflow 2.0.
@@ -102,10 +110,17 @@ python 3.6 > trainer.main()
 ** News [2020/5/29]
 New training results [[https://www.tensorflow.org/datasets/catalog/oxford_flowers102][Oxford-flower102]] with only 4 hours! (Quadro P6000 x 1)
 
-|-------+-------+------------+--------------|
- | data  |   NLL(val) | epoch      | pretrained   |
- |-------+-------+------------+--------------|
- | MNIST | 4.640194892883301 | 512 | --- |
- |-------+-------+------------+--------------|
+|------------------+-------------------+-------+------------|
+| data             |          NLL(test) | epoch | pretrained |
+|------------------+-------------------+-------+------------|
+| Oxford-flower102 | 4.640194892883301 |   512 | ---        |
+|------------------+-------------------+-------+------------|
 
 [[https://github.com/MokkeMeguru/seminar/blob/master/TFGENZOO/512epoch.png]]
+
+** News [2020/6/12]
+- Implement SPADE Layer
+- Implement Invertible Flatten Layer
+- Update document with Some Example
+* Contact
+MokkeMeguru ([[https://twitter.com/MeguruMokke][@MokkeMeguru]]): DM or Mention Please (in Any language).

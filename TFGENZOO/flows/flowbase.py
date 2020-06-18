@@ -67,7 +67,7 @@ class FlowBase(Layer, metaclass=ABCMeta):
 class FlowComponent(FlowBase):
     """Flow-based model's abstruct class
 
-    Notes:
+    Note:
          This layer will be inheritanced by the invertible layer with log det jacobian
     """
 
@@ -94,7 +94,7 @@ class FlowComponent(FlowBase):
     def assert_log_det_jacobian(self, log_det_jacobian: tf.Tensor):
         """assert log_det_jacobian's shape
        
-        Notes:
+        Note:
             | tf-2.0's bug
             | tf.debugging.assert_shapes([(tf.constant(1.0), (None, ))])
             | # => None (true)

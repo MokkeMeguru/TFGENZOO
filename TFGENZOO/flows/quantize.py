@@ -37,7 +37,7 @@ class LogitifyImage(FlowBase):
         * forward formula
             .. math::
 
-                 z &= logit(x)\\\\
+                 z &= logit(x (1 - \\alpha) + 0.5 \\alpha)\\\\
                    &= \\log(x) - \\log(1 - x)\\\\
                  LogDetJacobian &= sum(softplus(z) + softplus(-z) - softplus(\\log(\\cfrac{\\alpha}{1 - \\alpha})))
 
@@ -46,7 +46,8 @@ class LogitifyImage(FlowBase):
 
                  x &= logisitic(z)\\\\
                    &= 1 / (1 + exp( -z )) \\\\
-                 InverseLogDetJacobian &= sum(-2 \\log(logistic(z)) - z)
+                 x &= (x - 0.5 * \\alpha) / (1.0 -  \\alpha)\\\\
+                 InverseLogDetJacobian &= sum(-2 \\log(logistic(z)) - z) + softplus(\\log(\\cfrac{\\alpha}{1 - \\alpha})))
     Examples:
 
         >>> import tensorflow as tf

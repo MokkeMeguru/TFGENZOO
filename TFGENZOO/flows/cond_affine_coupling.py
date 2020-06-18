@@ -207,7 +207,7 @@ class ConditionalAffineCouplingWithMask(ConditionalAffineCoupling):
             z    (tf.Tensor): latent variable tensor [B, T, C]
             ldj  (tf.Tensor): log det jacobian [B]
 
-        Notes:
+        Note:
             * mask's example
                 | [[True, True, True, False],
                 |  [True, False, False, False],

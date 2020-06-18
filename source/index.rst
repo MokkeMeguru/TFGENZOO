@@ -16,11 +16,10 @@ If you have any question, Please let me it via `Github Issues
    :maxdepth: 2
    :caption: Contents:
 
-   news/index
-   usage/quickstart
    TFGENZOO
-
-
+   discussions/index
+   usage/quickstart
+            
 Indices and tables
 ==================
 

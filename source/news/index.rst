@@ -12,5 +12,4 @@ News
 
 Relase
 ------
-hogehoge
-
+WIP

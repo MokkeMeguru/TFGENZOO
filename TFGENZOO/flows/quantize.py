@@ -4,25 +4,6 @@ import tensorflow as tf
 from TFGENZOO.flows.flowbase import FlowBase
 
 
-def logit_ldj(z: tf.Tensor):
-    """
-    Note:
-       * formula
-           .. math::
-
-               \\tilde{z} &= logit(z) \\\\
-                         &= log(z) - log(1-z)\\\\
-               \log{\cfrac{\partial \\tilde{z}}{\partial z}} &= \log{\cfrac{1}{z}} + \log{\cfrac{1}{1 - z}} \\\\
-                         &= - \log{z} + \log{(1-z)}
-    """
-    return -tf.math.log(z) - tf.math.log(1 - z)
-
-
-# tf.math.softplus(z) + tf.math.softplus(
-#  -z
-# )
-
-
 class LogitifyImage(FlowBase):
     """Apply Tapani Raiko's dequantization and express image in terms of logits
 
@@ -47,10 +28,11 @@ class LogitifyImage(FlowBase):
         * forward preprocess (add noise)
             .. math::
 
-                x &\\leftarrow 255.0 x  \\ \\because [0, 1] \\rightarrow [0, 255] \\\\
-                x &\\leftarrow x + \\text{corruption_level} \\times  \\epsilon \\ where\\ \\epsilon \\sim N(0, 1)\\\\
-                x &\\leftarrow x / (\\text{corruption_level} + 255.0)\\\\
-                x &\\leftarrow x  (1 - \\alpha) + 0.5 \\alpha \\ \\because \\ [0, 1] \\rightarrow (0, 1)
+                z &\\leftarrow 255.0 x  \\ \\because [0, 1] \\rightarrow [0, 255] \\\\
+                z &\\leftarrow z + \\text{corruption_level} \\times  \\epsilon \\ where\\ \\epsilon \\sim N(0, 1)\\\\
+                z &\\leftarrow z / (\\text{corruption_level} + 255.0)\\\\
+                z &\\leftarrow z (1 - \\alpha) + 0.5 \\alpha \\ \\because \\ [0, 1] \\rightarrow (0, 1) \\\\
+                z &\\leftarrow \log(z) - \log(1 -z)
 
         * forward formula
             .. math::
@@ -123,52 +105,46 @@ class LogitifyImage(FlowBase):
         """
 
         # 1. transform the domain of x from [0, 1] to [0, 255]
-        z_1 = x * 255.0
+        z = x * 255.0
 
         # 2-1. add noize to pixels to dequantize them
         # and transform its domain ([0, 255]->[0, 1])
-        z_1 = z_1 + self.corruption_level * tf.random.uniform(tf.shape(x))
-        z_1 = z_1 / (255.0 + self.corruption_level)
+        z = z + self.corruption_level * tf.random.uniform(tf.shape(x))
+        z = z / (255.0 + self.corruption_level)
 
         # 2-2. transform pixel values with logit to be unconstrained
         # ([0, 1]->(0, 1)).
         # TODO: Will this function polutes the image?
-        z_2 = z_1 * (1 - self.alpha) + self.alpha * 0.5
+        z = z * (1 - self.alpha) + self.alpha * 0.5
 
         # 2-3. apply the logit function ((0, 1)->(-inf, inf)).
-        z_3 = tf.math.log(z_2) - tf.math.log(1.0 - z_2)
+        z = tf.math.log(z) - tf.math.log(1.0 - z)
 
         logdet_jacobian = (
-            -tf.math.log(z_2)
-            - tf.math.log(1 - z_2)
+            tf.math.softplus(z)
+            - tf.math.softplus(-z)
             - tf.math.softplus(self.pre_logit_scale)
         )
 
         logdet_jacobian = tf.reduce_sum(logdet_jacobian, self.reduce_axis)
-        z = z_3
         return z, logdet_jacobian
 
     def inverse(self, z: tf.Tensor, **kwargs):
         """
         """
-        z_3 = z
-        denominator = 1 + tf.exp(-z_3)
-        z_2 = 1 / denominator
+        denominator = 1 + tf.exp(-z)
+        x = 1 / denominator
 
-        z_1 = (z_2 - 0.5 * self.alpha) / (1.0 - self.alpha)
+        x = (x - 0.5 * self.alpha) / (1.0 - self.alpha)
 
         inverse_log_det_jacobian = -1 * (
-            -tf.math.log(z_2)
-            - tf.math.log(1 - z_2)
+            tf.math.softplus(z)
+            - tf.math.softplus(-z)
             - tf.math.softplus(self.pre_logit_scale)
         )
 
-        # inverse_log_det_jacobian = tf.reduce_sum(
-        #     -2 * tf.math.log(denominator) - z, self.reduce_axis
-        # )
-
-        x = z_1
         inverse_log_det_jacobian = tf.reduce_sum(
             inverse_log_det_jacobian, self.reduce_axis
         )
+
         return x, inverse_log_det_jacobian

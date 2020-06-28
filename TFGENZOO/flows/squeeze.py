@@ -70,15 +70,25 @@ class Squeeze(FlowBase):
 
 
 class Squeeze2D(FlowBase):
-    def __init__(self, with_zaux: bool = False):
+    def __init__(self, with_zaux: bool = False, n_squeeze: int = 2):
         self.with_zaux = with_zaux
+        self.n_squeeze = n_squeeze
         super().__init__()
 
     def get_config(self):
         config = super().get_config()
-        config_update = {"with_zaux": self.with_zaux}
+        config_update = {"with_zaux": self.with_zaux, "n_squeeze": self.n_squeeze}
         config.update(config_update)
         return config
+
+    def build(self, input_shape):
+        if input_shape[-2] % self.n_squeeze != 0:
+            tf.print(
+                "Invalid shape size: Timestep-size {} % {} == 0".format(
+                    input_shape[-2], self.n_squeeze
+                )
+            )
+        super().build(input_shape)
 
     def forward(
         self, x: tf.Tensor, zaux: tf.Tensor = None, mask: tf.Tensor = None, **kwargs
@@ -87,61 +97,71 @@ class Squeeze2D(FlowBase):
         Args:
             x     (tf.Tensor): input tensor [B, T, C]
             zaux  (tf.Tensor): pre-latent tensor [B, T, C'']
-            mask  (tf.Tensor): mask tensor [B, T]
+            mask  (tf.Tensor): mask tensor [B, T, M] where M may be 1
         Returns:
-            tf.Tensor: reshaped input tensor [B, T // 2, C * 2]
-            tf.Tensor: reshaped pre-latent tensor [B, T // 2, C'' * 2]
+            tf.Tensor: reshaped input tensor [B, T // n_squeeze, C * 2]
+            tf.Tensor: reshaped pre-latent tensor [B, T // n_squeeze, C'' * n_squeeze]
             tf.Tensor: reshaped mask tensor [B, T // 2]
         """
-        _, t, c = x.shape
-        z = tf.reshape(tf.reshape(x, [-1, t // 2, 2, c]), [-1, t // 2, c * 2])
+        b, t, c = x.shape
+
+        t = (t // self.n_squeeze) * self.n_squeeze
+        x = x[:, :t, :]  # [B, T_round, C]
+
+        z = tf.reshape(
+            tf.reshape(x, [-1, t // self.n_squeeze, self.n_squeeze, c]),
+            [-1, t // self.n_squeeze, c * self.n_squeeze],
+        )
+
+        if mask is not None:
+            mask = mask[:, self.n_squeeze - 1 :: self.n_squeeze, :]
+            mask = tf.cast(mask, x.dtype)
+        else:
+            mask = tf.ones([b, t // self.n_squeeze, 1], dtype=x.dtype)
+
         if zaux is not None:
             _, t, c = zaux.shape
-            zaux = tf.reshape(tf.reshape(zaux, [-1, t // 2, 2, c]), [-1, t // 2, c * 2])
-            return z, zaux
+            zaux = tf.reshape(
+                tf.reshape(zaux, [-1, t // self.n_squeeze, self.n_squeeze, c]),
+                [-1, t // self.n_squeeze, c * self.n_squeeze],
+            )
+            return z * mask, mask, zaux
         else:
-            return z
+            return z * mask, mask
 
     def inverse(
         self, z: tf.Tensor, zaux: tf.Tensor = None, mask: tf.Tensor = None, **kwargs
     ):
         """
         Args:
-            z    (tf.Tensor): input tensor [B, T // 2, C * 2]
-            zaux (tf.Tensor): pre-latent tensor [B, T // 2, C'' * 2]
-            mask (tf.Tensor): pre-latent tensor [B, T // 2]
+            z    (tf.Tensor): input tensor [B, T // n_squeeze, C * n_squeeze]
+            zaux (tf.Tensor): pre-latent tensor [B, T // n_squeeze, C'' * n_squeeze]
+            mask (tf.Tensor): pre-latent tensor [B, T // n_squeeze, 1]
         Returns:
             tf.Tensor: reshaped input tensor [B, T, C]
             tf.Tensor: reshaped pre-latent tensor [B, T, C'']
-            tf.Tensor: mask tensor [B, T]
+            tf.Tensor: mask tensor [B, T, 1]
         """
-        _, t, c = z.shape
-        x = tf.reshape(tf.reshape(z, [-1, t, 2, c // 2]), [-1, t * 2, c // 2])
+        b, t, c = z.shape
+        x = tf.reshape(
+            tf.reshape(z, [-1, t, self.n_squeeze, c // self.n_squeeze]),
+            [-1, t * self.n_squeeze, c // self.n_squeeze],
+        )
+
+        if mask is not None:
+            mask = tf.expand_dims(mask, -1)  # [B, T, 1, 1]
+            mask = tf.tile(mask, [1, 1, 1, self.n_squeeze])
+            mask = tf.reshape(mask, [b, t * self.n_squeeze, 1])
+            mask = tf.cast(mask, dtype=x.dtype)
+        else:
+            mask = tf.ones([b, t * self.n_squeeze, 1], dtype=x.dtype)
+
         if zaux is not None:
             _, t, c = zaux.shape
-            zaux = tf.reshape(tf.reshape(zaux, [-1, t, 2, c // 2]), [-1, t * 2, c // 2])
-            return x, zaux
+            zaux = tf.reshape(
+                tf.reshape(zaux, [-1, t, self.n_squeeze, c // self.n_squeeze]),
+                [-1, t * self.n_squeeze, c // self.n_squeeze],
+            )
+            return x * mask, mask, zaux
         else:
-            return x
-
-
-# TODO: move to squeeze_test.py
-def main():
-    layer = Squeeze()
-    x = tf.keras.Input([32, 32, 1])
-    y = layer(x)
-    print(y)
-    tf.keras.Model(x, y).summary()
-
-    layer = Squeeze(with_zaux=True)
-    x = tf.keras.Input([32, 32, 1])
-    zaux = tf.keras.Input([32, 32, 1])
-    y, _zaux = layer(x, zaux=zaux)
-    tf.keras.Model([x, zaux], [y, _zaux]).summary()
-
-    layer = Squeeze()
-    x = tf.random.normal([16, 32, 32, 1])
-    y = layer(x)
-    print(y.shape)
-    _x = layer(y, inverse=True)
-    print(tf.reduce_sum(x - _x))
+            return x * mask, mask

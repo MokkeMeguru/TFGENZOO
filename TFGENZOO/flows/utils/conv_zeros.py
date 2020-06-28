@@ -129,6 +129,7 @@ class Conv1DZeros(tf.keras.layers.Layer):
         initializer: tf.keras.initializers.Initializer = "zeros",
     ):
         super().__init__()
+        self.width = width
         self.width_scale = width_scale
         self.kernel_size = kernel_size
         self.stride = stride

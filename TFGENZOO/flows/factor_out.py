@@ -133,6 +133,10 @@ class FactorOutWithMask(FactorOut):
            |
            | sample z_i from N(0, 1) or N(mu, sigma) by conditional
            | h_{i-1} = [z_i, h_i]
+
+        * mask notes
+            | mask shape is [B, T, M] where M may be 1
+            | reference glow-tts
     """
 
     def calc_ll(self, z1: tf.Tensor, z2: tf.Tensor, mask_tensor: tf.Tensor = None):
@@ -157,7 +161,7 @@ class FactorOutWithMask(FactorOut):
 
     def forward(self, x: tf.Tensor, zaux: tf.Tensor = None, mask=None, **kwargs):
         if mask is not None:
-            mask_tensor = tf.expand_dims(tf.cast(mask, tf.float32), axis=[-1])
+            mask_tensor = tf.cast(mask, tf.float32)
         else:
             mask_tensor = None
         with tf.name_scope("split"):

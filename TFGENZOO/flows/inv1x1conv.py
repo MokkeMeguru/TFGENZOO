@@ -242,7 +242,6 @@ class Inv1x1Conv2DWithMask(FlowComponent):
         )
 
         if mask is not None:
-            # mask -> mask_tensor: [B, T] -> [B, T, 1]
             mask_tensor = tf.cast(mask, tf.float32)
             x = x * mask_tensor
             inverse_log_det_jacobian = inverse_log_det_jacobian * tf.reduce_sum(

@@ -69,7 +69,7 @@ class Squeeze(FlowBase):
         return z
 
 
-class Squeeze2D(FlowBase):
+class Squeeze2DWithMask(FlowBase):
     def __init__(self, with_zaux: bool = False, n_squeeze: int = 2):
         self.with_zaux = with_zaux
         self.n_squeeze = n_squeeze

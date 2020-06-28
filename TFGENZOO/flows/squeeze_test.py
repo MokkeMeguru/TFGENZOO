@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
 import tensorflow as tf
-from TFGENZOO.flows.squeeze import Squeeze2D, Squeeze
+from TFGENZOO.flows.squeeze import Squeeze2DWithMask, Squeeze
 
 
 class Squeeze2DTest(tf.test.TestCase):
     def setUp(self):
         super().setUp()
-        self.squeeze = Squeeze2D()
+        self.squeeze = Squeeze2DWithMask()
 
     def testSqueezeWithOutAnythng(self):
         x = tf.random.normal([32, 16, 8])

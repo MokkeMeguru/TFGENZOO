@@ -264,3 +264,8 @@ class ConditionalAffineCouplingWithMask(ConditionalAffineCoupling):
             return tf.concat([x1, x2], axis=-1), inverse_log_det_jacobian
         else:
             raise NotImplementedError()
+
+
+class ConditionalAffineCouplingWith2DMask(ConditionalAffineCouplingWithMask):
+    def build(self, input_shape: tf.TensorShape):
+        super().build(input_shape)

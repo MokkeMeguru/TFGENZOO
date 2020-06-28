@@ -151,17 +151,17 @@ class Inv1x1Conv2DWithMask(FlowComponent):
             .. math::
 
                 \\forall i: z_{i} &= Wx_{i} \\\\
-                LogDetJacobian &= hw \log|det(W)|\\\\
+                LogDetJacobian &= t \log|det(W)|\\\\
                 , where &\\\\
                 W &\\in \\mathbb{R}^{c \times c}\\\\
                     x &\\in \\mathbb{R}^{b \\times h\\times w \\times c}\\ \\ \\
-                ({\\rm batch, height, width, channel})
+                ({\\rm batch, timestep, channel})
 
         * inverse formula
             .. math::
 
                 \\forall i: x_{i} &= W^{-1} z_{i}\\\\
-                InverseLogDetJacobian &= - h w \log|det(W)|\\\\
+                InverseLogDetJacobian &= - t \log|det(W)|\\\\
                 , where &\\\\
                 W &\\in \\mathbb{R}^{c\\times c}\\\\
                 x &\\in \\mathbb{R}^{b \\times t\\times c}\\ \\ \\

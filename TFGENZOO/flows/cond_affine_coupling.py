@@ -266,6 +266,6 @@ class ConditionalAffineCouplingWithMask(ConditionalAffineCoupling):
             raise NotImplementedError()
 
 
-class ConditionalAffineCouplingWith2DMask(ConditionalAffineCouplingWithMask):
+class ConditionalAffineCoupling2DWithMask(ConditionalAffineCouplingWithMask):
     def build(self, input_shape: tf.TensorShape):
         super().build(input_shape)

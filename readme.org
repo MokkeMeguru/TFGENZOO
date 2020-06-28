@@ -51,12 +51,12 @@ We should Implement correct codes with well-documented(tested).
 ** by Install
 - pipenv
    #+begin_src
-   pipenv install TFGENZOO==1.2.4.post1
+   pipenv install TFGENZOO==1.2.4.post2
    #+end_src
   
 - pip
    #+begin_src
-    pip install TFGENZOO==1.2.4.post1
+    pip install TFGENZOO==1.2.4.post2
    #+end_src
 ** Source build for development
 

@@ -765,6 +765,29 @@ by <cite>Network</cite> (one layer of abstraction above).</p>
 </dd></dl>
 
 <dl class="py class">
+<dt id="TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCouplingWith2DMask">
+<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.cond_affine_coupling.</code><code class="sig-name descname">ConditionalAffineCouplingWith2DMask</code><span class="sig-paren">(</span><em class="sig-param">mask_type: TFGENZOO.flows.affine_coupling.AffineCouplingMask = &lt;AffineCouplingMask.ChannelWise: 1&gt;, scale_shift_net: tensorflow.python.keras.engine.base_layer.Layer = None, scale_shift_net_template: Callable[[tensorflow.python.keras.engine.input_layer.Input], tensorflow.python.keras.engine.training.Model] = None, scale_type='safe_exp', **kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCouplingWith2DMask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCouplingWithMask" title="TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCouplingWithMask"><code class="xref py py-class docutils literal notranslate"><span class="pre">TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCouplingWithMask</span></code></a></p>
+<dl class="py method">
+<dt id="TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCouplingWith2DMask.build">
+<code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_shape</span><span class="p">:</span> <span class="n">tensorflow.python.framework.tensor_shape.TensorShape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCouplingWith2DMask.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates the variables of the layer (optional, for subclass implementers).</p>
+<p>This is a method that implementers of subclasses of <cite>Layer</cite> or <cite>Model</cite>
+can override if they need a state-creation step in-between
+layer instantiation and layer call.</p>
+<p>This is typically used to create the weights of <cite>Layer</cite> subclasses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>input_shape</strong> – Instance of <cite>TensorShape</cite>, or list of instances of
+<cite>TensorShape</cite> if the layer expects a list of inputs
+(one instance per input).</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt id="TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCouplingWithMask">
 <em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.cond_affine_coupling.</code><code class="sig-name descname">ConditionalAffineCouplingWithMask</code><span class="sig-paren">(</span><em class="sig-param">mask_type: TFGENZOO.flows.affine_coupling.AffineCouplingMask = &lt;AffineCouplingMask.ChannelWise: 1&gt;, scale_shift_net: tensorflow.python.keras.engine.base_layer.Layer = None, scale_shift_net_template: Callable[[tensorflow.python.keras.engine.input_layer.Input], tensorflow.python.keras.engine.training.Model] = None, scale_type='safe_exp', **kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCouplingWithMask" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCoupling" title="TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCoupling"><code class="xref py py-class docutils literal notranslate"><span class="pre">TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCoupling</span></code></a></p>
@@ -821,6 +844,14 @@ by <cite>Network</cite> (one layer of abstraction above).</p>
 </dd>
 </dl>
 </li>
+<li><dl>
+<dt>mask notes</dt><dd><div class="line-block">
+<div class="line">mask shape is [B, T, M] where M may be 1</div>
+<div class="line">reference glow-tts</div>
+</div>
+</dd>
+</dl>
+</li>
 </ul>
 </div>
 <dl class="py method">
@@ -848,7 +879,7 @@ layer instantiation and layer call.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>tf.Tensor</em>) – base input tensor [B, T, C]</p></li>
 <li><p><strong>cond</strong> (<em>tf.Tensor</em>) – conditional input tensor [B, T, C’]</p></li>
-<li><p><strong>mask</strong> (<em>tf.Tensor</em>) – mask input tensor [B, T]</p></li>
+<li><p><strong>mask</strong> (<em>tf.Tensor</em>) – mask input tensor [B, T, M] where M may be 1</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1058,6 +1089,14 @@ by <cite>Network</cite> (one layer of abstraction above).</p>
 <div class="line"><br /></div>
 <div class="line">sample z_i from N(0, 1) or N(mu, sigma) by conditional</div>
 <div class="line">h_{i-1} = [z_i, h_i]</div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>mask notes</dt><dd><div class="line-block">
+<div class="line">mask shape is [B, T, M] where M may be 1</div>
+<div class="line">reference glow-tts</div>
 </div>
 </dd>
 </dl>
@@ -1819,22 +1858,30 @@ by <cite>Network</cite> (one layer of abstraction above).</p>
 <li><dl>
 <dt>forward formula</dt><dd><div class="math notranslate nohighlight">
 \[\begin{split}\forall i: z_{i} &amp;= Wx_{i} \\
-LogDetJacobian &amp;= hw \log|det(W)|\\
+LogDetJacobian &amp;= t \log|det(W)|\\
 , where &amp;\\
 W &amp;\in \mathbb{R}^{c    imes c}\\
     x &amp;\in \mathbb{R}^{b \times h\times w \times c}\ \ \
-({\rm batch, height, width, channel})\end{split}\]</div>
+({\rm batch, timestep, channel})\end{split}\]</div>
 </dd>
 </dl>
 </li>
 <li><dl>
 <dt>inverse formula</dt><dd><div class="math notranslate nohighlight">
 \[\begin{split}\forall i: x_{i} &amp;= W^{-1} z_{i}\\
-InverseLogDetJacobian &amp;= - h w \log|det(W)|\\
+InverseLogDetJacobian &amp;= - t \log|det(W)|\\
 , where &amp;\\
 W &amp;\in \mathbb{R}^{c\times c}\\
 x &amp;\in \mathbb{R}^{b \times t\times c}\ \ \
 ({\rm batch, timestep, channel})\end{split}\]</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>mask notes</dt><dd><div class="line-block">
+<div class="line">mask shape is [B, T, M] where M may be 1</div>
+<div class="line">reference glow-tts</div>
+</div>
 </dd>
 </dl>
 </li>
@@ -1864,7 +1911,7 @@ layer instantiation and layer call.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>tf.Tensor</em>) – base input tensor [B, T, C]</p></li>
-<li><p><strong>mask</strong> (<em>tf.Tensor</em>) – mask input tensor [B, T]</p></li>
+<li><p><strong>mask</strong> (<em>tf.Tensor</em>) – mask input tensor [B, T, M] where M may be 1</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1879,11 +1926,11 @@ ldj  (tf.Tensor): log det jacobian [B]</p>
 <ul>
 <li><dl>
 <dt>mask’s example</dt><dd><div class="line-block">
-<div class="line">[[True, True, True, False],</div>
+<div class="line">[[[True], [True], [True], [False],</div>
 <div class="line-block">
-<div class="line">[True, False, False, False],</div>
-<div class="line">[True, True, True, True],</div>
-<div class="line">[True, True, True, True]]</div>
+<div class="line">[[True], [False], [False], [False],</div>
+<div class="line">[[True], [True], [True], [True]],</div>
+<div class="line">[[True], [True], [True], [True]]]</div>
 </div>
 </div>
 </dd>
@@ -2236,23 +2283,40 @@ by <cite>Network</cite> (one layer of abstraction above).</p>
 </dd></dl>
 
 <dl class="py class">
-<dt id="TFGENZOO.flows.squeeze.Squeeze2D">
-<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.squeeze.</code><code class="sig-name descname">Squeeze2D</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">with_zaux</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.squeeze.Squeeze2D" title="Permalink to this definition">¶</a></dt>
+<dt id="TFGENZOO.flows.squeeze.Squeeze2DWithMask">
+<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.squeeze.</code><code class="sig-name descname">Squeeze2DWithMask</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">with_zaux</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">n_squeeze</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.squeeze.Squeeze2DWithMask" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#TFGENZOO.flows.flowbase.FlowBase" title="TFGENZOO.flows.flowbase.FlowBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">TFGENZOO.flows.flowbase.FlowBase</span></code></a></p>
 <dl class="py method">
-<dt id="TFGENZOO.flows.squeeze.Squeeze2D.forward">
-<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="n">zaux</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mask</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.squeeze.Squeeze2D.forward" title="Permalink to this definition">¶</a></dt>
+<dt id="TFGENZOO.flows.squeeze.Squeeze2DWithMask.build">
+<code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_shape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.squeeze.Squeeze2DWithMask.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates the variables of the layer (optional, for subclass implementers).</p>
+<p>This is a method that implementers of subclasses of <cite>Layer</cite> or <cite>Model</cite>
+can override if they need a state-creation step in-between
+layer instantiation and layer call.</p>
+<p>This is typically used to create the weights of <cite>Layer</cite> subclasses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>input_shape</strong> – Instance of <cite>TensorShape</cite>, or list of instances of
+<cite>TensorShape</cite> if the layer expects a list of inputs
+(one instance per input).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.squeeze.Squeeze2DWithMask.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="n">zaux</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mask</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.squeeze.Squeeze2DWithMask.forward" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>tf.Tensor</em>) – input tensor [B, T, C]</p></li>
 <li><p><strong>zaux</strong> (<em>tf.Tensor</em>) – pre-latent tensor [B, T, C’’]</p></li>
-<li><p><strong>mask</strong> (<em>tf.Tensor</em>) – mask tensor [B, T]</p></li>
+<li><p><strong>mask</strong> (<em>tf.Tensor</em>) – mask tensor [B, T, M] where M may be 1</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>reshaped input tensor [B, T // 2, C * 2]
-tf.Tensor: reshaped pre-latent tensor [B, T // 2, C’’ * 2]
+<dd class="field-even"><p>reshaped input tensor [B, T // n_squeeze, C * 2]
+tf.Tensor: reshaped pre-latent tensor [B, T // n_squeeze, C’’ * n_squeeze]
 tf.Tensor: reshaped mask tensor [B, T // 2]</p>
 </dd>
 <dt class="field-odd">Return type</dt>
@@ -2262,8 +2326,8 @@ tf.Tensor: reshaped mask tensor [B, T // 2]</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="TFGENZOO.flows.squeeze.Squeeze2D.get_config">
-<code class="sig-name descname">get_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.squeeze.Squeeze2D.get_config" title="Permalink to this definition">¶</a></dt>
+<dt id="TFGENZOO.flows.squeeze.Squeeze2DWithMask.get_config">
+<code class="sig-name descname">get_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.squeeze.Squeeze2DWithMask.get_config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the config of the layer.</p>
 <p>A layer config is a Python dictionary (serializable)
 containing the configuration of a layer.
@@ -2280,20 +2344,20 @@ by <cite>Network</cite> (one layer of abstraction above).</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="TFGENZOO.flows.squeeze.Squeeze2D.inverse">
-<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">z</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="n">zaux</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mask</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.squeeze.Squeeze2D.inverse" title="Permalink to this definition">¶</a></dt>
+<dt id="TFGENZOO.flows.squeeze.Squeeze2DWithMask.inverse">
+<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">z</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="n">zaux</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mask</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.squeeze.Squeeze2DWithMask.inverse" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>z</strong> (<em>tf.Tensor</em>) – input tensor [B, T // 2, C * 2]</p></li>
-<li><p><strong>zaux</strong> (<em>tf.Tensor</em>) – pre-latent tensor [B, T // 2, C’’ * 2]</p></li>
-<li><p><strong>mask</strong> (<em>tf.Tensor</em>) – pre-latent tensor [B, T // 2]</p></li>
+<li><p><strong>z</strong> (<em>tf.Tensor</em>) – input tensor [B, T // n_squeeze, C * n_squeeze]</p></li>
+<li><p><strong>zaux</strong> (<em>tf.Tensor</em>) – pre-latent tensor [B, T // n_squeeze, C’’ * n_squeeze]</p></li>
+<li><p><strong>mask</strong> (<em>tf.Tensor</em>) – pre-latent tensor [B, T // n_squeeze, 1]</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>reshaped input tensor [B, T, C]
 tf.Tensor: reshaped pre-latent tensor [B, T, C’’]
-tf.Tensor: mask tensor [B, T]</p>
+tf.Tensor: mask tensor [B, T, 1]</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>tf.Tensor</p>
@@ -2302,11 +2366,6 @@ tf.Tensor: mask tensor [B, T]</p>
 </dd></dl>
 
 </dd></dl>
-
-<dl class="py function">
-<dt id="TFGENZOO.flows.squeeze.main">
-<code class="sig-prename descclassname">TFGENZOO.flows.squeeze.</code><code class="sig-name descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.squeeze.main" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 </div>
 <div class="section" id="module-TFGENZOO.flows.squeeze_test">

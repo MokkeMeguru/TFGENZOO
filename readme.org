@@ -50,13 +50,13 @@ We should Implement correct codes with well-documented(tested).
 ** by Install
 - pipenv
    #+begin_src
-   pipenv install git+https://github.com/MokkeMeguru/TFGENZOO.git@v1.2.3#egg=TFGENZOO
+   pipenv install git+https://github.com/MokkeMeguru/TFGENZOO.git@v1.2.4#egg=TFGENZOO
    # or pipenv install TFGENZOO
    #+end_src
   
 - pip
    #+begin_src
-   pip install git+https://github.com/MokkeMeguru/TFGENZOO.git@v1.2.3#egg=TFGENZOO
+   pip install git+https://github.com/MokkeMeguru/TFGENZOO.git@v1.2.4#egg=TFGENZOO
    # or pip install TFGENZOO
    #+end_src
 ** Source build for development

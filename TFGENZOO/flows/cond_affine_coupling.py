@@ -184,6 +184,10 @@ class ConditionalAffineCouplingWithMask(ConditionalAffineCoupling):
            | cINN uses double coupling, but our coupling is single coupling
            |
            | scale > 0 because exp(x) > 0
+
+        * mask notes
+           | mask shape is [B, T, M] where M may be 1
+           | reference glow-tts
     """
 
     def build(self, input_shape: tf.TensorShape):
@@ -201,7 +205,7 @@ class ConditionalAffineCouplingWithMask(ConditionalAffineCoupling):
         Args:
             x    (tf.Tensor): base input tensor [B, T, C]
             cond (tf.Tensor): conditional input tensor [B, T, C']
-            mask (tf.Tensor): mask input tensor [B, T]
+            mask (tf.Tensor): mask input tensor [B, T, M] where M may be 1
 
         Returns:
             z    (tf.Tensor): latent variable tensor [B, T, C]
@@ -226,7 +230,7 @@ class ConditionalAffineCouplingWithMask(ConditionalAffineCoupling):
             # apply mask into scale, shift
             # mask -> mask_tensor: [B, T] -> [B, T, 1]
             if mask is not None:
-                mask_tensor = tf.expand_dims(tf.cast(mask, tf.float32), [-1])
+                mask_tensor = tf.cast(mask, tf.float32)
                 scale *= mask_tensor
                 shift *= mask_tensor
             z2 = (x2 + shift) * scale
@@ -249,7 +253,7 @@ class ConditionalAffineCouplingWithMask(ConditionalAffineCoupling):
             scale = self.scale_func(log_scale)
 
             if mask is not None:
-                mask_tensor = tf.expand_dims(tf.cast(mask, tf.float32), [-1])
+                mask_tensor = tf.cast(mask, tf.float32)
                 scale *= mask_tensor
                 shift *= mask_tensor
             x2 = (z2 / scale) - shift

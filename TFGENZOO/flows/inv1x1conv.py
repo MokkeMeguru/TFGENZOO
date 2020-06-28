@@ -166,6 +166,10 @@ class Inv1x1Conv2DWithMask(FlowComponent):
                 W &\\in \\mathbb{R}^{c\\times c}\\\\
                 x &\\in \\mathbb{R}^{b \\times t\\times c}\\ \\ \\
                 ({\\rm batch, timestep, channel})
+
+        * mask notes
+            | mask shape is [B, T, M] where M may be 1
+            | reference glow-tts
     """
 
     def __init__(self, **kwargs):
@@ -192,7 +196,7 @@ class Inv1x1Conv2DWithMask(FlowComponent):
         """
         Args:
             x    (tf.Tensor): base input tensor [B, T, C]
-            mask (tf.Tensor): mask input tensor [B, T]
+            mask (tf.Tensor): mask input tensor [B, T, M] where M may be 1
 
         Returns:
             z    (tf.Tensor): latent variable tensor [B, T, C]
@@ -200,10 +204,10 @@ class Inv1x1Conv2DWithMask(FlowComponent):
 
         Notes:
             * mask's example
-                | [[True, True, True, False],
-                |  [True, False, False, False],
-                |  [True, True, True, True],
-                |  [True, True, True, True]]
+                | [[[True], [True], [True], [False],
+                |  [[True], [False], [False], [False],
+                |  [[True], [True], [True], [True]],
+                |  [[True], [True], [True], [True]]]
         """
         _, t, _ = x.shape
         W = self.W + tf.eye(self.c) * 1e-5
@@ -218,8 +222,7 @@ class Inv1x1Conv2DWithMask(FlowComponent):
 
         # expand as batch
         if mask is not None:
-            # mask -> mask_tensor: [B, T] -> [B, T, 1]
-            mask_tensor = tf.expand_dims(tf.cast(mask, tf.float32), [-1])
+            mask_tensor = tf.cast(mask, tf.float32)
             z = z * mask_tensor
             log_det_jacobian = log_det_jacobian * tf.reduce_sum(
                 tf.cast(mask, tf.float32), axis=[-1]
@@ -240,7 +243,7 @@ class Inv1x1Conv2DWithMask(FlowComponent):
 
         if mask is not None:
             # mask -> mask_tensor: [B, T] -> [B, T, 1]
-            mask_tensor = tf.expand_dims(tf.cast(mask, tf.float32), [-1])
+            mask_tensor = tf.cast(mask, tf.float32)
             x = x * mask_tensor
             inverse_log_det_jacobian = inverse_log_det_jacobian * tf.reduce_sum(
                 tf.cast(mask, tf.float32), axis=[-1]

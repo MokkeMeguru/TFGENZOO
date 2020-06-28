@@ -15,7 +15,26 @@ New training results [[https://www.tensorflow.org/datasets/catalog/oxford_flower
 [[./docs/oxford.png]]
 
 see more detail, you can see [[https://docs.google.com/presentation/d/12z6MZizIsytLxUb2ly7vYorFiKruIGZ2ckQ0-By4b6s/edit?usp=sharing][my internship's report]] (Japanese only, if you need translated version, please contact me.)
+* News [2020/6/29]
+Set Naming Convention
 
+#+BEGIN_CENTER
+XXX [YYY] [WithMask]
+#+END_CENTER
+- XXX is layer name such as Inv1x1Conv
+- YYY is the data-dimention such as 2D. default 3D
+- WithMask is the support of Mask
+
+#+begin_example
+Inv1x1Conv -> Inv1x1Conv for 3D Tensor
+Inv1x1Conv2D -> Inv1x1Conv for 2D Tensor
+Inv1x1Conv2DWithMask -> Inv1x1Conv for 2D Tensor with the support of Mask
+#+end_example
+
+** Why implement these layer?
+1. Mask is a high burden of memory. Flow-based Model needs more memory in training, So we want to reduce mask as much as possible.
+2. Mask often pollute the invertible characteristics.
+3. Multi-dimensional Layer often have complex implementation. It makes proofing and verification difficult.
 * What's this repository?
   This is a repository for some researcher to build some Generative models using Tensorflow 2.0.
 

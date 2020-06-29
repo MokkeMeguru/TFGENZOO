@@ -1,8 +1,8 @@
 from enum import Enum
+from typing import Callable
 
 import tensorflow as tf
 from tensorflow.keras import layers
-from typing import Callable
 
 from TFGENZOO.flows.flowbase import FlowComponent
 

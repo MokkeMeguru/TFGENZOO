@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import tensorflow as tf
+
 from TFGENZOO.layers.spectral_normalization import SpectralNormalization
 
 

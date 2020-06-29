@@ -1,4 +1,3 @@
-from TFGENZOO.layers.resnet import ShallowResNet, ShallowConnectedResNet
-
+from TFGENZOO.layers.resnet import ShallowConnectedResNet, ShallowResNet
 
 __all__ = ["ShallowResNet", "ShallowConnectedResNet"]

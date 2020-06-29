@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
 import tensorflow as tf
-from TFGENZOO.flows.squeeze import Squeeze2DWithMask, Squeeze
+
+from TFGENZOO.flows.squeeze import Squeeze, Squeeze2DWithMask
 
 
 class Squeeze2DTest(tf.test.TestCase):

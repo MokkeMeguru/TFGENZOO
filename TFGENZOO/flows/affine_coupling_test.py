@@ -1,6 +1,6 @@
 import numpy as np
-
 import tensorflow as tf
+
 from TFGENZOO.flows.affine_coupling import AffineCoupling
 from TFGENZOO.layers.resnet import ShallowResNet
 

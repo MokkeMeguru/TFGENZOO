@@ -4,6 +4,7 @@ from typing import Callable, Dict
 
 import tensorflow as tf
 from tensorflow.keras import layers
+
 from TFGENZOO.flows.affine_coupling import AffineCouplingMask
 from TFGENZOO.flows.flowbase import FlowComponent
 

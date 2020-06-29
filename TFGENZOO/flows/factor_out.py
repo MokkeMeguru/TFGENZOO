@@ -2,7 +2,7 @@ import tensorflow as tf
 
 from TFGENZOO.flows.flowbase import FactorOutBase
 from TFGENZOO.flows.utils import gaussianize
-from TFGENZOO.flows.utils.conv_zeros import Conv2DZeros, Conv1DZeros
+from TFGENZOO.flows.utils.conv_zeros import Conv1DZeros, Conv2DZeros
 from TFGENZOO.flows.utils.util import split_feature
 
 

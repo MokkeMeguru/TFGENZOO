@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import numpy as np
-
 import tensorflow as tf
+
 from TFGENZOO.flows.cond_affine_coupling import ConditionalAffineCoupling
 from TFGENZOO.layers.resnet import ShallowResNet
 

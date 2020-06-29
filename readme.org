@@ -5,7 +5,7 @@
 [[file:https://badge.fury.io/py/TFGENZOO.svg]]
 #+TITLE: TFGENZOO (Generative Model x Tensorflow 2.x)
 #+ATTR_HTML: :style margin-left: auto; margin-right: auto;
-[[https://drive.google.com/uc?export=view&id=1d1QN3Y4CofyfCyy8d8G3GhoI9qLqNjl8]]
+[[https://raw.githubusercontent.com/MokkeMeguru/TFGENZOO/master/docs/tfgenzoo_header.png]]
 * News [2020/6/16]
 New training results [[https://www.tensorflow.org/datasets/catalog/oxford_flowers102][Oxford-flower102]] with only 8 hours! (Quadro P6000 x 1)
 

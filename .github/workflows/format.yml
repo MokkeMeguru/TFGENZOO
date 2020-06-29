@@ -12,14 +12,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-     - name: cache pip
-       uses: actions/cache@v1
-       env:
-         cache-name: cache-pip
-       with:
-         path: /home/runner/.cache/pip
-         key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('pip') }}
-         restore-keys: |
+    - name: cache pip
+      uses: actions/cache@v1
+      env:
+        cache-name: cache-pip
+      with:
+        path: /home/runner/.cache/pip
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('pip') }}
+        restore-keys: |
            ${{ runner.os }}-build-${{ env.cache-name }}-
            ${{ runner.os }}-build-
            ${{ runner.os }}-

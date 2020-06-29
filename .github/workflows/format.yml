@@ -33,5 +33,5 @@ jobs:
         python -m pip install black isort
     - name: isort and black
       run: |
-        python -m isort TFGENZOO
+        python -m isort TFGENZOO/**/*.py
         python -m black TFGENZOO

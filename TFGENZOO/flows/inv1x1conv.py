@@ -209,7 +209,7 @@ class Inv1x1Conv2DWithMask(FlowComponent):
                 |  [[True], [True], [True], [True]],
                 |  [[True], [True], [True], [True]]]
         """
-        _, t, _ = x.shape
+        _, t, _ = tf.shape(x) 
         W = self.W + tf.eye(self.c) * 1e-5
         _W = tf.reshape(W, [1, self.c, self.c])
         z = tf.nn.conv1d(x, _W, [1, 1, 1], "SAME")
@@ -233,7 +233,7 @@ class Inv1x1Conv2DWithMask(FlowComponent):
         return z, log_det_jacobian
 
     def inverse(self, z: tf.Tensor, mask: tf.Tensor = None, **kwargs):
-        _, t, _ = z.shape
+        _, t, _ = tf.shape(z)
         W = self.W + tf.eye(self.c) * 1e-5
         _W = tf.reshape(tf.linalg.inv(W), [1, self.c, self.c])
         x = tf.nn.conv1d(z, _W, [1, 1, 1], "SAME")

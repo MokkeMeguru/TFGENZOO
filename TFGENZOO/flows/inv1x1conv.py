@@ -224,8 +224,9 @@ class Inv1x1Conv2DWithMask(FlowComponent):
         if mask is not None:
             mask_tensor = tf.cast(mask, tf.float32)
             z = z * mask_tensor
+            # mask_tensor [B, T, M]
             log_det_jacobian = log_det_jacobian * tf.reduce_sum(
-                tf.cast(mask, tf.float32), axis=[-1]
+                tf.cast(mask, tf.float32), axis=[-2, -1]
             )
         else:
             log_det_jacobian = tf.broadcast_to(log_det_jacobian * t, tf.shape(x)[0:1])

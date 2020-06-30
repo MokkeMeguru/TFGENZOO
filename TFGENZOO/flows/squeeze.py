@@ -121,7 +121,7 @@ class Squeeze2DWithMask(FlowBase):
             mask = tf.ones([b, t // self.n_squeeze, 1], dtype=x.dtype)
 
         if zaux is not None:
-            _, t, c = zaux.shape
+            _, t, c = tf.shape(zaux)
             zaux = tf.reshape(
                 tf.reshape(zaux, [-1, t // self.n_squeeze, self.n_squeeze, c]),
                 [-1, t // self.n_squeeze, c * self.n_squeeze],
@@ -158,7 +158,7 @@ class Squeeze2DWithMask(FlowBase):
             mask = tf.ones([b, t * self.n_squeeze, 1], dtype=x.dtype)
 
         if zaux is not None:
-            _, t, c = zaux.shape
+            _, t, c = tf.shape(zaux)
             zaux = tf.reshape(
                 tf.reshape(zaux, [-1, t, self.n_squeeze, c // self.n_squeeze]),
                 [-1, t * self.n_squeeze, c // self.n_squeeze],

@@ -209,7 +209,7 @@ class Inv1x1Conv2DWithMask(FlowComponent):
                 |  [[True], [True], [True], [True]],
                 |  [[True], [True], [True], [True]]]
         """
-        _, t, _ = x.shape
+        _, t, _ = tf.shape(x) 
         W = self.W + tf.eye(self.c) * 1e-5
         _W = tf.reshape(W, [1, self.c, self.c])
         z = tf.nn.conv1d(x, _W, [1, 1, 1], "SAME")
@@ -224,15 +224,16 @@ class Inv1x1Conv2DWithMask(FlowComponent):
         if mask is not None:
             mask_tensor = tf.cast(mask, tf.float32)
             z = z * mask_tensor
+            # mask_tensor [B, T, M]
             log_det_jacobian = log_det_jacobian * tf.reduce_sum(
-                tf.cast(mask, tf.float32), axis=[-1]
+                tf.cast(mask, tf.float32), axis=[-2, -1]
             )
         else:
-            log_det_jacobian = tf.broadcast_to(log_det_jacobian * t, tf.shape(x)[0:1])
+            log_det_jacobian = tf.broadcast_to(log_det_jacobian * tf.cast(t, tf.float32), tf.shape(x)[0:1])
         return z, log_det_jacobian
 
     def inverse(self, z: tf.Tensor, mask: tf.Tensor = None, **kwargs):
-        _, t, _ = z.shape
+        _, t, _ = tf.shape(z)
         W = self.W + tf.eye(self.c) * 1e-5
         _W = tf.reshape(tf.linalg.inv(W), [1, self.c, self.c])
         x = tf.nn.conv1d(z, _W, [1, 1, 1], "SAME")
@@ -245,10 +246,10 @@ class Inv1x1Conv2DWithMask(FlowComponent):
             mask_tensor = tf.cast(mask, tf.float32)
             x = x * mask_tensor
             inverse_log_det_jacobian = inverse_log_det_jacobian * tf.reduce_sum(
-                tf.cast(mask, tf.float32), axis=[-1]
+                tf.cast(mask, tf.float32), axis=[-2, -1]
             )
         else:
             inverse_log_det_jacobian = tf.broadcast_to(
-                inverse_log_det_jacobian * t, tf.shape(z)[0:1]
+                inverse_log_det_jacobian * tf.cast(t, tf.float32), tf.shape(z)[0:1]
             )
         return x, inverse_log_det_jacobian

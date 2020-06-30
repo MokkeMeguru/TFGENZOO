@@ -103,7 +103,8 @@ class Squeeze2DWithMask(FlowBase):
             tf.Tensor: reshaped pre-latent tensor [B, T // n_squeeze, C'' * n_squeeze]
             tf.Tensor: reshaped mask tensor [B, T // 2]
         """
-        b, t, c = x.shape
+        # We cannot use x.shape because TF's problem.
+        b, t, c = tf.shape(x)
 
         t = (t // self.n_squeeze) * self.n_squeeze
         x = x[:, :t, :]  # [B, T_round, C]
@@ -120,7 +121,7 @@ class Squeeze2DWithMask(FlowBase):
             mask = tf.ones([b, t // self.n_squeeze, 1], dtype=x.dtype)
 
         if zaux is not None:
-            _, t, c = zaux.shape
+            _, t, c = tf.shape(zaux)
             zaux = tf.reshape(
                 tf.reshape(zaux, [-1, t // self.n_squeeze, self.n_squeeze, c]),
                 [-1, t // self.n_squeeze, c * self.n_squeeze],
@@ -142,7 +143,7 @@ class Squeeze2DWithMask(FlowBase):
             tf.Tensor: reshaped pre-latent tensor [B, T, C'']
             tf.Tensor: mask tensor [B, T, 1]
         """
-        b, t, c = z.shape
+        b, t, c = tf.shape(z) 
         x = tf.reshape(
             tf.reshape(z, [-1, t, self.n_squeeze, c // self.n_squeeze]),
             [-1, t * self.n_squeeze, c // self.n_squeeze],
@@ -157,7 +158,7 @@ class Squeeze2DWithMask(FlowBase):
             mask = tf.ones([b, t * self.n_squeeze, 1], dtype=x.dtype)
 
         if zaux is not None:
-            _, t, c = zaux.shape
+            _, t, c = tf.shape(zaux)
             zaux = tf.reshape(
                 tf.reshape(zaux, [-1, t, self.n_squeeze, c // self.n_squeeze]),
                 [-1, t * self.n_squeeze, c // self.n_squeeze],

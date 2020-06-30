@@ -4,6 +4,8 @@
 [[file:https://img.shields.io/badge/tensorflow-%3E%3D2.2.0-brightgreen.svg]]
 [[file:https://badge.fury.io/py/TFGENZOO.svg]]
 #+TITLE: TFGENZOO (Generative Model x Tensorflow 2.x)
+#+ATTR_HTML: :style margin-left: auto; margin-right: auto;
+[[https://drive.google.com/uc?export=view&id=1d1QN3Y4CofyfCyy8d8G3GhoI9qLqNjl8]]
 * News [2020/6/16]
 New training results [[https://www.tensorflow.org/datasets/catalog/oxford_flowers102][Oxford-flower102]] with only 8 hours! (Quadro P6000 x 1)
 
@@ -48,15 +50,15 @@ We should Implement correct codes with well-documented(tested).
 #+end_example
 
 * How to use?
-** by Install
+** By Install
 - pipenv
    #+begin_src
-   pipenv install TFGENZOO==1.2.4.post3
+   pipenv install TFGENZOO==1.2.4.post4
    #+end_src
   
 - pip
    #+begin_src
-    pip install TFGENZOO==1.2.4.post3
+    pip install TFGENZOO==1.2.4.post4
    #+end_src
 ** Source build for development
 
@@ -140,5 +142,18 @@ New training results [[https://www.tensorflow.org/datasets/catalog/oxford_flower
 - Implement SPADE Layer
 - Implement Invertible Flatten Layer
 - Update document with Some Example
+** News [2020/6/16]
+New training results [[https://www.tensorflow.org/datasets/catalog/oxford_flowers102][Oxford-flower102]] with only 8 hours! (Quadro P6000 x 1)
+
+|------------------+-------------------+-------+------------|
+| data             |         NLL(test) | epoch | pretrained |
+|------------------+-------------------+-------+------------|
+| Oxford-flower102 | 4.590211391448975 |  1024 | ---        |
+|------------------+-------------------+-------+------------|
+
+[[./docs/oxford.png]]
+
+see more detail, you can see [[https://docs.google.com/presentation/d/12z6MZizIsytLxUb2ly7vYorFiKruIGZ2ckQ0-By4b6s/edit?usp=sharing][my internship's report]] (Japanese only, if you need translated version, please contact me.)
+
 * Contact
 MokkeMeguru ([[https://twitter.com/MeguruMokke][@MokkeMeguru]]): DM or Mention Please (in Any language).

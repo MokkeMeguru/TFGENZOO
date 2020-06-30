@@ -229,7 +229,7 @@ class Inv1x1Conv2DWithMask(FlowComponent):
                 tf.cast(mask, tf.float32), axis=[-2, -1]
             )
         else:
-            log_det_jacobian = tf.broadcast_to(log_det_jacobian * t, tf.shape(x)[0:1])
+            log_det_jacobian = tf.broadcast_to(log_det_jacobian * tf.cast(t, tf.float32), tf.shape(x)[0:1])
         return z, log_det_jacobian
 
     def inverse(self, z: tf.Tensor, mask: tf.Tensor = None, **kwargs):
@@ -250,6 +250,6 @@ class Inv1x1Conv2DWithMask(FlowComponent):
             )
         else:
             inverse_log_det_jacobian = tf.broadcast_to(
-                inverse_log_det_jacobian * t, tf.shape(z)[0:1]
+                inverse_log_det_jacobian * tf.cast(t, tf.float32), tf.shape(z)[0:1]
             )
         return x, inverse_log_det_jacobian

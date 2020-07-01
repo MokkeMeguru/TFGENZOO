@@ -123,7 +123,7 @@ class LogitifyImage(FlowBase):
 
         logdet_jacobian = (
             tf.math.softplus(z)
-            - tf.math.softplus(-z)
+            + tf.math.softplus(-z)
             - tf.math.softplus(self.pre_logit_scale)
         )
 
@@ -140,7 +140,7 @@ class LogitifyImage(FlowBase):
 
         inverse_log_det_jacobian = -1 * (
             tf.math.softplus(z)
-            - tf.math.softplus(-z)
+            + tf.math.softplus(-z)
             - tf.math.softplus(self.pre_logit_scale)
         )
 

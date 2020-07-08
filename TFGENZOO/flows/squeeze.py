@@ -148,7 +148,7 @@ class Squeeze2DWithMask(FlowBase):
             tf.Tensor: mask tensor [B, T, 1]
         """
         # b, t, c = tf.shape(x)
-        shapes = tf.shape(x)
+        shapes = tf.shape(z)
         b = shapes[0]
         t = shapes[1]
         c = shapes[2]

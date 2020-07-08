@@ -104,7 +104,11 @@ class Squeeze2DWithMask(FlowBase):
             tf.Tensor: reshaped mask tensor [B, T // 2]
         """
         # We cannot use x.shape because TF's problem.
-        b, t, c = tf.shape(x)
+        # b, t, c = tf.shape(x)
+        shapes = tf.shape(x)
+        b = shapes[0]
+        t = shapes[1]
+        c = shapes[2]
 
         t = (t // self.n_squeeze) * self.n_squeeze
         x = x[:, :t, :]  # [B, T_round, C]
@@ -143,7 +147,12 @@ class Squeeze2DWithMask(FlowBase):
             tf.Tensor: reshaped pre-latent tensor [B, T, C'']
             tf.Tensor: mask tensor [B, T, 1]
         """
-        b, t, c = tf.shape(z) 
+        # b, t, c = tf.shape(x)
+        shapes = tf.shape(x)
+        b = shapes[0]
+        t = shapes[1]
+        c = shapes[2]
+
         x = tf.reshape(
             tf.reshape(z, [-1, t, self.n_squeeze, c // self.n_squeeze]),
             [-1, t * self.n_squeeze, c // self.n_squeeze],

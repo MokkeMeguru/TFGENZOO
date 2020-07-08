@@ -22,12 +22,12 @@ We should Implement correct codes with well-documented(tested).
 ** By Install
 - pipenv
    #+begin_src
-   pipenv install TFGENZOO==1.2.4.post5
+   pipenv install TFGENZOO==1.2.4.post7
    #+end_src
   
 - pip
    #+begin_src
-    pip install TFGENZOO==1.2.4.post5
+    pip install TFGENZOO==1.2.4.post7
    #+end_src
 ** Source build for development
 

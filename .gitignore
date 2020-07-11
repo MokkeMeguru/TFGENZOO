@@ -12,3 +12,6 @@
 /dist/
 /cifar10/
 Pipfile.lock
+*.aux
+*.bbl
+*.blg

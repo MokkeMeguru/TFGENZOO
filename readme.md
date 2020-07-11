@@ -42,6 +42,11 @@ I NEED YOUR HELP(please let me know about formula, implementation and anything y
 # Examples
 
 - [TFGENZOO_EXAMPLE](https://github.com/MokkeMeguru/TFGENZOO_EXAMPLE)
+- Simple Tutorials
+  - [What is the invertible layer](./tutorials/01_What_is_the_invertible_layer.ipynb)
+    The tutorial about Flow-based Model
+  - [conditional flow-based model](./tutorials/02_conditional_flow-based_model.ipynb)
+    How to add conditional input into Flow-based Model for the image generation.
 
 # Roadmap
 
@@ -90,6 +95,10 @@ New training results [Oxford-flower102](https://www.tensorflow.org/datasets/cata
 ![img](https://raw.githubusercontent.com/MokkeMeguru/TFGENZOO/master/docs/oxford.png)
 
 see more detail, you can see [my internship&rsquo;s report](https://docs.google.com/presentation/d/12z6MZizIsytLxUb2ly7vYorFiKruIGZ2ckQ0-By4b6s/edit?usp=sharing) (Japanese only, if you need translated version, please contact me.)
+
+## News [2020/7/11]
+
+Add some tutorial into `./tutorial`
 
 # Contact
 

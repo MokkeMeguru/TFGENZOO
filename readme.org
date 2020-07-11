@@ -52,6 +52,11 @@ We should Implement correct codes with well-documented(tested).
 
 * Examples
   - [[https://github.com/MokkeMeguru/TFGENZOO_EXAMPLE][TFGENZOO_EXAMPLE]]
+  - Simple Tutorials
+    - [[./tutorials/01_What_is_the_invertible_layer.ipynb][What is the invertible layer]]
+      The tutorial about Flow-based Model
+    - [[./tutorials/02_conditional_flow-based_model.ipynb][conditional flow-based model]]
+      How to add conditional input into Flow-based Model for the image generation.
 
 * Roadmap
     - [X] Flow-based Model Architecture (RealNVP, Glow)
@@ -61,6 +66,7 @@ We should Implement correct codes with well-documented(tested).
 
 * Remarkable Backlog
 Whole backlog is [[https://github.com/MokkeMeguru/TFGENZOO/wiki/Backlog][here]]
+
 ** News [2020/6/16]
 New training results [[https://www.tensorflow.org/datasets/catalog/oxford_flowers102][Oxford-flower102]] with only 8 hours! (Quadro P6000 x 1)
 
@@ -74,6 +80,9 @@ New training results [[https://www.tensorflow.org/datasets/catalog/oxford_flower
 [[https://raw.githubusercontent.com/MokkeMeguru/TFGENZOO/master/docs/oxford.png]]
 
 see more detail, you can see [[https://docs.google.com/presentation/d/12z6MZizIsytLxUb2ly7vYorFiKruIGZ2ckQ0-By4b6s/edit?usp=sharing][my internship's report]] (Japanese only, if you need translated version, please contact me.)
+
+** News [2020/7/11]
+Add some tutorial into ~./tutorial~
 
 * Contact
 MokkeMeguru ([[https://twitter.com/MeguruMokke][@MokkeMeguru]]): DM or Mention Please (in Any language).

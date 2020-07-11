@@ -13,134 +13,25 @@ Subpackages
 Submodules
 ----------
 
-TFGENZOO.flows.actnorm module
------------------------------
+.. toctree::
+   :maxdepth: 4
 
-.. automodule:: TFGENZOO.flows.actnorm
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-TFGENZOO.flows.actnorm\_test module
------------------------------------
-
-.. automodule:: TFGENZOO.flows.actnorm_test
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-TFGENZOO.flows.affine\_coupling module
---------------------------------------
-
-.. automodule:: TFGENZOO.flows.affine_coupling
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-TFGENZOO.flows.affine\_coupling\_test module
---------------------------------------------
-
-.. automodule:: TFGENZOO.flows.affine_coupling_test
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-TFGENZOO.flows.cond\_affine\_coupling module
---------------------------------------------
-
-.. automodule:: TFGENZOO.flows.cond_affine_coupling
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-TFGENZOO.flows.cond\_affine\_coupling\_test module
---------------------------------------------------
-
-.. automodule:: TFGENZOO.flows.cond_affine_coupling_test
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-TFGENZOO.flows.factor\_out module
----------------------------------
-
-.. automodule:: TFGENZOO.flows.factor_out
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-TFGENZOO.flows.flatten module
------------------------------
-
-.. automodule:: TFGENZOO.flows.flatten
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-TFGENZOO.flows.flowbase module
-------------------------------
-
-.. automodule:: TFGENZOO.flows.flowbase
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-TFGENZOO.flows.flowmodel module
--------------------------------
-
-.. automodule:: TFGENZOO.flows.flowmodel
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-TFGENZOO.flows.inv1x1conv module
---------------------------------
-
-.. automodule:: TFGENZOO.flows.inv1x1conv
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-TFGENZOO.flows.inv1x1conv\_test module
---------------------------------------
-
-.. automodule:: TFGENZOO.flows.inv1x1conv_test
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-TFGENZOO.flows.quantize module
-------------------------------
-
-.. automodule:: TFGENZOO.flows.quantize
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-TFGENZOO.flows.quantize\_test module
-------------------------------------
-
-.. automodule:: TFGENZOO.flows.quantize_test
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-TFGENZOO.flows.squeeze module
------------------------------
-
-.. automodule:: TFGENZOO.flows.squeeze
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-TFGENZOO.flows.squeeze\_test module
------------------------------------
-
-.. automodule:: TFGENZOO.flows.squeeze_test
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
+   TFGENZOO.flows.actnorm
+   TFGENZOO.flows.actnorm_test
+   TFGENZOO.flows.affine_coupling
+   TFGENZOO.flows.affine_coupling_test
+   TFGENZOO.flows.cond_affine_coupling
+   TFGENZOO.flows.cond_affine_coupling_test
+   TFGENZOO.flows.factor_out
+   TFGENZOO.flows.flatten
+   TFGENZOO.flows.flowbase
+   TFGENZOO.flows.flowmodel
+   TFGENZOO.flows.inv1x1conv
+   TFGENZOO.flows.inv1x1conv_test
+   TFGENZOO.flows.quantize
+   TFGENZOO.flows.quantize_test
+   TFGENZOO.flows.squeeze
+   TFGENZOO.flows.squeeze_test
 
 Module contents
 ---------------

@@ -4,14 +4,10 @@ TFGENZOO.flows.utils.unsafe package
 Submodules
 ----------
 
-TFGENZOO.flows.utils.unsafe.actnorm\_activation module
-------------------------------------------------------
+.. toctree::
+   :maxdepth: 4
 
-.. automodule:: TFGENZOO.flows.utils.unsafe.actnorm_activation
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
+   TFGENZOO.flows.utils.unsafe.actnorm_activation
 
 Module contents
 ---------------

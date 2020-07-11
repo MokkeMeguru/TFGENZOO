@@ -4,14 +4,10 @@ TFGENZOO.optimizers package
 Submodules
 ----------
 
-TFGENZOO.optimizers.transformer\_schedule module
-------------------------------------------------
+.. toctree::
+   :maxdepth: 4
 
-.. automodule:: TFGENZOO.optimizers.transformer_schedule
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
+   TFGENZOO.optimizers.transformer_schedule
 
 Module contents
 ---------------

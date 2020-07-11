@@ -38,7 +38,10 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.napoleon",
     "sphinxemoji.sphinxemoji",
+    "sphinx.ext.autosummary",
 ]
+
+autosummary_generate = True
 
 sphinxemoji_style = "twemoji"
 # Add any paths that contain templates here, relative to this directory.

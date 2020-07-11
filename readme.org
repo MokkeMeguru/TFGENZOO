@@ -57,6 +57,8 @@ We should Implement correct codes with well-documented(tested).
       The tutorial about Flow-based Model
     - [[./tutorials/02_conditional_flow-based_model.ipynb][conditional flow-based model]]
       How to add conditional input into Flow-based Model for the image generation.
+* Documents
+[[https://mokkemeguru.github.io/TFGENZOO/]]
 
 * Roadmap
     - [X] Flow-based Model Architecture (RealNVP, Glow)

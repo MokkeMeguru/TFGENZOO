@@ -2,6 +2,7 @@
 #+options: broken-links:nil c:nil creator:nil d:(not "LOGBOOK") date:t e:t
 #+options: email:nil f:t inline:t num:t p:nil pri:nil prop:nil stat:t tags:t
 #+options: tasks:t tex:t timestamp:t title:t toc:nil todo:t |:t
+* TFGENZOO (Generative Model x Tensorflow 2.x)
 #+date: <2020-07-11 Sat>
 #+author: MokkeMeguru
 #+email: meguru.mokke@gmail.com
@@ -15,7 +16,7 @@
 [[file:https://img.shields.io/badge/python-3.7-blue.svg]]
 [[file:https://img.shields.io/badge/tensorflow-%3E%3D2.2.0-brightgreen.svg]]
 [[file:https://badge.fury.io/py/TFGENZOO.svg]]
-#+TITLE: TFGENZOO (Generative Model x Tensorflow 2.x)
+
 * What's this repository?
   This is a repository for some researcher to build some Generative models using Tensorflow 2.x.
 

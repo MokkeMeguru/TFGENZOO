@@ -22,7 +22,7 @@ setuptools.setup(
     long_description=(readme),
     long_description_content_type="text/markdown",
     url="https://github.com/MokkeMeguru/TFGENZOO",
-    licence="MIT",
+    license="MIT",
     classifiers=[
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.6",

@@ -39,7 +39,7 @@ I NEED YOUR HELP(please let me know about formula, implementation and anything y
 
 # Examples
 
-- [TFGENZOO<sub>EXAMPLE</sub>](https://github.com/MokkeMeguru/TFGENZOO_EXAMPLE)
+- [TFGENZOO_EXAMPLE](https://github.com/MokkeMeguru/TFGENZOO_EXAMPLE)
 
 # Roadmap
 

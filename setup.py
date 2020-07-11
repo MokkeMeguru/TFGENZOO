@@ -8,6 +8,9 @@ here = os.path.abspath(os.path.dirname(__file__))
 with open(os.path.join(here, PACKAGE, "__version__.py")) as f:
     exec(f.read(), about)
 
+with open("readme.md") as f:
+    readme = f.read()
+
 setuptools.setup(
     name=PACKAGE,
     packages=setuptools.find_packages(),
@@ -16,10 +19,7 @@ setuptools.setup(
     author="MokkeMeguru",
     author_email="meguru.mokke@gmail.com",
     description="helper of building generative model with Tensorflow 2.x",
-    long_description=(
-        "heavily documented (test and description and formula)"
-        + "generative model examples / layers"
-    ),
+    long_description=(readme),
     long_description_content_type="text/markdown",
     url="https://github.com/MokkeMeguru/TFGENZOO",
     licence="MIT",

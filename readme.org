@@ -54,9 +54,13 @@ We should Implement correct codes with well-documented(tested).
   - [[https://github.com/MokkeMeguru/TFGENZOO_EXAMPLE][TFGENZOO_EXAMPLE]]
   - Simple Tutorials
     - [[./tutorials/01_What_is_the_invertible_layer.ipynb][What is the invertible layer]]
+      
       The tutorial about Flow-based Model
+      
     - [[./tutorials/02_conditional_flow-based_model.ipynb][conditional flow-based model]]
+      
       How to add conditional input into Flow-based Model for the image generation.
+
 * Documents
 [[https://mokkemeguru.github.io/TFGENZOO/]]
 

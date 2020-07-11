@@ -43,9 +43,13 @@ I NEED YOUR HELP(please let me know about formula, implementation and anything y
 
 - [TFGENZOO_EXAMPLE](https://github.com/MokkeMeguru/TFGENZOO_EXAMPLE)
 - Simple Tutorials
+
   - [What is the invertible layer](./tutorials/01_What_is_the_invertible_layer.ipynb)
+
     The tutorial about Flow-based Model
+
   - [conditional flow-based model](./tutorials/02_conditional_flow-based_model.ipynb)
+
     How to add conditional input into Flow-based Model for the image generation.
 
 # Documents

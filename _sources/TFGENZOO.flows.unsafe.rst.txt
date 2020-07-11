@@ -4,22 +4,11 @@ TFGENZOO.flows.unsafe package
 Submodules
 ----------
 
-TFGENZOO.flows.unsafe.actnorm module
-------------------------------------
+.. toctree::
+   :maxdepth: 4
 
-.. automodule:: TFGENZOO.flows.unsafe.actnorm
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-TFGENZOO.flows.unsafe.actnorm\_test module
-------------------------------------------
-
-.. automodule:: TFGENZOO.flows.unsafe.actnorm_test
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
+   TFGENZOO.flows.unsafe.actnorm
+   TFGENZOO.flows.unsafe.actnorm_test
 
 Module contents
 ---------------

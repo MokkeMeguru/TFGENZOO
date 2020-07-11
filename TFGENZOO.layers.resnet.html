@@ -1,0 +1,432 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>TFGENZOO.layers.resnet module &mdash; TFGENZOO 1.0-beta1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js"></script>
+        <script src="_static/twemoji.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="_static/twemoji.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="TFGENZOO.layers.spadebn module" href="TFGENZOO.layers.spadebn.html" />
+    <link rel="prev" title="TFGENZOO.layers.flowtts_coupling_test module" href="TFGENZOO.layers.flowtts_coupling_test.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> TFGENZOO
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="TFGENZOO.html">TFGENZOO package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="TFGENZOO.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="TFGENZOO.flows.html">TFGENZOO.flows package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="TFGENZOO.gans.html">TFGENZOO.gans package</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="TFGENZOO.layers.html">TFGENZOO.layers package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="TFGENZOO.layers.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="TFGENZOO.layers.html#module-TFGENZOO.layers">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="TFGENZOO.optimizers.html">TFGENZOO.optimizers package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="TFGENZOO.html#module-TFGENZOO">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="discussions/index.html">Discussions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="discussions/index.html#indices-and-tables">Indices and tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage/quickstart.html">Simple Tutorial</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">TFGENZOO</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="TFGENZOO.html">TFGENZOO package</a> &raquo;</li>
+        
+          <li><a href="TFGENZOO.layers.html">TFGENZOO.layers package</a> &raquo;</li>
+        
+      <li>TFGENZOO.layers.resnet module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/TFGENZOO.layers.resnet.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-TFGENZOO.layers.resnet">
+<span id="tfgenzoo-layers-resnet-module"></span><h1>TFGENZOO.layers.resnet module<a class="headerlink" href="#module-TFGENZOO.layers.resnet" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="TFGENZOO.layers.resnet.ShallowConnectedResNet">
+<code class="sig-prename descclassname">TFGENZOO.layers.resnet.</code><code class="sig-name descname">ShallowConnectedResNet</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inputs</span><span class="p">:</span> <span class="n">tensorflow.python.keras.engine.input_layer.Input</span></em>, <em class="sig-param"><span class="n">cond</span><span class="p">:</span> <span class="n">tensorflow.python.keras.engine.input_layer.Input</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">width</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">512</span></em>, <em class="sig-param"><span class="n">out_scale</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">2</span></em>, <em class="sig-param"><span class="n">connect_type</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'whole'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.layers.resnet.ShallowConnectedResNet" title="Permalink to this definition">¶</a></dt>
+<dd><p>ResNet of OpenAI’s Glow with Connection</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> (<em>tf.Tensor</em>) – input tensor rank == 4</p></li>
+<li><p><strong>cond</strong> (<em>tf.Tensor</em>) – input tensor rank == 4 (optional)</p></li>
+<li><p><strong>width</strong> (<em>int</em>) – hidden width</p></li>
+<li><p><strong>out_scale</strong> (<em>int</em>) – output channel width scale</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>tf.keras.Model</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>model</p>
+</dd>
+</dl>
+<p>Sources:</p>
+<blockquote>
+<div><p><a class="reference external" href="https://github.com/openai/glow/blob/master/model.py#L420-L426">https://github.com/openai/glow/blob/master/model.py#L420-L426</a></p>
+</div></blockquote>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">inputs</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Input</span><span class="p">([</span><span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cond</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sr</span> <span class="o">=</span> <span class="n">ShallowConnectedResNet</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sr</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+<span class="go">Model: &quot;model&quot;</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">Layer (type)                    Output Shape         Param #     Connected to</span>
+<span class="go">==================================================================================================</span>
+<span class="go">input_1 (InputLayer)            [(None, 16, 16, 2)]  0</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">conv2d_8 (Conv2D)               (None, 16, 16, 512)  10241       input_1[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">tf_op_layer_Relu_8 (TensorFlowO [(None, 16, 16, 512) 0           conv2d_8[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">conv2d_9 (Conv2D)               (None, 16, 16, 512)  2360321     tf_op_layer_Relu_8[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">tf_op_layer_Relu_9 (TensorFlowO [(None, 16, 16, 512) 0           conv2d_9[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">tf_op_layer_concat (TensorFlowO [(None, 16, 16, 514) 0           tf_op_layer_Relu_9[0][0]</span>
+<span class="go">                                                                input_1[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">conv2d_zeros_4 (Conv2DZeros)    (None, 16, 16, 4)    18512       tf_op_layer_concat[0][0]</span>
+<span class="go">==================================================================================================</span>
+<span class="go">Total params: 2,389,074</span>
+<span class="go">Trainable params: 2,389,072</span>
+<span class="go">Non-trainable params: 2</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cond</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Input</span><span class="p">([</span><span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">128</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sr</span> <span class="o">=</span> <span class="n">ShallowResNet</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">cond</span><span class="p">,</span> <span class="n">connect_type</span><span class="o">=</span><span class="s2">&quot;cond&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sr</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+<span class="go">sr.summary()</span>
+<span class="go">Model: &quot;model_4&quot;</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">Layer (type)                    Output Shape         Param #     Connected to</span>
+<span class="go">==================================================================================================</span>
+<span class="go">input_1 (InputLayer)            [(None, 16, 16, 2)]  0</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">input_2 (InputLayer)            [(None, 16, 16, 128) 0</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">tf_op_layer_concat_3 (TensorFlo [(None, 16, 16, 130) 0           input_1[0][0]</span>
+<span class="go">                                                                input_2[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">conv2d_14 (Conv2D)              (None, 16, 16, 512)  600065      tf_op_layer_concat_3[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">tf_op_layer_Relu_14 (TensorFlow [(None, 16, 16, 512) 0           conv2d_14[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">conv2d_15 (Conv2D)              (None, 16, 16, 512)  2360321     tf_op_layer_Relu_14[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">tf_op_layer_Relu_15 (TensorFlow [(None, 16, 16, 512) 0           conv2d_15[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">tf_op_layer_concat_4 (TensorFlo [(None, 16, 16, 640) 0           tf_op_layer_Relu_15[0][0]</span>
+<span class="go">                                                                input_2[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">conv2d_zeros_7 (Conv2DZeros)    (None, 16, 16, 4)    23048       tf_op_layer_concat_4[0][0]</span>
+<span class="go">==================================================================================================</span>
+<span class="go">Total params: 2,983,434</span>
+<span class="go">Trainable params: 2,983,432</span>
+<span class="go">Non-trainable params: 2</span>
+<span class="go">__________________________________________________________________________________________________</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="TFGENZOO.layers.resnet.ShallowConnectedResNetlikeSPADE">
+<code class="sig-prename descclassname">TFGENZOO.layers.resnet.</code><code class="sig-name descname">ShallowConnectedResNetlikeSPADE</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inputs</span><span class="p">:</span> <span class="n">tensorflow.python.keras.engine.input_layer.Input</span></em>, <em class="sig-param"><span class="n">cond</span><span class="p">:</span> <span class="n">tensorflow.python.keras.engine.input_layer.Input</span></em>, <em class="sig-param"><span class="n">width</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">512</span></em>, <em class="sig-param"><span class="n">out_scale</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">2</span></em>, <em class="sig-param"><span class="n">connect_type</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'whole'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.layers.resnet.ShallowConnectedResNetlikeSPADE" title="Permalink to this definition">¶</a></dt>
+<dd><p>ResNet of OpenAI’s Glow with Connection
+.. note:: WIP now…</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> (<em>tf.Tensor</em>) – input tensor rank == 4</p></li>
+<li><p><strong>cond</strong> (<em>tf.Tensor</em>) – input tensor rank == 4 (optional)</p></li>
+<li><p><strong>width</strong> (<em>int</em>) – hidden width</p></li>
+<li><p><strong>out_scale</strong> (<em>int</em>) – output channel width scale</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>tf.keras.Model</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>model</p>
+</dd>
+</dl>
+<p>Sources:</p>
+<blockquote>
+<div><p><a class="reference external" href="https://github.com/openai/glow/blob/master/model.py#L420-L426">https://github.com/openai/glow/blob/master/model.py#L420-L426</a>
+<a class="reference external" href="https://github.com/NVlabs/SPADE">https://github.com/NVlabs/SPADE</a></p>
+</div></blockquote>
+<p>Examples:</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="TFGENZOO.layers.resnet.ShallowResNet">
+<code class="sig-prename descclassname">TFGENZOO.layers.resnet.</code><code class="sig-name descname">ShallowResNet</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inputs</span><span class="p">:</span> <span class="n">tensorflow.python.keras.engine.input_layer.Input</span></em>, <em class="sig-param"><span class="n">cond</span><span class="p">:</span> <span class="n">tensorflow.python.keras.engine.input_layer.Input</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">width</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">512</span></em>, <em class="sig-param"><span class="n">out_scale</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.layers.resnet.ShallowResNet" title="Permalink to this definition">¶</a></dt>
+<dd><p>ResNet of OpenAI’s Glow</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> (<em>tf.Tensor</em>) – input tensor rank == 4</p></li>
+<li><p><strong>cond</strong> (<em>tf.Tensor</em>) – input tensor rank == 4 (optional)</p></li>
+<li><p><strong>width</strong> (<em>int</em>) – hidden width</p></li>
+<li><p><strong>out_scale</strong> (<em>int</em>) – output channel width scale</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>tf.keras.Model</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>model</p>
+</dd>
+</dl>
+<p>Sources:</p>
+<blockquote>
+<div><p><a class="reference external" href="https://github.com/openai/glow/blob/master/model.py#L420-L426">https://github.com/openai/glow/blob/master/model.py#L420-L426</a></p>
+</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This layer is not Residual Network
+because this layer does not have Skip connection</p>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">inputs</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Input</span><span class="p">([</span><span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cond</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sr</span> <span class="o">=</span> <span class="n">ShallowResNet</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sr</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+<span class="go">Model: &quot;model&quot;</span>
+<span class="go">_________________________________________________________________</span>
+<span class="go">Layer (type)                 Output Shape              Param #</span>
+<span class="go">=================================================================</span>
+<span class="go">input_1 (InputLayer)         [(None, 16, 16, 2)]       0</span>
+<span class="go">_________________________________________________________________</span>
+<span class="go">conv2d (Conv2D)              (None, 16, 16, 512)       10241</span>
+<span class="go">_________________________________________________________________</span>
+<span class="go">tf_op_layer_Relu (TensorFlow [(None, 16, 16, 512)]     0</span>
+<span class="go">_________________________________________________________________</span>
+<span class="go">conv2d_1 (Conv2D)            (None, 16, 16, 512)       2360321</span>
+<span class="go">_________________________________________________________________</span>
+<span class="go">tf_op_layer_Relu_1 (TensorFl [(None, 16, 16, 512)]     0</span>
+<span class="go">_________________________________________________________________</span>
+<span class="go">conv2d_zeros (Conv2DZeros)   (None, 16, 16, 4)         18440</span>
+<span class="go">=================================================================</span>
+<span class="go">Total params: 2,389,002</span>
+<span class="go">Trainable params: 2,389,000</span>
+<span class="go">Non-trainable params: 2</span>
+<span class="go">_________________________________________________________________</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cond</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Input</span><span class="p">([</span><span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">128</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sr</span> <span class="o">=</span> <span class="n">ShallowResNet</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">cond</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sr</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+<span class="go">Model: &quot;model_1&quot;</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">Layer (type)                    Output Shape         Param #     Connected to</span>
+<span class="go">==================================================================================================</span>
+<span class="go">input_1 (InputLayer)            [(None, 16, 16, 2)]  0</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">input_3 (InputLayer)            [(None, 16, 16, 128) 0</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">tf_op_layer_concat_1 (TensorFlo [(None, 16, 16, 130) 0           input_1[0][0]</span>
+<span class="go">                                                                input_3[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">conv2d_2 (Conv2D)               (None, 16, 16, 512)  600065      tf_op_layer_concat_1[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">tf_op_layer_Relu_2 (TensorFlowO [(None, 16, 16, 512) 0           conv2d_2[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">conv2d_3 (Conv2D)               (None, 16, 16, 512)  2360321     tf_op_layer_Relu_2[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">tf_op_layer_Relu_3 (TensorFlowO [(None, 16, 16, 512) 0           conv2d_3[0][0]</span>
+<span class="go">__________________________________________________________________________________________________</span>
+<span class="go">conv2d_zeros_1 (Conv2DZeros)    (None, 16, 16, 4)    18440       tf_op_layer_Relu_3[0][0]</span>
+<span class="go">==================================================================================================</span>
+<span class="go">Total params: 2,978,826</span>
+<span class="go">Trainable params: 2,978,824</span>
+<span class="go">Non-trainable params: 2</span>
+<span class="go">__________________________________________________________________________________________________</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="TFGENZOO.layers.spadebn.html" class="btn btn-neutral float-right" title="TFGENZOO.layers.spadebn module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="TFGENZOO.layers.flowtts_coupling_test.html" class="btn btn-neutral float-left" title="TFGENZOO.layers.flowtts_coupling_test module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, MokkeMeguru
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

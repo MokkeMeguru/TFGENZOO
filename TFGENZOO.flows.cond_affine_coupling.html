@@ -1,0 +1,491 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>TFGENZOO.flows.cond_affine_coupling module &mdash; TFGENZOO 1.0-beta1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js"></script>
+        <script src="_static/twemoji.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="_static/twemoji.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="TFGENZOO.flows.cond_affine_coupling_test module" href="TFGENZOO.flows.cond_affine_coupling_test.html" />
+    <link rel="prev" title="TFGENZOO.flows.affine_coupling_test module" href="TFGENZOO.flows.affine_coupling_test.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> TFGENZOO
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="TFGENZOO.html">TFGENZOO package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="TFGENZOO.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="TFGENZOO.flows.html">TFGENZOO.flows package</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="TFGENZOO.flows.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="TFGENZOO.gans.html">TFGENZOO.gans package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="TFGENZOO.layers.html">TFGENZOO.layers package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="TFGENZOO.optimizers.html">TFGENZOO.optimizers package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="TFGENZOO.html#module-TFGENZOO">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="discussions/index.html">Discussions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="discussions/index.html#indices-and-tables">Indices and tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage/quickstart.html">Simple Tutorial</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">TFGENZOO</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="TFGENZOO.html">TFGENZOO package</a> &raquo;</li>
+        
+          <li><a href="TFGENZOO.flows.html">TFGENZOO.flows package</a> &raquo;</li>
+        
+      <li>TFGENZOO.flows.cond_affine_coupling module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/TFGENZOO.flows.cond_affine_coupling.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-TFGENZOO.flows.cond_affine_coupling">
+<span id="tfgenzoo-flows-cond-affine-coupling-module"></span><h1>TFGENZOO.flows.cond_affine_coupling module<a class="headerlink" href="#module-TFGENZOO.flows.cond_affine_coupling" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCoupling">
+<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.cond_affine_coupling.</code><code class="sig-name descname">ConditionalAffineCoupling</code><span class="sig-paren">(</span><em class="sig-param">mask_type: TFGENZOO.flows.affine_coupling.AffineCouplingMask = &lt;AffineCouplingMask.ChannelWise: 1&gt;, scale_shift_net: tensorflow.python.keras.engine.base_layer.Layer = None, scale_shift_net_template: Callable[[tensorflow.python.keras.engine.input_layer.Input], tensorflow.python.keras.engine.training.Model] = None, scale_type='safe_exp', **kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCoupling" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="TFGENZOO.flows.flowbase.html#TFGENZOO.flows.flowbase.FlowComponent" title="TFGENZOO.flows.flowbase.FlowComponent"><code class="xref py py-class docutils literal notranslate"><span class="pre">TFGENZOO.flows.flowbase.FlowComponent</span></code></a></p>
+<p>Affine Coupling Layer</p>
+<dl class="simple">
+<dt>Sources:</dt><dd><p><a class="reference external" href="https://github.com/masa-su/pixyz/blob/master/pixyz/flows/coupling.py">https://github.com/masa-su/pixyz/blob/master/pixyz/flows/coupling.py</a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul>
+<li><dl>
+<dt>forward formula</dt><dd><div class="line-block">
+<div class="line">[x1, x2] = split(x)</div>
+<div class="line">log_scale, shift = NN([x1, c])</div>
+<div class="line">scale = sigmoid(log_scale + 2.0)</div>
+<div class="line">z1 = x1</div>
+<div class="line">z2 = (x2 + shift) * scale</div>
+<div class="line">z = concat([z1, z2])</div>
+<div class="line">LogDetJacobian = sum(log(scale))</div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>inverse formula</dt><dd><div class="line-block">
+<div class="line">[z1, z2] = split(x)</div>
+<div class="line">log_scale, shift = NN([z1, c])</div>
+<div class="line">scale = sigmoid(log_scale + 2.0)</div>
+<div class="line">x1 = z1</div>
+<div class="line">x2 = z2 / scale - shift</div>
+<div class="line">z = concat([x1, x2])</div>
+<div class="line">InverseLogDetJacobian = - sum(log(scale))</div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>implementation notes</dt><dd><div class="line-block">
+<div class="line">in Glow’s Paper, scale is calculated by exp(log_scale),</div>
+<div class="line">but IN IMPLEMENTATION, scale is done by sigmoid(log_scale + 2.0)</div>
+<div class="line">where c is the conditional input for WaveGlow or cINN</div>
+<div class="line"><a class="reference external" href="https://arxiv.org/abs/1907.02392">https://arxiv.org/abs/1907.02392</a></div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>TODO notes</dt><dd><div class="line-block">
+<div class="line">cINN uses double coupling, but our coupling is single coupling</div>
+</div>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<dl class="py method">
+<dt id="TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCoupling.build">
+<code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_shape</span><span class="p">:</span> <span class="n">tensorflow.python.framework.tensor_shape.TensorShape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCoupling.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates the variables of the layer (optional, for subclass implementers).</p>
+<p>This is a method that implementers of subclasses of <cite>Layer</cite> or <cite>Model</cite>
+can override if they need a state-creation step in-between
+layer instantiation and layer call.</p>
+<p>This is typically used to create the weights of <cite>Layer</cite> subclasses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>input_shape</strong> – Instance of <cite>TensorShape</cite>, or list of instances of
+<cite>TensorShape</cite> if the layer expects a list of inputs
+(one instance per input).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCoupling.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="n">cond</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCoupling.forward" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCoupling.get_config">
+<code class="sig-name descname">get_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCoupling.get_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the config of the layer.</p>
+<p>A layer config is a Python dictionary (serializable)
+containing the configuration of a layer.
+The same layer can be reinstantiated later
+(without its trained weights) from this configuration.</p>
+<p>The config of a layer does not include connectivity
+information, nor the layer class name. These are handled
+by <cite>Network</cite> (one layer of abstraction above).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Python dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCoupling.inverse">
+<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">z</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="n">cond</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCoupling.inverse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCoupling2DWithMask">
+<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.cond_affine_coupling.</code><code class="sig-name descname">ConditionalAffineCoupling2DWithMask</code><span class="sig-paren">(</span><em class="sig-param">mask_type: TFGENZOO.flows.affine_coupling.AffineCouplingMask = &lt;AffineCouplingMask.ChannelWise: 1&gt;, scale_shift_net: tensorflow.python.keras.engine.base_layer.Layer = None, scale_shift_net_template: Callable[[tensorflow.python.keras.engine.input_layer.Input], tensorflow.python.keras.engine.training.Model] = None, scale_type='safe_exp', **kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCoupling2DWithMask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCouplingWithMask" title="TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCouplingWithMask"><code class="xref py py-class docutils literal notranslate"><span class="pre">TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCouplingWithMask</span></code></a></p>
+<dl class="py method">
+<dt id="TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCoupling2DWithMask.build">
+<code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_shape</span><span class="p">:</span> <span class="n">tensorflow.python.framework.tensor_shape.TensorShape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCoupling2DWithMask.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates the variables of the layer (optional, for subclass implementers).</p>
+<p>This is a method that implementers of subclasses of <cite>Layer</cite> or <cite>Model</cite>
+can override if they need a state-creation step in-between
+layer instantiation and layer call.</p>
+<p>This is typically used to create the weights of <cite>Layer</cite> subclasses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>input_shape</strong> – Instance of <cite>TensorShape</cite>, or list of instances of
+<cite>TensorShape</cite> if the layer expects a list of inputs
+(one instance per input).</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCouplingWithMask">
+<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.cond_affine_coupling.</code><code class="sig-name descname">ConditionalAffineCouplingWithMask</code><span class="sig-paren">(</span><em class="sig-param">mask_type: TFGENZOO.flows.affine_coupling.AffineCouplingMask = &lt;AffineCouplingMask.ChannelWise: 1&gt;, scale_shift_net: tensorflow.python.keras.engine.base_layer.Layer = None, scale_shift_net_template: Callable[[tensorflow.python.keras.engine.input_layer.Input], tensorflow.python.keras.engine.training.Model] = None, scale_type='safe_exp', **kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCouplingWithMask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCoupling" title="TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCoupling"><code class="xref py py-class docutils literal notranslate"><span class="pre">TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCoupling</span></code></a></p>
+<p>Conditional Affine Coupling Layer with mask</p>
+<dl class="simple">
+<dt>Sources:</dt><dd><p><a class="reference external" href="https://github.com/masa-su/pixyz/blob/master/pixyz/flows/coupling.py">https://github.com/masa-su/pixyz/blob/master/pixyz/flows/coupling.py</a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul>
+<li><dl>
+<dt>forward formula</dt><dd><div class="line-block">
+<div class="line">[x1, x2] = split(x)</div>
+<div class="line">log_scale, shift = NN([x1, c])</div>
+<div class="line">scale = exp(log_scale)</div>
+<div class="line">z1 = x1</div>
+<div class="line">z2 = (x2 + shift) * scale</div>
+<div class="line">z = concat([z1, z2])</div>
+<div class="line">LogDetJacobian = sum(log(scale))</div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>inverse formula</dt><dd><div class="line-block">
+<div class="line">[z1, z2] = split(x)</div>
+<div class="line">log_scale, shift = NN([z1, c])</div>
+<div class="line">scale = exp(log_scale)</div>
+<div class="line">x1 = z1</div>
+<div class="line">x2 = z2 / scale - shift</div>
+<div class="line">z = concat([x1, x2])</div>
+<div class="line">InverseLogDetJacobian = - sum(log(scale))</div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>implementation notes</dt><dd><div class="line-block">
+<div class="line">in Glow’s Paper, scale is calculated by exp(log_scale),</div>
+<div class="line">but IN IMPLEMENTATION, scale is done by sigmoid(log_scale + 2.0)</div>
+<div class="line">where c is the conditional input for WaveGlow or cINN</div>
+<div class="line"><a class="reference external" href="https://arxiv.org/abs/1907.02392">https://arxiv.org/abs/1907.02392</a></div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>TODO notes</dt><dd><div class="line-block">
+<div class="line">cINN uses double coupling, but our coupling is single coupling</div>
+<div class="line"><br /></div>
+<div class="line">scale &gt; 0 because exp(x) &gt; 0</div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>mask notes</dt><dd><div class="line-block">
+<div class="line">mask shape is [B, T, M] where M may be 1</div>
+<div class="line">reference glow-tts</div>
+</div>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<dl class="py method">
+<dt id="TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCouplingWithMask.build">
+<code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_shape</span><span class="p">:</span> <span class="n">tensorflow.python.framework.tensor_shape.TensorShape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCouplingWithMask.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates the variables of the layer (optional, for subclass implementers).</p>
+<p>This is a method that implementers of subclasses of <cite>Layer</cite> or <cite>Model</cite>
+can override if they need a state-creation step in-between
+layer instantiation and layer call.</p>
+<p>This is typically used to create the weights of <cite>Layer</cite> subclasses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>input_shape</strong> – Instance of <cite>TensorShape</cite>, or list of instances of
+<cite>TensorShape</cite> if the layer expects a list of inputs
+(one instance per input).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCouplingWithMask.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="n">cond</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="n">mask</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCouplingWithMask.forward" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>tf.Tensor</em>) – base input tensor [B, T, C]</p></li>
+<li><p><strong>cond</strong> (<em>tf.Tensor</em>) – conditional input tensor [B, T, C’]</p></li>
+<li><p><strong>mask</strong> (<em>tf.Tensor</em>) – mask input tensor [B, T, M] where M may be 1</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>latent variable tensor [B, T, C]
+ldj  (tf.Tensor): log det jacobian [B]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>z    (tf.Tensor)</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul>
+<li><dl>
+<dt>mask’s example</dt><dd><div class="line-block">
+<div class="line">[[True, True, True, False],</div>
+<div class="line-block">
+<div class="line">[True, False, False, False],</div>
+<div class="line">[True, True, True, True],</div>
+<div class="line">[True, True, True, True]]</div>
+</div>
+</div>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCouplingWithMask.inverse">
+<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">z</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="n">cond</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="n">mask</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.cond_affine_coupling.ConditionalAffineCouplingWithMask.inverse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="TFGENZOO.flows.cond_affine_coupling.filter_kwargs">
+<code class="sig-prename descclassname">TFGENZOO.flows.cond_affine_coupling.</code><code class="sig-name descname">filter_kwargs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">d</span><span class="p">:</span> <span class="n">Dict</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.cond_affine_coupling.filter_kwargs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="TFGENZOO.flows.cond_affine_coupling_test.html" class="btn btn-neutral float-right" title="TFGENZOO.flows.cond_affine_coupling_test module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="TFGENZOO.flows.affine_coupling_test.html" class="btn btn-neutral float-left" title="TFGENZOO.flows.affine_coupling_test module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, MokkeMeguru
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

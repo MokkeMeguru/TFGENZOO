@@ -1,0 +1,402 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>TFGENZOO.flows.squeeze module &mdash; TFGENZOO 1.0-beta1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js"></script>
+        <script src="_static/twemoji.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="_static/twemoji.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="TFGENZOO.flows.squeeze_test module" href="TFGENZOO.flows.squeeze_test.html" />
+    <link rel="prev" title="TFGENZOO.flows.quantize_test module" href="TFGENZOO.flows.quantize_test.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> TFGENZOO
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="TFGENZOO.html">TFGENZOO package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="TFGENZOO.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="TFGENZOO.flows.html">TFGENZOO.flows package</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="TFGENZOO.flows.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="TFGENZOO.gans.html">TFGENZOO.gans package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="TFGENZOO.layers.html">TFGENZOO.layers package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="TFGENZOO.optimizers.html">TFGENZOO.optimizers package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="TFGENZOO.html#module-TFGENZOO">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="discussions/index.html">Discussions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="discussions/index.html#indices-and-tables">Indices and tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage/quickstart.html">Simple Tutorial</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">TFGENZOO</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="TFGENZOO.html">TFGENZOO package</a> &raquo;</li>
+        
+          <li><a href="TFGENZOO.flows.html">TFGENZOO.flows package</a> &raquo;</li>
+        
+      <li>TFGENZOO.flows.squeeze module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/TFGENZOO.flows.squeeze.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-TFGENZOO.flows.squeeze">
+<span id="tfgenzoo-flows-squeeze-module"></span><h1>TFGENZOO.flows.squeeze module<a class="headerlink" href="#module-TFGENZOO.flows.squeeze" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="TFGENZOO.flows.squeeze.Squeeze">
+<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.squeeze.</code><code class="sig-name descname">Squeeze</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">with_zaux</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.squeeze.Squeeze" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="TFGENZOO.flows.flowbase.html#TFGENZOO.flows.flowbase.FlowBase" title="TFGENZOO.flows.flowbase.FlowBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">TFGENZOO.flows.flowbase.FlowBase</span></code></a></p>
+<p>Squeeze Layer</p>
+<p>Sources:</p>
+<blockquote>
+<div><p><a class="reference external" href="https://github.com/openai/glow/blob/master/tfops.py#L338-L352">https://github.com/openai/glow/blob/master/tfops.py#L338-L352</a>
+<a class="reference external" href="https://arxiv.org/pdf/1605.08803.pdf">https://arxiv.org/pdf/1605.08803.pdf</a> Figure 3</p>
+</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul>
+<li><dl>
+<dt>forward formula</dt><dd><div class="line-block">
+<div class="line">z = reshape(x, [B, H // 2, W // 2, C * 4])</div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>inverse formula</dt><dd><div class="line-block">
+<div class="line">x = reshape(z, [B, H, W, C])</div>
+</div>
+</dd>
+</dl>
+</li>
+<li><p>checkerboard spacing</p>
+<blockquote>
+<div><p>e.g.</p>
+<div class="line-block">
+<div class="line">[[[[1], [2], [5], [6]],</div>
+<div class="line">[[3], [4], [7], [8]],</div>
+<div class="line">[[9], [10], [13], [14]],</div>
+<div class="line">[[11], [12], [15], [16]]]]</div>
+</div>
+<p>to</p>
+<div class="line-block">
+<div class="line">[[[ 1,  5],</div>
+<div class="line">[ 9, 13]]]</div>
+</div>
+<div class="line-block">
+<div class="line">[[[ 2,  6],</div>
+<div class="line">[10, 14]]]</div>
+</div>
+<div class="line-block">
+<div class="line">[[[ 3,  7],</div>
+<div class="line">[11, 15]]]</div>
+</div>
+<div class="line-block">
+<div class="line">[[[ 4,  8],</div>
+<div class="line">[12, 16]]]</div>
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div>
+<dl class="py method">
+<dt id="TFGENZOO.flows.squeeze.Squeeze.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="n">zaux</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.squeeze.Squeeze.forward" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.squeeze.Squeeze.get_config">
+<code class="sig-name descname">get_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.squeeze.Squeeze.get_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the config of the layer.</p>
+<p>A layer config is a Python dictionary (serializable)
+containing the configuration of a layer.
+The same layer can be reinstantiated later
+(without its trained weights) from this configuration.</p>
+<p>The config of a layer does not include connectivity
+information, nor the layer class name. These are handled
+by <cite>Network</cite> (one layer of abstraction above).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Python dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.squeeze.Squeeze.inverse">
+<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">z</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="n">zaux</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.squeeze.Squeeze.inverse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="TFGENZOO.flows.squeeze.Squeeze2DWithMask">
+<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.squeeze.</code><code class="sig-name descname">Squeeze2DWithMask</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">with_zaux</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">n_squeeze</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.squeeze.Squeeze2DWithMask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="TFGENZOO.flows.flowbase.html#TFGENZOO.flows.flowbase.FlowBase" title="TFGENZOO.flows.flowbase.FlowBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">TFGENZOO.flows.flowbase.FlowBase</span></code></a></p>
+<dl class="py method">
+<dt id="TFGENZOO.flows.squeeze.Squeeze2DWithMask.build">
+<code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_shape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.squeeze.Squeeze2DWithMask.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates the variables of the layer (optional, for subclass implementers).</p>
+<p>This is a method that implementers of subclasses of <cite>Layer</cite> or <cite>Model</cite>
+can override if they need a state-creation step in-between
+layer instantiation and layer call.</p>
+<p>This is typically used to create the weights of <cite>Layer</cite> subclasses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>input_shape</strong> – Instance of <cite>TensorShape</cite>, or list of instances of
+<cite>TensorShape</cite> if the layer expects a list of inputs
+(one instance per input).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.squeeze.Squeeze2DWithMask.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="n">zaux</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mask</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.squeeze.Squeeze2DWithMask.forward" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>tf.Tensor</em>) – input tensor [B, T, C]</p></li>
+<li><p><strong>zaux</strong> (<em>tf.Tensor</em>) – pre-latent tensor [B, T, C’’]</p></li>
+<li><p><strong>mask</strong> (<em>tf.Tensor</em>) – mask tensor [B, T, M] where M may be 1</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>reshaped input tensor [B, T // n_squeeze, C * 2]
+tf.Tensor: reshaped pre-latent tensor [B, T // n_squeeze, C’’ * n_squeeze]
+tf.Tensor: reshaped mask tensor [B, T // 2]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tf.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.squeeze.Squeeze2DWithMask.get_config">
+<code class="sig-name descname">get_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.squeeze.Squeeze2DWithMask.get_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the config of the layer.</p>
+<p>A layer config is a Python dictionary (serializable)
+containing the configuration of a layer.
+The same layer can be reinstantiated later
+(without its trained weights) from this configuration.</p>
+<p>The config of a layer does not include connectivity
+information, nor the layer class name. These are handled
+by <cite>Network</cite> (one layer of abstraction above).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Python dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.squeeze.Squeeze2DWithMask.inverse">
+<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">z</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span></em>, <em class="sig-param"><span class="n">zaux</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mask</span><span class="p">:</span> <span class="n">tensorflow.python.framework.ops.Tensor</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.squeeze.Squeeze2DWithMask.inverse" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>z</strong> (<em>tf.Tensor</em>) – input tensor [B, T // n_squeeze, C * n_squeeze]</p></li>
+<li><p><strong>zaux</strong> (<em>tf.Tensor</em>) – pre-latent tensor [B, T // n_squeeze, C’’ * n_squeeze]</p></li>
+<li><p><strong>mask</strong> (<em>tf.Tensor</em>) – pre-latent tensor [B, T // n_squeeze, 1]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>reshaped input tensor [B, T, C]
+tf.Tensor: reshaped pre-latent tensor [B, T, C’’]
+tf.Tensor: mask tensor [B, T, 1]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tf.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="TFGENZOO.flows.squeeze_test.html" class="btn btn-neutral float-right" title="TFGENZOO.flows.squeeze_test module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="TFGENZOO.flows.quantize_test.html" class="btn btn-neutral float-left" title="TFGENZOO.flows.quantize_test module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, MokkeMeguru
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

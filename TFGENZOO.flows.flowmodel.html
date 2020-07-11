@@ -1,0 +1,424 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>TFGENZOO.flows.flowmodel module &mdash; TFGENZOO 1.0-beta1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js"></script>
+        <script src="_static/twemoji.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="_static/twemoji.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="TFGENZOO.flows.inv1x1conv module" href="TFGENZOO.flows.inv1x1conv.html" />
+    <link rel="prev" title="TFGENZOO.flows.flowbase module" href="TFGENZOO.flows.flowbase.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> TFGENZOO
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="TFGENZOO.html">TFGENZOO package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="TFGENZOO.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="TFGENZOO.flows.html">TFGENZOO.flows package</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="TFGENZOO.flows.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="TFGENZOO.flows.html#module-TFGENZOO.flows">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="TFGENZOO.gans.html">TFGENZOO.gans package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="TFGENZOO.layers.html">TFGENZOO.layers package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="TFGENZOO.optimizers.html">TFGENZOO.optimizers package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="TFGENZOO.html#module-TFGENZOO">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="discussions/index.html">Discussions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="discussions/index.html#indices-and-tables">Indices and tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage/quickstart.html">Simple Tutorial</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">TFGENZOO</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="TFGENZOO.html">TFGENZOO package</a> &raquo;</li>
+        
+          <li><a href="TFGENZOO.flows.html">TFGENZOO.flows package</a> &raquo;</li>
+        
+      <li>TFGENZOO.flows.flowmodel module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/TFGENZOO.flows.flowmodel.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-TFGENZOO.flows.flowmodel">
+<span id="tfgenzoo-flows-flowmodel-module"></span><h1>TFGENZOO.flows.flowmodel module<a class="headerlink" href="#module-TFGENZOO.flows.flowmodel" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="TFGENZOO.flows.flowmodel.BasicGlow">
+<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.flowmodel.</code><code class="sig-name descname">BasicGlow</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">K</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">5</span></em>, <em class="sig-param"><span class="n">L</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">3</span></em>, <em class="sig-param"><span class="n">resblk_kwargs</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">conditional</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flowmodel.BasicGlow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tensorflow.python.keras.engine.training.Model</span></code></p>
+<dl class="py method">
+<dt id="TFGENZOO.flows.flowmodel.BasicGlow.call">
+<code class="sig-name descname">call</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">zaux</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">inverse</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">training</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flowmodel.BasicGlow.call" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calls the model on new inputs.</p>
+<p>In this case <cite>call</cite> just reapplies
+all ops in the graph to the new inputs
+(e.g. build a new computational graph from the provided inputs).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> – A tensor or list of tensors.</p></li>
+<li><p><strong>training</strong> – Boolean or boolean scalar tensor, indicating whether to run
+the <cite>Network</cite> in training mode or inference mode.</p></li>
+<li><p><strong>mask</strong> – A mask or list of masks. A mask can be
+either a tensor or None (no mask).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A tensor if there is a single output, or
+a list of tensors if there are more than one outputs.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.flowmodel.BasicGlow.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">training</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flowmodel.BasicGlow.forward" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.flowmodel.BasicGlow.get_config">
+<code class="sig-name descname">get_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flowmodel.BasicGlow.get_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the config of the layer.</p>
+<p>A layer config is a Python dictionary (serializable)
+containing the configuration of a layer.
+The same layer can be reinstantiated later
+(without its trained weights) from this configuration.</p>
+<p>The config of a layer does not include connectivity
+information, nor the layer class name. These are handled
+by <cite>Network</cite> (one layer of abstraction above).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Python dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.flowmodel.BasicGlow.inverse">
+<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">zaux</span></em>, <em class="sig-param"><span class="n">training</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flowmodel.BasicGlow.inverse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="TFGENZOO.flows.flowmodel.SingleFlow">
+<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.flowmodel.</code><code class="sig-name descname">SingleFlow</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">K</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">5</span></em>, <em class="sig-param"><span class="n">L</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">resblk_kwargs</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flowmodel.SingleFlow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tensorflow.python.keras.engine.training.Model</span></code></p>
+<dl class="py method">
+<dt id="TFGENZOO.flows.flowmodel.SingleFlow.call">
+<code class="sig-name descname">call</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">zaux</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">inverse</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">training</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flowmodel.SingleFlow.call" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calls the model on new inputs.</p>
+<p>In this case <cite>call</cite> just reapplies
+all ops in the graph to the new inputs
+(e.g. build a new computational graph from the provided inputs).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> – A tensor or list of tensors.</p></li>
+<li><p><strong>training</strong> – Boolean or boolean scalar tensor, indicating whether to run
+the <cite>Network</cite> in training mode or inference mode.</p></li>
+<li><p><strong>mask</strong> – A mask or list of masks. A mask can be
+either a tensor or None (no mask).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A tensor if there is a single output, or
+a list of tensors if there are more than one outputs.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.flowmodel.SingleFlow.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">training</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flowmodel.SingleFlow.forward" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.flowmodel.SingleFlow.get_config">
+<code class="sig-name descname">get_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flowmodel.SingleFlow.get_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the config of the layer.</p>
+<p>A layer config is a Python dictionary (serializable)
+containing the configuration of a layer.
+The same layer can be reinstantiated later
+(without its trained weights) from this configuration.</p>
+<p>The config of a layer does not include connectivity
+information, nor the layer class name. These are handled
+by <cite>Network</cite> (one layer of abstraction above).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Python dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.flowmodel.SingleFlow.inverse">
+<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">zaux</span></em>, <em class="sig-param"><span class="n">training</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flowmodel.SingleFlow.inverse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="TFGENZOO.flows.flowmodel.SqueezeFactorOut">
+<em class="property">class </em><code class="sig-prename descclassname">TFGENZOO.flows.flowmodel.</code><code class="sig-name descname">SqueezeFactorOut</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">L</span><span class="o">=</span><span class="default_value">3</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flowmodel.SqueezeFactorOut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tensorflow.python.keras.engine.training.Model</span></code></p>
+<dl class="py method">
+<dt id="TFGENZOO.flows.flowmodel.SqueezeFactorOut.call">
+<code class="sig-name descname">call</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">zaux</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">inverse</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flowmodel.SqueezeFactorOut.call" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calls the model on new inputs.</p>
+<p>In this case <cite>call</cite> just reapplies
+all ops in the graph to the new inputs
+(e.g. build a new computational graph from the provided inputs).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> – A tensor or list of tensors.</p></li>
+<li><p><strong>training</strong> – Boolean or boolean scalar tensor, indicating whether to run
+the <cite>Network</cite> in training mode or inference mode.</p></li>
+<li><p><strong>mask</strong> – A mask or list of masks. A mask can be
+either a tensor or None (no mask).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A tensor if there is a single output, or
+a list of tensors if there are more than one outputs.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.flowmodel.SqueezeFactorOut.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flowmodel.SqueezeFactorOut.forward" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.flowmodel.SqueezeFactorOut.get_config">
+<code class="sig-name descname">get_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flowmodel.SqueezeFactorOut.get_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the config of the layer.</p>
+<p>A layer config is a Python dictionary (serializable)
+containing the configuration of a layer.
+The same layer can be reinstantiated later
+(without its trained weights) from this configuration.</p>
+<p>The config of a layer does not include connectivity
+information, nor the layer class name. These are handled
+by <cite>Network</cite> (one layer of abstraction above).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Python dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="TFGENZOO.flows.flowmodel.SqueezeFactorOut.inverse">
+<code class="sig-name descname">inverse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">zaux</span></em><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flowmodel.SqueezeFactorOut.inverse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="TFGENZOO.flows.flowmodel.basic_flow_Test">
+<code class="sig-prename descclassname">TFGENZOO.flows.flowmodel.</code><code class="sig-name descname">basic_flow_Test</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flowmodel.basic_flow_Test" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="TFGENZOO.flows.flowmodel.basic_glow_Test">
+<code class="sig-prename descclassname">TFGENZOO.flows.flowmodel.</code><code class="sig-name descname">basic_glow_Test</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flowmodel.basic_glow_Test" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="TFGENZOO.flows.flowmodel.main">
+<code class="sig-prename descclassname">TFGENZOO.flows.flowmodel.</code><code class="sig-name descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flowmodel.main" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="TFGENZOO.flows.flowmodel.squeeze_factor_Test">
+<code class="sig-prename descclassname">TFGENZOO.flows.flowmodel.</code><code class="sig-name descname">squeeze_factor_Test</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#TFGENZOO.flows.flowmodel.squeeze_factor_Test" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="TFGENZOO.flows.inv1x1conv.html" class="btn btn-neutral float-right" title="TFGENZOO.flows.inv1x1conv module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="TFGENZOO.flows.flowbase.html" class="btn btn-neutral float-left" title="TFGENZOO.flows.flowbase module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, MokkeMeguru
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

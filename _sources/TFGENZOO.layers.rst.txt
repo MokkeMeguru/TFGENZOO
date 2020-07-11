@@ -4,54 +4,15 @@ TFGENZOO.layers package
 Submodules
 ----------
 
-TFGENZOO.layers.flowtts\_coupling module
-----------------------------------------
+.. toctree::
+   :maxdepth: 4
 
-.. automodule:: TFGENZOO.layers.flowtts_coupling
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-TFGENZOO.layers.flowtts\_coupling\_test module
-----------------------------------------------
-
-.. automodule:: TFGENZOO.layers.flowtts_coupling_test
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-TFGENZOO.layers.resnet module
------------------------------
-
-.. automodule:: TFGENZOO.layers.resnet
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-TFGENZOO.layers.spadebn module
-------------------------------
-
-.. automodule:: TFGENZOO.layers.spadebn
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-TFGENZOO.layers.spectral\_normalization module
-----------------------------------------------
-
-.. automodule:: TFGENZOO.layers.spectral_normalization
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-TFGENZOO.layers.weight\_norm module
------------------------------------
-
-.. automodule:: TFGENZOO.layers.weight_norm
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
+   TFGENZOO.layers.flowtts_coupling
+   TFGENZOO.layers.flowtts_coupling_test
+   TFGENZOO.layers.resnet
+   TFGENZOO.layers.spadebn
+   TFGENZOO.layers.spectral_normalization
+   TFGENZOO.layers.weight_norm
 
 Module contents
 ---------------

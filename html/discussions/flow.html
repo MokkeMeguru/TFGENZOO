@@ -1,0 +1,273 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Flow-based Model &mdash; TFGENZOO 1.0-beta1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js"></script>
+        <script src="../_static/twemoji.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/twemoji.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Simple Tutorial" href="../usage/quickstart.html" />
+    <link rel="prev" title="Discussions" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> TFGENZOO
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../TFGENZOO.html">TFGENZOO package</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Discussions</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Flow-based Model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#is-1x1conv-compatible-with-tensordot">Is 1x1Conv compatible with tensordot?</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#experiments">Experiments</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#sometimes-matrix-determinant-will-be-crash">SomeTimes, matrix_determinant will be crash</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#in-qunantize-the-log-det-jacobian-has-better-formulation-than-current-one-in-the-view-of-time-complexity">In Qunantize, the log-det-jacobian has better formulation than current one in the view of time complexity.</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="index.html#indices-and-tables">Indices and tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/quickstart.html">Simple Tutorial</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">TFGENZOO</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Discussions</a> &raquo;</li>
+        
+      <li>Flow-based Model</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/discussions/flow.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="flow-based-model">
+<h1>Flow-based Model<a class="headerlink" href="#flow-based-model" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="is-1x1conv-compatible-with-tensordot">
+<h2>Is 1x1Conv compatible with tensordot?<a class="headerlink" href="#is-1x1conv-compatible-with-tensordot" title="Permalink to this headline">¶</a></h2>
+<p>1x1conv is the convolution with filter [1, 1].</p>
+<p>So this procedure is as same as tensordot.</p>
+<div class="section" id="experiments">
+<h3>Experiments<a class="headerlink" href="#experiments" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://colab.research.google.com/gist/MokkeMeguru/ee7af2a1c4947e4b0305efb892daf6b2/tfgenzoo_knowledges.ipynb">TFGENZOO_KNOWLEDGES (CAST 1x1conv to TensorDot)(colab notebook)</a></p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="sometimes-matrix-determinant-will-be-crash">
+<h2>SomeTimes, matrix_determinant will be crash<a class="headerlink" href="#sometimes-matrix-determinant-will-be-crash" title="Permalink to this headline">¶</a></h2>
+<p>Sometimes, matrix_determinant will be 0. which is cannot apply backpropergation in InvConv1x1.</p>
+<p>We can use decomposed matrix of W, but it consume training time more and more…</p>
+<div class="section" id="references">
+<h3>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/tensorflow/probability/blob/master/tensorflow_probability/python/bijectors/scale_matvec_lu.py">Tensorflow Probability - ScaledMatvecLU</a></p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="in-qunantize-the-log-det-jacobian-has-better-formulation-than-current-one-in-the-view-of-time-complexity">
+<h2>In Qunantize, the log-det-jacobian has better formulation than current one in the view of time complexity.<a class="headerlink" href="#in-qunantize-the-log-det-jacobian-has-better-formulation-than-current-one-in-the-view-of-time-complexity" title="Permalink to this headline">¶</a></h2>
+<p>Now, the forward formula in LogitifyImage is below.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}z_1 &amp;= x + \epsilon \\\\
+z_2 &amp;= (1- \alpha) z_1  + 0.5 \alpha \\\\
+z &amp;= z_3 = \text{logit}z = \log{z_2} - \log(1 - z_2)\end{split}\]</div>
+<p>And then, the log det jacobian is below.</p>
+<div class="math notranslate nohighlight">
+\[\text{log_det_jacobian} = \text{softplus}(z_3) + \text{softplus}(- z_3) - \text{softplus}(\log{\alpha} - \log(1 - \alpha))\]</div>
+<p>But we can propose below formula to decrease the time complexity.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\text{log_det_jacobian} &amp;= - \log(z_2) - \log(1 - z_2) - \text{softplus}(\log{\alpha} - \log(1 - \alpha))\\\\
+    &amp;= \text{softplus}(z_3) + \text{softplus}(- z_3) - \text{softplus}(\log{\alpha} - \log(1 - \alpha)) \\\\
+    &amp;= \log(1 + \exp(z_3)) + \log(1 + \exp(- z_3)) - t \\\\
+    &amp;= \log(1 + \exp(\log{z_2} + \log(1 - z_2))) - \log(1 + \exp(- \log{z_2} + \log(1 - z_2))) - t \\\\
+    &amp;= \log(1 + \cfrac{z_2}{1 - z_2}) + \log(1 + \cfrac{1 - z_2}{z_2}) - t \\\\
+    &amp;= \log(\cfrac{1}{1 - z_2}) + \log(\cfrac{1}{z_2})  - t\\\\
+    &amp;= - \log(z_2) - \log(1 - z_2) - t \\\\
+    &amp; ,where \ t =   \text{softplus}(\log{\alpha} - \log(1 - \alpha)) \\\\\end{split}\]</div>
+<p>However, if <span class="math notranslate nohighlight">\(1 - z_2 &lt; \epsilon\)</span> , <span class="math notranslate nohighlight">\(\log(1 - z_2)\)</span> will cancel significant digits because <span class="math notranslate nohighlight">\(\log(1 - z_2) \approx -\text{Inf}\)</span></p>
+<p>Besides, if <span class="math notranslate nohighlight">\(z_2 &lt; \epsilon\)</span>, <span class="math notranslate nohighlight">\(\log(z_2)\)</span> will cancel significant digits because <span class="math notranslate nohighlight">\(\log(z_2) \approx -\text{Inf}\)</span></p>
+<p>So that, we should use <strong>softplus</strong> instead of <strong>log</strong> in this case.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../usage/quickstart.html" class="btn btn-neutral float-right" title="Simple Tutorial" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Discussions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, MokkeMeguru
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

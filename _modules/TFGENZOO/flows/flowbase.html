@@ -1,0 +1,454 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>TFGENZOO.flows.flowbase &mdash; TFGENZOO 1.0-beta1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js"></script>
+        <script src="../../../_static/twemoji.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/twemoji.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> TFGENZOO
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../TFGENZOO.html">TFGENZOO package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../discussions/index.html">Discussions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../discussions/index.html#indices-and-tables">Indices and tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage/quickstart.html">Simple Tutorial</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">TFGENZOO</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>TFGENZOO.flows.flowbase</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for TFGENZOO.flows.flowbase</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABCMeta</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras</span> <span class="kn">import</span> <span class="n">layers</span>
+
+<span class="n">Layer</span> <span class="o">=</span> <span class="n">layers</span><span class="o">.</span><span class="n">Layer</span>
+
+
+<div class="viewcode-block" id="FlowBase"><a class="viewcode-back" href="../../../TFGENZOO.flows.flowbase.html#TFGENZOO.flows.FlowBase">[docs]</a><span class="k">class</span> <span class="nc">FlowBase</span><span class="p">(</span><span class="n">Layer</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Flow-based model&#39;s abstruct class</span>
+
+<span class="sd">    Examples:</span>
+
+<span class="sd">        &gt;&gt;&gt; layer = FlowBase()</span>
+<span class="sd">        &gt;&gt;&gt; z = layer(x, inverse=False) # forward method</span>
+<span class="sd">        &gt;&gt;&gt; x_hat = layer(z, inverse=True) # inverse method</span>
+<span class="sd">        &gt;&gt;&gt; assert tf.reduce_sum((x - x_hat)^2) &lt;&lt; 1e-3</span>
+
+<span class="sd">    Note:</span>
+
+<span class="sd">        If you need data-dependent initialization (e.g. ActNorm),</span>
+<span class="sd">        You can write it at #initialize_parameter.</span>
+
+<span class="sd">         This layer will be inheritanced by the invertible layer without log det jacobian</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conditional_input</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="FlowBase.data_dep_initialize"><a class="viewcode-back" href="../../../TFGENZOO.flows.flowbase.html#TFGENZOO.flows.FlowBase.data_dep_initialize">[docs]</a>    <span class="k">def</span> <span class="nf">data_dep_initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initialized</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FlowBase.build"><a class="viewcode-back" href="../../../TFGENZOO.flows.flowbase.html#TFGENZOO.flows.FlowBase.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_shape</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">TensorShape</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initialized</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_weight</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;initialized&quot;</span><span class="p">,</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">bool</span><span class="p">,</span>
+            <span class="n">trainable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">synchronization</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">VariableSynchronization</span><span class="o">.</span><span class="n">ON_READ</span><span class="p">,</span>
+            <span class="n">aggregation</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">VariableAggregation</span><span class="o">.</span><span class="n">ONLY_FIRST_REPLICA</span><span class="p">,</span>
+            <span class="n">initializer</span><span class="o">=</span><span class="k">lambda</span> <span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">built</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="FlowBase.call"><a class="viewcode-back" href="../../../TFGENZOO.flows.flowbase.html#TFGENZOO.flows.FlowBase.call">[docs]</a>    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">inverse</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialized</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Invalid initialize&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_dep_initialize</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">inverse</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">inverse</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FlowBase.forward"><a class="viewcode-back" href="../../../TFGENZOO.flows.flowbase.html#TFGENZOO.flows.FlowBase.forward">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">inputs</span></div>
+
+<div class="viewcode-block" id="FlowBase.inverse"><a class="viewcode-back" href="../../../TFGENZOO.flows.flowbase.html#TFGENZOO.flows.FlowBase.inverse">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">inverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">inputs</span></div></div>
+
+
+<div class="viewcode-block" id="FlowComponent"><a class="viewcode-back" href="../../../TFGENZOO.flows.flowbase.html#TFGENZOO.flows.FlowComponent">[docs]</a><span class="k">class</span> <span class="nc">FlowComponent</span><span class="p">(</span><span class="n">FlowBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Flow-based model&#39;s abstruct class</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">         This layer will be inheritanced by the invertible layer with log det jacobian</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="FlowComponent.forward"><a class="viewcode-back" href="../../../TFGENZOO.flows.flowbase.html#TFGENZOO.flows.FlowComponent.forward">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">log_det_jacobian</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="k">return</span> <span class="n">z</span><span class="p">,</span> <span class="n">log_det_jacobian</span></div>
+
+<div class="viewcode-block" id="FlowComponent.inverse"><a class="viewcode-back" href="../../../TFGENZOO.flows.flowbase.html#TFGENZOO.flows.FlowComponent.inverse">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">inverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">inverse_log_det_jacobian</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">z</span>
+        <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">inverse_log_det_jacobian</span></div>
+
+<div class="viewcode-block" id="FlowComponent.assert_tensor"><a class="viewcode-back" href="../../../TFGENZOO.flows.flowbase.html#TFGENZOO.flows.FlowComponent.assert_tensor">[docs]</a>    <span class="k">def</span> <span class="nf">assert_tensor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">z</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_debug</span><span class="p">:</span>
+            <span class="n">tf</span><span class="o">.</span><span class="n">debugging</span><span class="o">.</span><span class="n">assert_shapes</span><span class="p">([(</span><span class="n">x</span><span class="p">,</span> <span class="n">z</span><span class="o">.</span><span class="n">shape</span><span class="p">)])</span></div>
+
+<div class="viewcode-block" id="FlowComponent.assert_log_det_jacobian"><a class="viewcode-back" href="../../../TFGENZOO.flows.flowbase.html#TFGENZOO.flows.FlowComponent.assert_log_det_jacobian">[docs]</a>    <span class="k">def</span> <span class="nf">assert_log_det_jacobian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_det_jacobian</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;assert log_det_jacobian&#39;s shape</span>
+<span class="sd">       </span>
+<span class="sd">        Note:</span>
+<span class="sd">            | tf-2.0&#39;s bug</span>
+<span class="sd">            | tf.debugging.assert_shapes([(tf.constant(1.0), (None, ))])</span>
+<span class="sd">            | # =&gt; None (true)</span>
+<span class="sd">            | tf.debugging.assert_shapes([(tf.constant([1.0, 1.0]), (None, ))])</span>
+<span class="sd">            | # =&gt; None (true)</span>
+<span class="sd">            | tf.debugging.assert_shapes([(tf.constant([[1.0], [1.0]]), (None, ))])</span>
+<span class="sd">            | # =&gt; Error</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_debug</span><span class="p">:</span>
+            <span class="n">tf</span><span class="o">.</span><span class="n">debugging</span><span class="o">.</span><span class="n">assert_shapes</span><span class="p">([(</span><span class="n">log_det_jacobian</span><span class="p">,</span> <span class="p">(</span><span class="kc">None</span><span class="p">,))])</span></div></div>
+
+
+<div class="viewcode-block" id="FlowModule"><a class="viewcode-back" href="../../../TFGENZOO.flows.flowbase.html#TFGENZOO.flows.FlowModule">[docs]</a><span class="k">class</span> <span class="nc">FlowModule</span><span class="p">(</span><span class="n">FlowBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Sequential Layer for FlowBase&#39;s Layer</span>
+
+<span class="sd">    Examples:</span>
+
+<span class="sd">         &gt;&gt;&gt; layers = [FlowBase() for _ in range(10)]</span>
+<span class="sd">         &gt;&gt;&gt; module = FlowModule(layers)</span>
+<span class="sd">         &gt;&gt;&gt; z = module(x, inverse=False)</span>
+<span class="sd">         &gt;&gt;&gt; x_hat = module(z, inverse=True)</span>
+<span class="sd">         &gt;&gt;&gt; assert ((x - x_hat)^2) &lt;&lt; 1e-3</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="FlowModule.build"><a class="viewcode-back" href="../../../TFGENZOO.flows.flowbase.html#TFGENZOO.flows.FlowModule.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_shape</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">TensorShape</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">input_shape</span><span class="o">=</span><span class="n">input_shape</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">components</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">FlowComponent</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">components</span> <span class="o">=</span> <span class="n">components</span>
+
+<div class="viewcode-block" id="FlowModule.get_config"><a class="viewcode-back" href="../../../TFGENZOO.flows.flowbase.html#TFGENZOO.flows.FlowModule.get_config">[docs]</a>    <span class="k">def</span> <span class="nf">get_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_config</span><span class="p">()</span>
+        <span class="n">config_update_layer</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">comp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
+            <span class="n">config_update_layer</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">comp</span><span class="o">.</span><span class="n">get_config</span><span class="p">())</span>
+        <span class="n">config_update</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;components&quot;</span><span class="p">,</span> <span class="n">config_update_layer</span><span class="p">}</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">config_update</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">config</span></div>
+
+<div class="viewcode-block" id="FlowModule.forward"><a class="viewcode-back" href="../../../TFGENZOO.flows.flowbase.html#TFGENZOO.flows.FlowModule.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="n">log_det_jacobian</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
+            <span class="n">z</span><span class="p">,</span> <span class="n">ldj</span> <span class="o">=</span> <span class="n">component</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">log_det_jacobian</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ldj</span><span class="p">)</span>
+        <span class="n">log_det_jacobian</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">log_det_jacobian</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">z</span><span class="p">,</span> <span class="n">log_det_jacobian</span></div>
+
+<div class="viewcode-block" id="FlowModule.inverse"><a class="viewcode-back" href="../../../TFGENZOO.flows.flowbase.html#TFGENZOO.flows.FlowModule.inverse">[docs]</a>    <span class="k">def</span> <span class="nf">inverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">z</span>
+        <span class="n">inverse_log_det_jacobian</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">):</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">ildj</span> <span class="o">=</span> <span class="n">component</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">inverse_log_det_jacobian</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ildj</span><span class="p">)</span>
+        <span class="n">inverse_log_det_jacobian</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">inverse_log_det_jacobian</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">inverse_log_det_jacobian</span></div></div>
+
+
+<div class="viewcode-block" id="ConditionalFlowModule"><a class="viewcode-back" href="../../../TFGENZOO.flows.flowbase.html#TFGENZOO.flows.ConditionalFlowModule">[docs]</a><span class="k">class</span> <span class="nc">ConditionalFlowModule</span><span class="p">(</span><span class="n">FlowBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Sequential Layer for FlowBase&#39;s Layer</span>
+
+<span class="sd">    Examples:</span>
+
+<span class="sd">         &gt;&gt;&gt; layers = [FlowBase() for _ in range(10)]</span>
+<span class="sd">         &gt;&gt;&gt; module = FlowModule(layers)</span>
+<span class="sd">         &gt;&gt;&gt; z = module(x, inverse=False)</span>
+<span class="sd">         &gt;&gt;&gt; x_hat = module(z, inverse=True)</span>
+<span class="sd">         &gt;&gt;&gt; assert ((x - x_hat)^2) &lt;&lt; 1e-3</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ConditionalFlowModule.build"><a class="viewcode-back" href="../../../TFGENZOO.flows.flowbase.html#TFGENZOO.flows.ConditionalFlowModule.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_shape</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">TensorShape</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
+            <span class="n">component</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">input_shape</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conditional_input</span> <span class="o">=</span> <span class="kc">True</span>    
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">input_shape</span><span class="o">=</span><span class="n">input_shape</span><span class="p">)</span></div>
+        
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">components</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">FlowComponent</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">components</span> <span class="o">=</span> <span class="n">components</span>
+
+<div class="viewcode-block" id="ConditionalFlowModule.get_config"><a class="viewcode-back" href="../../../TFGENZOO.flows.flowbase.html#TFGENZOO.flows.ConditionalFlowModule.get_config">[docs]</a>    <span class="k">def</span> <span class="nf">get_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_config</span><span class="p">()</span>
+        <span class="n">config_update_layer</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">comp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
+            <span class="n">config_update_layer</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">comp</span><span class="o">.</span><span class="n">get_config</span><span class="p">())</span>
+        <span class="n">config_update</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;components&quot;</span><span class="p">,</span> <span class="n">config_update_layer</span><span class="p">}</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">config_update</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">config</span></div>
+
+<div class="viewcode-block" id="ConditionalFlowModule.forward"><a class="viewcode-back" href="../../../TFGENZOO.flows.flowbase.html#TFGENZOO.flows.ConditionalFlowModule.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">cond</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="n">log_det_jacobian</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">component</span><span class="o">.</span><span class="n">conditional_input</span><span class="p">:</span>
+                <span class="n">z</span><span class="p">,</span> <span class="n">ldj</span> <span class="o">=</span> <span class="n">component</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cond</span><span class="o">=</span><span class="n">cond</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">z</span><span class="p">,</span> <span class="n">ldj</span> <span class="o">=</span> <span class="n">component</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">log_det_jacobian</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ldj</span><span class="p">)</span>
+        <span class="n">log_det_jacobian</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">log_det_jacobian</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">z</span><span class="p">,</span> <span class="n">log_det_jacobian</span></div>
+
+<div class="viewcode-block" id="ConditionalFlowModule.inverse"><a class="viewcode-back" href="../../../TFGENZOO.flows.flowbase.html#TFGENZOO.flows.ConditionalFlowModule.inverse">[docs]</a>    <span class="k">def</span> <span class="nf">inverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">cond</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">z</span>
+        <span class="n">inverse_log_det_jacobian</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">component</span><span class="o">.</span><span class="n">conditional_input</span><span class="p">:</span>
+                <span class="n">x</span><span class="p">,</span> <span class="n">ildj</span> <span class="o">=</span> <span class="n">component</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cond</span><span class="o">=</span><span class="n">cond</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">x</span><span class="p">,</span> <span class="n">ildj</span> <span class="o">=</span> <span class="n">component</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">inverse_log_det_jacobian</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ildj</span><span class="p">)</span>
+        <span class="n">inverse_log_det_jacobian</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">inverse_log_det_jacobian</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">inverse_log_det_jacobian</span></div></div>
+
+
+<div class="viewcode-block" id="FactorOutBase"><a class="viewcode-back" href="../../../TFGENZOO.flows.flowbase.html#TFGENZOO.flows.FactorOutBase">[docs]</a><span class="k">class</span> <span class="nc">FactorOutBase</span><span class="p">(</span><span class="n">FlowBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Factor Out Layer in Flow-based Model</span>
+
+<span class="sd">    Examples:</span>
+
+<span class="sd">        &gt;&gt;&gt; fo = FactorOutBase(with_zaux=False)</span>
+<span class="sd">        &gt;&gt;&gt; z, zaux = fo(x, zaux=None, inverse=False)</span>
+<span class="sd">        &gt;&gt;&gt; x = fo(z, zaux=zaux, inverse=True)</span>
+
+<span class="sd">        &gt;&gt;&gt; fo = FactorOutBase(with_zaux=True)</span>
+<span class="sd">        &gt;&gt;&gt; z, zaux = fo(x, zaux=zaux, inverse=False)</span>
+<span class="sd">        &gt;&gt;&gt; x, zaux = fo(z, zaux=zaux, inverse=True)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">with_zaux</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">with_zaux</span> <span class="o">=</span> <span class="n">with_zaux</span>
+
+<div class="viewcode-block" id="FactorOutBase.get_config"><a class="viewcode-back" href="../../../TFGENZOO.flows.flowbase.html#TFGENZOO.flows.FactorOutBase.get_config">[docs]</a>    <span class="k">def</span> <span class="nf">get_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_config</span><span class="p">()</span>
+        <span class="n">config_update</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;with_zaux&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_zaux</span><span class="p">}</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">config_update</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">config</span></div>
+
+<div class="viewcode-block" id="FactorOutBase.build"><a class="viewcode-back" href="../../../TFGENZOO.flows.flowbase.html#TFGENZOO.flows.FactorOutBase.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_shape</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">TensorShape</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">input_shape</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FactorOutBase.call"><a class="viewcode-back" href="../../../TFGENZOO.flows.flowbase.html#TFGENZOO.flows.FactorOutBase.call">[docs]</a>    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">zaux</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">inverse</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialized</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Invalid initialize&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_dep_initialize</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">inverse</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">inverse</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">zaux</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">zaux</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FactorOutBase.forward"><a class="viewcode-back" href="../../../TFGENZOO.flows.flowbase.html#TFGENZOO.flows.FactorOutBase.forward">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">zaux</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="FactorOutBase.inverse"><a class="viewcode-back" href="../../../TFGENZOO.flows.flowbase.html#TFGENZOO.flows.FactorOutBase.inverse">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">inverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">zaux</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">pass</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, MokkeMeguru
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

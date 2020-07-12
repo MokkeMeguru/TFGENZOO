@@ -1,0 +1,384 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>TFGENZOO.flows.affine_coupling &mdash; TFGENZOO 1.0-beta1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js"></script>
+        <script src="../../../_static/twemoji.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/twemoji.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> TFGENZOO
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../TFGENZOO.html">TFGENZOO package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../discussions/index.html">Discussions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../discussions/index.html#indices-and-tables">Indices and tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage/quickstart.html">Simple Tutorial</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">TFGENZOO</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>TFGENZOO.flows.affine_coupling</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for TFGENZOO.flows.affine_coupling</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span>
+
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras</span> <span class="kn">import</span> <span class="n">layers</span>
+
+<span class="kn">from</span> <span class="nn">TFGENZOO.flows.flowbase</span> <span class="kn">import</span> <span class="n">FlowComponent</span>
+
+<span class="n">Layer</span> <span class="o">=</span> <span class="n">layers</span><span class="o">.</span><span class="n">Layer</span>
+<span class="n">Conv2D</span> <span class="o">=</span> <span class="n">layers</span><span class="o">.</span><span class="n">Conv2D</span>
+
+
+<div class="viewcode-block" id="LogScale"><a class="viewcode-back" href="../../../TFGENZOO.flows.affine_coupling.html#TFGENZOO.flows.LogScale">[docs]</a><span class="k">class</span> <span class="nc">LogScale</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
+<div class="viewcode-block" id="LogScale.build"><a class="viewcode-back" href="../../../TFGENZOO.flows.affine_coupling.html#TFGENZOO.flows.LogScale.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_shape</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">TensorShape</span><span class="p">):</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">input_shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_weight</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;log_scale&quot;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">shape</span><span class="p">),</span> <span class="n">initializer</span><span class="o">=</span><span class="s2">&quot;zeros&quot;</span><span class="p">,</span> <span class="n">trainable</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_scale_factor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">3.0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">LogScale</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_scale_factor</span> <span class="o">=</span> <span class="n">log_scale_factor</span>
+
+<div class="viewcode-block" id="LogScale.get_config"><a class="viewcode-back" href="../../../TFGENZOO.flows.affine_coupling.html#TFGENZOO.flows.LogScale.get_config">[docs]</a>    <span class="k">def</span> <span class="nf">get_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_config</span><span class="p">()</span>
+        <span class="n">config_update</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;log_scale_factor&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_scale_factor</span><span class="p">}</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">config_update</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">config</span></div>
+
+<div class="viewcode-block" id="LogScale.call"><a class="viewcode-back" href="../../../TFGENZOO.flows.affine_coupling.html#TFGENZOO.flows.LogScale.call">[docs]</a>    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="n">tf</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logs</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_scale_factor</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="AffineCouplingMask"><a class="viewcode-back" href="../../../TFGENZOO.flows.affine_coupling.html#TFGENZOO.flows.AffineCouplingMask">[docs]</a><span class="k">class</span> <span class="nc">AffineCouplingMask</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">ChannelWise</span> <span class="o">=</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="AffineCoupling"><a class="viewcode-back" href="../../../TFGENZOO.flows.affine_coupling.html#TFGENZOO.flows.AffineCoupling">[docs]</a><span class="k">class</span> <span class="nc">AffineCoupling</span><span class="p">(</span><span class="n">FlowComponent</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Affine Coupling Layer</span>
+
+<span class="sd">    Sources:</span>
+<span class="sd">        https://github.com/masa-su/pixyz/blob/master/pixyz/flows/coupling.py</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        * forward formula</span>
+<span class="sd">            | [x1, x2] = split(x)</span>
+<span class="sd">            | log_scale, shift = NN(x1)</span>
+<span class="sd">            | scale = sigmoid(log_scale + 2.0)</span>
+<span class="sd">            | z1 = x1</span>
+<span class="sd">            | z2 = (x2 + shift) * scale</span>
+<span class="sd">            | z = concat([z1, z2])</span>
+<span class="sd">            | LogDetJacobian = sum(log(scale))</span>
+
+<span class="sd">        * inverse formula</span>
+<span class="sd">            | [z1, z2] = split(x)</span>
+<span class="sd">            | log_scale, shift = NN(z1)</span>
+<span class="sd">            | scale = sigmoid(log_scale + 2.0)</span>
+<span class="sd">            | x1 = z1</span>
+<span class="sd">            | x2 = z2 / scale - shift</span>
+<span class="sd">            | z = concat([x1, x2])</span>
+<span class="sd">            | InverseLogDetJacobian = - sum(log(scale))</span>
+
+<span class="sd">        * implementation notes</span>
+<span class="sd">           | in Glow&#39;s Paper, scale is calculated by exp(log_scale),</span>
+<span class="sd">           | but IN IMPLEMENTATION, scale is done by sigmoid(log_scale + 2.0)</span>
+
+<span class="sd">    Examples:</span>
+
+<span class="sd">        &gt;&gt;&gt; import tensorflow as tf</span>
+<span class="sd">        &gt;&gt;&gt; from TFGENZOO.flows.affine_coupling import AffineCoupling</span>
+<span class="sd">        &gt;&gt;&gt; from TFGENZOO.layers.resnet import ShallowResNet</span>
+<span class="sd">        &gt;&gt;&gt; af = AffineCoupling(scale_shift_net_template=ShallowResNet)</span>
+<span class="sd">        &gt;&gt;&gt; af.build([None, 16, 16, 4])</span>
+<span class="sd">        &gt;&gt;&gt; af.get_config()</span>
+<span class="sd">            {&#39;name&#39;: &#39;affine_coupling_1&#39;, ...}</span>
+<span class="sd">        &gt;&gt;&gt; inputs = tf.keras.Input([16, 16, 4])</span>
+<span class="sd">        &gt;&gt;&gt; af(inputs)</span>
+<span class="sd">        (&lt;tf.Tensor &#39;affine_coupling_3_2/Identity:0&#39; shape=(None, 16, 16, 4) dtype=float32&gt;,</span>
+<span class="sd">         &lt;tf.Tensor &#39;affine_coupling_3_2/Identity_1:0&#39; shape=(None,) dtype=float32&gt;)</span>
+<span class="sd">        &gt;&gt;&gt; tf.keras.Model(inputs, af(inputs)).summary()</span>
+<span class="sd">        Model: &quot;model_1&quot;</span>
+<span class="sd">        _________________________________________________________________</span>
+<span class="sd">        Layer (type)                 Output Shape              Param #</span>
+<span class="sd">        =================================================================</span>
+<span class="sd">        input_3 (InputLayer)         [(None, 16, 16, 4)]       0</span>
+<span class="sd">        _________________________________________________________________</span>
+<span class="sd">        affine_coupling (AffineCoupl ((None, 16, 16, 4), (None 2389003</span>
+<span class="sd">        =================================================================</span>
+<span class="sd">        Total params: 2,389,003</span>
+<span class="sd">        Trainable params: 0</span>
+<span class="sd">        Non-trainable params: 2,389,003</span>
+<span class="sd">        _________________________________________________________________</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">mask_type</span><span class="p">:</span> <span class="n">AffineCouplingMask</span> <span class="o">=</span> <span class="n">AffineCouplingMask</span><span class="o">.</span><span class="n">ChannelWise</span><span class="p">,</span>
+        <span class="n">scale_shift_net</span><span class="p">:</span> <span class="n">Layer</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">scale_shift_net_template</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Input</span><span class="p">],</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">scale_type</span><span class="o">=</span><span class="s2">&quot;safe_exp&quot;</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            mask_type       (AffineCouplingMask: AffineCoupling Mask type</span>
+<span class="sd">            scale_shift_net (tf.keras.Layer): NN in the fomula (Deprecated)</span>
+<span class="sd">            scale_shift_net_template (Callable[[tf.keras.Input], [tf.keras.Model]]): NN in the formula (for tf.keras.Model without Input Shape)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">scale_shift_net_template</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">scale_shift_net</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span>
+        <span class="k">if</span> <span class="n">scale_shift_net_template</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">scale_shift_net_template</span> <span class="o">=</span> <span class="n">scale_shift_net_template</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">scale_shift_net</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">elif</span> <span class="n">scale_shift_net</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">scale_shift_net</span> <span class="o">=</span> <span class="n">scale_shift_net</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mask_type</span> <span class="o">=</span> <span class="n">mask_type</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">scale_type</span> <span class="o">=</span> <span class="n">scale_type</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;safe_exp&quot;</span><span class="p">,</span> <span class="s2">&quot;exp&quot;</span><span class="p">,</span> <span class="s2">&quot;sigmoid&quot;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_type</span> <span class="o">==</span> <span class="s2">&quot;safe_exp&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">scale_func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">log_scale</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span>
+                <span class="n">tf</span><span class="o">.</span><span class="n">clip_by_value</span><span class="p">(</span><span class="n">log_scale</span><span class="p">,</span> <span class="o">-</span><span class="mf">15.0</span><span class="p">,</span> <span class="mf">15.0</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_type</span> <span class="o">==</span> <span class="s2">&quot;exp&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">scale_func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">log_scale</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">log_scale</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">scale_func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">log_scale</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">log_scale</span> <span class="o">+</span> <span class="mf">2.0</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AffineCoupling.get_config"><a class="viewcode-back" href="../../../TFGENZOO.flows.affine_coupling.html#TFGENZOO.flows.AffineCoupling.get_config">[docs]</a>    <span class="k">def</span> <span class="nf">get_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_config</span><span class="p">()</span>
+        <span class="n">config_update</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;scale_shit_net&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_shift_net</span><span class="o">.</span><span class="n">get_config</span><span class="p">(),</span>
+            <span class="s2">&quot;mask_type&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_type</span><span class="p">,</span>
+            <span class="s2">&quot;scale_type&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_type</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">config_update</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">config</span></div>
+
+<div class="viewcode-block" id="AffineCoupling.build"><a class="viewcode-back" href="../../../TFGENZOO.flows.affine_coupling.html#TFGENZOO.flows.AffineCoupling.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_shape</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">TensorShape</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reduce_axis</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">input_shape</span><span class="p">)))[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_shift_net</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">resnet_inputs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">input_shape</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="n">resnet_inputs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">resnet_inputs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">scale_shift_net</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_shift_net_template</span><span class="p">(</span>
+                <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span><span class="n">resnet_inputs</span><span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">input_shape</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AffineCoupling.forward"><a class="viewcode-back" href="../../../TFGENZOO.flows.affine_coupling.html#TFGENZOO.flows.AffineCoupling.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">z1</span> <span class="o">=</span> <span class="n">x1</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_shift_net</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_type</span> <span class="o">==</span> <span class="n">AffineCouplingMask</span><span class="o">.</span><span class="n">ChannelWise</span><span class="p">:</span>
+            <span class="n">shift</span> <span class="o">=</span> <span class="n">h</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">log_scale</span> <span class="o">=</span> <span class="n">h</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span>
+
+            <span class="n">scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_func</span><span class="p">(</span><span class="n">log_scale</span><span class="p">)</span>
+            <span class="n">z2</span> <span class="o">=</span> <span class="p">(</span><span class="n">x2</span> <span class="o">+</span> <span class="n">shift</span><span class="p">)</span> <span class="o">*</span> <span class="n">scale</span>
+
+            <span class="c1"># scale&#39;s shape is [B, H, W, C]</span>
+            <span class="c1"># log_det_jacobian&#39;s hape is [B]</span>
+            <span class="n">log_det_jacobian</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">scale</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">reduce_axis</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">z1</span><span class="p">,</span> <span class="n">z2</span><span class="p">],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">),</span> <span class="n">log_det_jacobian</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="AffineCoupling.inverse"><a class="viewcode-back" href="../../../TFGENZOO.flows.affine_coupling.html#TFGENZOO.flows.AffineCoupling.inverse">[docs]</a>    <span class="k">def</span> <span class="nf">inverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">z1</span><span class="p">,</span> <span class="n">z2</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">x1</span> <span class="o">=</span> <span class="n">z1</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_shift_net</span><span class="p">(</span><span class="n">z1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_type</span> <span class="o">==</span> <span class="n">AffineCouplingMask</span><span class="o">.</span><span class="n">ChannelWise</span><span class="p">:</span>
+            <span class="n">shift</span> <span class="o">=</span> <span class="n">h</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">log_scale</span> <span class="o">=</span> <span class="n">h</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span>
+
+            <span class="n">scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_func</span><span class="p">(</span><span class="n">log_scale</span><span class="p">)</span>
+            <span class="n">x2</span> <span class="o">=</span> <span class="p">(</span><span class="n">z2</span> <span class="o">/</span> <span class="n">scale</span><span class="p">)</span> <span class="o">-</span> <span class="n">shift</span>
+
+            <span class="c1"># scale&#39;s shape is [B, H, W, C // 2]</span>
+            <span class="c1"># inverse_log_det_jacobian&#39;s hape is [B]</span>
+            <span class="n">inverse_log_det_jacobian</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span>
+                <span class="n">tf</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">scale</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">reduce_axis</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">),</span> <span class="n">inverse_log_det_jacobian</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, MokkeMeguru
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

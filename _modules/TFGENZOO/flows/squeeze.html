@@ -1,0 +1,373 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>TFGENZOO.flows.squeeze &mdash; TFGENZOO 1.0-beta1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js"></script>
+        <script src="../../../_static/twemoji.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/twemoji.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> TFGENZOO
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../TFGENZOO.html">TFGENZOO package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../discussions/index.html">Discussions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../discussions/index.html#indices-and-tables">Indices and tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage/quickstart.html">Simple Tutorial</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">TFGENZOO</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>TFGENZOO.flows.squeeze</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for TFGENZOO.flows.squeeze</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+
+<span class="kn">from</span> <span class="nn">TFGENZOO.flows.flowbase</span> <span class="kn">import</span> <span class="n">FlowBase</span>
+
+
+<div class="viewcode-block" id="Squeeze"><a class="viewcode-back" href="../../../TFGENZOO.flows.squeeze.html#TFGENZOO.flows.Squeeze">[docs]</a><span class="k">class</span> <span class="nc">Squeeze</span><span class="p">(</span><span class="n">FlowBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Squeeze Layer</span>
+
+<span class="sd">    Sources:</span>
+
+<span class="sd">        https://github.com/openai/glow/blob/master/tfops.py#L338-L352</span>
+<span class="sd">        https://arxiv.org/pdf/1605.08803.pdf Figure 3</span>
+
+<span class="sd">    Note:</span>
+
+<span class="sd">        * forward formula</span>
+<span class="sd">            | z = reshape(x, [B, H // 2, W // 2, C * 4])</span>
+
+<span class="sd">        * inverse formula</span>
+<span class="sd">            | x = reshape(z, [B, H, W, C])</span>
+
+<span class="sd">        * checkerboard spacing</span>
+
+<span class="sd">                e.g.</span>
+
+<span class="sd">                | [[[[1], [2], [5], [6]],</span>
+<span class="sd">                | [[3], [4], [7], [8]],</span>
+<span class="sd">                | [[9], [10], [13], [14]],</span>
+<span class="sd">                | [[11], [12], [15], [16]]]]</span>
+
+<span class="sd">                to</span>
+
+<span class="sd">                | [[[ 1,  5],</span>
+<span class="sd">                | [ 9, 13]]]</span>
+
+<span class="sd">                | [[[ 2,  6],</span>
+<span class="sd">                | [10, 14]]]</span>
+
+<span class="sd">                | [[[ 3,  7],</span>
+<span class="sd">                | [11, 15]]]</span>
+
+<span class="sd">                | [[[ 4,  8],</span>
+<span class="sd">                | [12, 16]]]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">with_zaux</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">with_zaux</span> <span class="o">=</span> <span class="n">with_zaux</span>
+
+<div class="viewcode-block" id="Squeeze.get_config"><a class="viewcode-back" href="../../../TFGENZOO.flows.squeeze.html#TFGENZOO.flows.Squeeze.get_config">[docs]</a>    <span class="k">def</span> <span class="nf">get_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_config</span><span class="p">()</span>
+        <span class="n">config_update</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;with_zaux&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_zaux</span><span class="p">}</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">config_update</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">config</span></div>
+
+<div class="viewcode-block" id="Squeeze.forward"><a class="viewcode-back" href="../../../TFGENZOO.flows.squeeze.html#TFGENZOO.flows.Squeeze.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">zaux</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">space_to_depth</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_zaux</span> <span class="ow">and</span> <span class="n">zaux</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">zaux</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">space_to_depth</span><span class="p">(</span><span class="n">zaux</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">zaux</span>
+        <span class="k">return</span> <span class="n">x</span></div>
+
+<div class="viewcode-block" id="Squeeze.inverse"><a class="viewcode-back" href="../../../TFGENZOO.flows.squeeze.html#TFGENZOO.flows.Squeeze.inverse">[docs]</a>    <span class="k">def</span> <span class="nf">inverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">zaux</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">depth_to_space</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_zaux</span> <span class="ow">and</span> <span class="n">zaux</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">zaux</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">depth_to_space</span><span class="p">(</span><span class="n">zaux</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">z</span><span class="p">,</span> <span class="n">zaux</span>
+        <span class="k">return</span> <span class="n">z</span></div></div>
+
+
+<div class="viewcode-block" id="Squeeze2DWithMask"><a class="viewcode-back" href="../../../TFGENZOO.flows.squeeze.html#TFGENZOO.flows.Squeeze2DWithMask">[docs]</a><span class="k">class</span> <span class="nc">Squeeze2DWithMask</span><span class="p">(</span><span class="n">FlowBase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">with_zaux</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">n_squeeze</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">with_zaux</span> <span class="o">=</span> <span class="n">with_zaux</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_squeeze</span> <span class="o">=</span> <span class="n">n_squeeze</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Squeeze2DWithMask.get_config"><a class="viewcode-back" href="../../../TFGENZOO.flows.squeeze.html#TFGENZOO.flows.Squeeze2DWithMask.get_config">[docs]</a>    <span class="k">def</span> <span class="nf">get_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_config</span><span class="p">()</span>
+        <span class="n">config_update</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;with_zaux&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_zaux</span><span class="p">,</span> <span class="s2">&quot;n_squeeze&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_squeeze</span><span class="p">}</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">config_update</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">config</span></div>
+
+<div class="viewcode-block" id="Squeeze2DWithMask.build"><a class="viewcode-back" href="../../../TFGENZOO.flows.squeeze.html#TFGENZOO.flows.Squeeze2DWithMask.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_shape</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">input_shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_squeeze</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">tf</span><span class="o">.</span><span class="n">print</span><span class="p">(</span>
+                <span class="s2">&quot;Invalid shape size: Timestep-size </span><span class="si">{}</span><span class="s2"> % </span><span class="si">{}</span><span class="s2"> == 0&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">input_shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_squeeze</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">input_shape</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Squeeze2DWithMask.forward"><a class="viewcode-back" href="../../../TFGENZOO.flows.squeeze.html#TFGENZOO.flows.Squeeze2DWithMask.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">zaux</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">mask</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            x     (tf.Tensor): input tensor [B, T, C]</span>
+<span class="sd">            zaux  (tf.Tensor): pre-latent tensor [B, T, C&#39;&#39;]</span>
+<span class="sd">            mask  (tf.Tensor): mask tensor [B, T, M] where M may be 1</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            tf.Tensor: reshaped input tensor [B, T // n_squeeze, C * 2]</span>
+<span class="sd">            tf.Tensor: reshaped pre-latent tensor [B, T // n_squeeze, C&#39;&#39; * n_squeeze]</span>
+<span class="sd">            tf.Tensor: reshaped mask tensor [B, T // 2]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># We cannot use x.shape because TF&#39;s problem.</span>
+        <span class="c1"># b, t, c = tf.shape(x)</span>
+        <span class="n">shapes</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">shapes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">shapes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">shapes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+        <span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="n">t</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_squeeze</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_squeeze</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">[:,</span> <span class="p">:</span><span class="n">t</span><span class="p">,</span> <span class="p">:]</span>  <span class="c1"># [B, T_round, C]</span>
+
+        <span class="n">z</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+            <span class="n">tf</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">t</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_squeeze</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_squeeze</span><span class="p">,</span> <span class="n">c</span><span class="p">]),</span>
+            <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">t</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_squeeze</span><span class="p">,</span> <span class="n">c</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_squeeze</span><span class="p">],</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_squeeze</span> <span class="o">-</span> <span class="mi">1</span> <span class="p">::</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_squeeze</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="n">b</span><span class="p">,</span> <span class="n">t</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_squeeze</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">zaux</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">zaux</span><span class="p">)</span>
+            <span class="n">zaux</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+                <span class="n">tf</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">zaux</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">t</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_squeeze</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_squeeze</span><span class="p">,</span> <span class="n">c</span><span class="p">]),</span>
+                <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">t</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_squeeze</span><span class="p">,</span> <span class="n">c</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_squeeze</span><span class="p">],</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">z</span> <span class="o">*</span> <span class="n">mask</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">zaux</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">z</span> <span class="o">*</span> <span class="n">mask</span><span class="p">,</span> <span class="n">mask</span></div>
+
+<div class="viewcode-block" id="Squeeze2DWithMask.inverse"><a class="viewcode-back" href="../../../TFGENZOO.flows.squeeze.html#TFGENZOO.flows.Squeeze2DWithMask.inverse">[docs]</a>    <span class="k">def</span> <span class="nf">inverse</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">zaux</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">mask</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            z    (tf.Tensor): input tensor [B, T // n_squeeze, C * n_squeeze]</span>
+<span class="sd">            zaux (tf.Tensor): pre-latent tensor [B, T // n_squeeze, C&#39;&#39; * n_squeeze]</span>
+<span class="sd">            mask (tf.Tensor): pre-latent tensor [B, T // n_squeeze, 1]</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            tf.Tensor: reshaped input tensor [B, T, C]</span>
+<span class="sd">            tf.Tensor: reshaped pre-latent tensor [B, T, C&#39;&#39;]</span>
+<span class="sd">            tf.Tensor: mask tensor [B, T, 1]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># b, t, c = tf.shape(x)</span>
+        <span class="n">shapes</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">shapes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">shapes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">shapes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+        <span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+            <span class="n">tf</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_squeeze</span><span class="p">,</span> <span class="n">c</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_squeeze</span><span class="p">]),</span>
+            <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">t</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_squeeze</span><span class="p">,</span> <span class="n">c</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_squeeze</span><span class="p">],</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># [B, T, 1, 1]</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_squeeze</span><span class="p">])</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="p">[</span><span class="n">b</span><span class="p">,</span> <span class="n">t</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_squeeze</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="n">b</span><span class="p">,</span> <span class="n">t</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_squeeze</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">zaux</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">zaux</span><span class="p">)</span>
+            <span class="n">zaux</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+                <span class="n">tf</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">zaux</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_squeeze</span><span class="p">,</span> <span class="n">c</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_squeeze</span><span class="p">]),</span>
+                <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">t</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_squeeze</span><span class="p">,</span> <span class="n">c</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_squeeze</span><span class="p">],</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="n">mask</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">zaux</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="n">mask</span><span class="p">,</span> <span class="n">mask</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, MokkeMeguru
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

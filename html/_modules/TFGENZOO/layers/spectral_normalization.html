@@ -1,0 +1,318 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>TFGENZOO.layers.spectral_normalization &mdash; TFGENZOO 1.0-beta1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script src="https://twemoji.maxcdn.com/v/latest/twemoji.min.js"></script>
+        <script src="../../../_static/twemoji.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/twemoji.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> TFGENZOO
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../TFGENZOO.html">TFGENZOO package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../discussions/index.html">Discussions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../discussions/index.html#indices-and-tables">Indices and tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage/quickstart.html">Simple Tutorial</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">TFGENZOO</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>TFGENZOO.layers.spectral_normalization</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for TFGENZOO.layers.spectral_normalization</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># reference: https://github.com/tensorflow/addons/pull/1244</span>
+
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+
+
+<div class="viewcode-block" id="SpectralNormalization"><a class="viewcode-back" href="../../../TFGENZOO.layers.spectral_normalization.html#TFGENZOO.layers.spectral_normalization.SpectralNormalization">[docs]</a><span class="k">class</span> <span class="nc">SpectralNormalization</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Wrapper</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This wrapper controls the Lipschitz constant of the layer by</span>
+<span class="sd">    constraining its spectral norm.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        This stabilizes the training of GANs.</span>
+<span class="sd">        Spectral Normalization for Generative Adversarial Networks:</span>
+<span class="sd">        https://arxiv.org/abs/1802.05957</span>
+<span class="sd">        Takeru Miyato, Toshiki Kataoka, Masanori Koyama, Yuichi Yoshida (2018)</span>
+<span class="sd">        SpectralNormalization wrapper works for keras and tf layers.</span>
+
+<span class="sd">    Examples:</span>
+
+<span class="sd">        &gt;&gt;&gt; net = SpectralNormalization(</span>
+<span class="sd">        &gt;&gt;&gt;   tf.keras.layers.Conv2D(2, 2, activation=&quot;relu&quot;),</span>
+<span class="sd">        &gt;&gt;&gt;     input_shape=(32, 32, 3))(x)</span>
+<span class="sd">        &gt;&gt;&gt; net = SpectralNormalization(</span>
+<span class="sd">        &gt;&gt;&gt;   tf.keras.layers.Conv2D(16, 5, activation=&quot;relu&quot;))(net)</span>
+<span class="sd">        &gt;&gt;&gt; net = SpectralNormalization(</span>
+<span class="sd">        &gt;&gt;&gt;   tf.keras.layers.Dense(120, activation=&quot;relu&quot;))(net)</span>
+<span class="sd">        &gt;&gt;&gt; net = SpectralNormalization(</span>
+<span class="sd">        &gt;&gt;&gt;   tf.keras.layers.Dense(n_classes))(net)</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">      layer (tf.keras.layersLayer): a layer instance.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">      tf.keras.layers.Layer: Wrapped Layer</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">      AssertionError: If not initialized with a `Layer` instance.</span>
+<span class="sd">      ValueError: If initialized with negative `power_iterations`</span>
+<span class="sd">      AttributeError: If `Layer` does not contain a `kernel` or `embeddings` of weights</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="p">,</span> <span class="n">power_iterations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SpectralNormalization</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">power_iterations</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;`power_iterations` should be greater than zero, got &quot;</span>
+                <span class="s2">&quot;`power_iterations=</span><span class="si">{}</span><span class="s2">`&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">power_iterations</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">power_iterations</span> <span class="o">=</span> <span class="n">power_iterations</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initialized</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_track_trackable</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;layer&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SpectralNormalization.build"><a class="viewcode-back" href="../../../TFGENZOO.layers.spectral_normalization.html#TFGENZOO.layers.spectral_normalization.SpectralNormalization.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_shape</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Build `Layer`&quot;&quot;&quot;</span>
+
+        <span class="n">input_shape</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">TensorShape</span><span class="p">(</span><span class="n">input_shape</span><span class="p">)</span><span class="o">.</span><span class="n">as_list</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_spec</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">InputSpec</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">input_shape</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="o">.</span><span class="n">built</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">input_shape</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="p">,</span> <span class="s2">&quot;kernel&quot;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="o">.</span><span class="n">kernel</span>
+            <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="p">,</span> <span class="s2">&quot;embeddings&quot;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="o">.</span><span class="n">embeddings</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                    <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> object has no attribute &#39;kernel&#39; nor &quot;</span>
+                    <span class="s2">&quot;&#39;embeddings&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+                <span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">w_shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">as_list</span><span class="p">()</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_weight</span><span class="p">(</span>
+                <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">w_shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span>
+                <span class="n">initializer</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">initializers</span><span class="o">.</span><span class="n">TruncatedNormal</span><span class="p">(</span><span class="n">stddev</span><span class="o">=</span><span class="mf">0.02</span><span class="p">),</span>
+                <span class="n">aggregation</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">VariableAggregation</span><span class="o">.</span><span class="n">MEAN</span><span class="p">,</span>
+                <span class="n">trainable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;sn_u&quot;</span><span class="p">,</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">SpectralNormalization</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="SpectralNormalization.call"><a class="viewcode-back" href="../../../TFGENZOO.layers.spectral_normalization.html#TFGENZOO.layers.spectral_normalization.SpectralNormalization.call">[docs]</a>    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Call `Layer`&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">training</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">training</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">learning_phase</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">training</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">normalize_weights</span><span class="p">()</span>
+
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">output</span></div>
+
+<div class="viewcode-block" id="SpectralNormalization.compute_output_shape"><a class="viewcode-back" href="../../../TFGENZOO.layers.spectral_normalization.html#TFGENZOO.layers.spectral_normalization.SpectralNormalization.compute_output_shape">[docs]</a>    <span class="k">def</span> <span class="nf">compute_output_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_shape</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">TensorShape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="o">.</span><span class="n">compute_output_shape</span><span class="p">(</span><span class="n">input_shape</span><span class="p">)</span><span class="o">.</span><span class="n">as_list</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="SpectralNormalization.normalize_weights"><a class="viewcode-back" href="../../../TFGENZOO.layers.spectral_normalization.html#TFGENZOO.layers.spectral_normalization.SpectralNormalization.normalize_weights">[docs]</a>    <span class="nd">@tf</span><span class="o">.</span><span class="n">function</span>
+    <span class="k">def</span> <span class="nf">normalize_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generate spectral normalized weights.</span>
+<span class="sd">        This method will update the value of self.w with the</span>
+<span class="sd">        spectral normalized value, so that the layer is ready for call().</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">w</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">w_shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span>
+
+        <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">name_scope</span><span class="p">(</span><span class="s2">&quot;spectral_normalize&quot;</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">power_iterations</span><span class="p">):</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">l2_normalize</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">w</span><span class="p">)))</span>
+                <span class="n">u</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">math</span><span class="o">.</span><span class="n">l2_normalize</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="p">))</span>
+
+            <span class="n">sigma</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="p">),</span> <span class="n">tf</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">u</span><span class="p">))</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">/</span> <span class="n">sigma</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">u</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SpectralNormalization.get_config"><a class="viewcode-back" href="../../../TFGENZOO.layers.spectral_normalization.html#TFGENZOO.layers.spectral_normalization.SpectralNormalization.get_config">[docs]</a>    <span class="k">def</span> <span class="nf">get_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;power_iterations&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">power_iterations</span><span class="p">}</span>
+        <span class="n">base_config</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">SpectralNormalization</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_config</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">base_config</span><span class="o">.</span><span class="n">items</span><span class="p">())</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, MokkeMeguru
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

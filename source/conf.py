@@ -35,6 +35,7 @@ extensions = [
     "recommonmark",
     "sphinx.ext.mathjax",
     "sphinx.ext.graphviz",
+    "sphinx.ext.viewcode",
     "sphinx.ext.autodoc",
     "sphinx.ext.napoleon",
     "sphinxemoji.sphinxemoji",

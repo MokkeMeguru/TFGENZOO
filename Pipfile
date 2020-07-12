@@ -12,12 +12,18 @@ yapf = "*"
 pytest = "*"
 jupyterlab = "*"
 twine = "*"
+tensorflow-datasets = "*"
+black = "*"
 
 [packages]
 tensorflow = "==2.2.0"
 tensorflow-probability = "==0.10.1"
 pandas = "*"
 matplotlib = "*"
+tensorflow-datasets = "*"
 
 [requires]
 python_version = "3.7"
+
+[pipenv]
+allow_prereleases = true

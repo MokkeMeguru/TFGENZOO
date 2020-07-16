@@ -3,7 +3,28 @@ import tensorflow as tf
 from TFGENZOO.flows.flowbase import FlowBase
 
 
-class Squeeze(FlowBase):
+class SqueezeBase(FlowBase):
+    def __init__(self, n_squeeze: int = 2, **kwargs):
+        super().__init__()
+        self.n_queeze = n_squeeze
+
+    def get_config(self):
+        config = super().get_config()
+        config_update = {"n_squeeze": self.n_squeeze}
+        config.update(config_update)
+        return config
+
+    def build(self, input_shape):
+        if input_shape[-2] % self.n_squeeze != 0:
+            tf.print(
+                "Invalid shape size: Timestep-size {} % {} == 0".format(
+                    input_shape[-2], self.n_squeeze
+                )
+            )
+        super().build(input_shape)
+
+
+class Squeeze(SqueezeBase):
     """Squeeze Layer
 
     Sources:
@@ -45,50 +66,42 @@ class Squeeze(FlowBase):
     """
 
     def __init__(self, with_zaux=False):
-        super().__init__()
-        self.with_zaux = with_zaux
-
-    def get_config(self):
-        config = super().get_config()
-        config_update = {"with_zaux": self.with_zaux}
-        config.update(config_update)
-        return config
+        super().__init__(with_zaux=with_zaux, n_squeeze=2)
 
     def forward(self, x: tf.Tensor, zaux: tf.Tensor = None, **kwargs):
+        """
+        Args:
+            x     (tf.Tensor): input tensor [B, H, W, C]
+            zaux  (tf.Tensor): pre-latent tensor [B, H, W, C'']
+        Returns:
+            tf.Tensor: reshaped input tensor [B, H // 2, W // 2, C * 4]
+            tf.Tensor: reshaped pre-latent tensor [B, H // 2, H // 2, C'' * 4]
+        """
         x = tf.nn.space_to_depth(x, 2)
-        if self.with_zaux and zaux is not None:
+        if zaux is not None:
             zaux = tf.nn.space_to_depth(zaux, 2)
             return x, zaux
         return x
 
     def inverse(self, z: tf.Tensor, zaux: tf.Tensor = None, **kwargs):
+        """
+        Args:
+            z    (tf.Tensor): input tensor [B, H // 2, W // 2, C * 4]
+            zaux (tf.Tensor): pre-latent tensor [B, H // 2, W // 2, C'' * 4]
+        Returns:
+            tf.Tensor: reshaped input tensor [B, H // 2, W // 2, C * 4]
+            tf.Tensor: reshaped pre-latent tensor [B, H // 2, W // 2, C'' * 4]
+        """
         z = tf.nn.depth_to_space(z, 2)
-        if self.with_zaux and zaux is not None:
+        if zaux is not None:
             zaux = tf.nn.depth_to_space(zaux, 2)
             return z, zaux
         return z
 
 
-class Squeeze2DWithMask(FlowBase):
+class Squeeze2DWithMask(SqueezeBase):
     def __init__(self, with_zaux: bool = False, n_squeeze: int = 2):
-        self.with_zaux = with_zaux
-        self.n_squeeze = n_squeeze
-        super().__init__()
-
-    def get_config(self):
-        config = super().get_config()
-        config_update = {"with_zaux": self.with_zaux, "n_squeeze": self.n_squeeze}
-        config.update(config_update)
-        return config
-
-    def build(self, input_shape):
-        if input_shape[-2] % self.n_squeeze != 0:
-            tf.print(
-                "Invalid shape size: Timestep-size {} % {} == 0".format(
-                    input_shape[-2], self.n_squeeze
-                )
-            )
-        super().build(input_shape)
+        super().__init__(with_zaux=with_zaux, n_squeeze=n_squeeze)
 
     def forward(
         self, x: tf.Tensor, zaux: tf.Tensor = None, mask: tf.Tensor = None, **kwargs
@@ -99,9 +112,9 @@ class Squeeze2DWithMask(FlowBase):
             zaux  (tf.Tensor): pre-latent tensor [B, T, C'']
             mask  (tf.Tensor): mask tensor [B, T, M] where M may be 1
         Returns:
-            tf.Tensor: reshaped input tensor [B, T // n_squeeze, C * 2]
+            tf.Tensor: reshaped input tensor [B, T // n_squeeze, C * n_squeeze]
             tf.Tensor: reshaped pre-latent tensor [B, T // n_squeeze, C'' * n_squeeze]
-            tf.Tensor: reshaped mask tensor [B, T // 2]
+            tf.Tensor: reshaped mask tensor [B, T // n_squeeze, M]
         """
         # We cannot use x.shape because TF's problem.
         # b, t, c = tf.shape(x)

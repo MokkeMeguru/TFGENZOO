@@ -16,6 +16,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     install_requires=["tensorflow>=2.1.0", "tensorflow_probability>=0.9.0", "pandas"],
     version=about["__version__"],
+    keywords=["tensorflow", "flow-based model", "flow-based"],
     author="MokkeMeguru",
     author_email="meguru.mokke@gmail.com",
     description="helper of building generative model with Tensorflow 2.x",

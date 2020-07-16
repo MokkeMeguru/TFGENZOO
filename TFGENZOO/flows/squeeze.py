@@ -5,7 +5,7 @@ from TFGENZOO.flows.flowbase import FlowBase
 
 class SqueezeBase(FlowBase):
     def __init__(self, n_squeeze: int = 2, **kwargs):
-        super().__init__(**kwargs)
+        super().__init__()
         self.n_squeeze = n_squeeze
 
     def get_config(self):

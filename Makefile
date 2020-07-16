@@ -14,6 +14,9 @@ help:
 
 .PHONY: help Makefile
 
+deps:
+	pipenv lock -r > requirements.txt
+
 build_release:
 	rm -r TFGENZOO.egg-info/
 	rm -r dist

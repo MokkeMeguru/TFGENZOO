@@ -120,6 +120,7 @@ Description: # TFGENZOO (Generative Model x Tensorflow 2.x)
         
         MokkeMeguru ([@MokkeMeguru](https://twitter.com/MeguruMokke)): DM or Mention Please (in Any language).
         
+Keywords: tensorflow,flow-based model,flow-based
 Platform: UNKNOWN
 Classifier: Programming Language :: Python :: 3.7
 Classifier: Programming Language :: Python :: 3.6

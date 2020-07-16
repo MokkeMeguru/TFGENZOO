@@ -5,7 +5,7 @@ from TFGENZOO.flows.flowbase import FlowBase
 
 class SqueezeBase(FlowBase):
     def __init__(self, n_squeeze: int = 2, **kwargs):
-        super().__init__()
+        super().__init__(**kwargs)
         self.n_queeze = n_squeeze
 
     def get_config(self):
@@ -65,8 +65,8 @@ class Squeeze(SqueezeBase):
 
     """
 
-    def __init__(self, with_zaux=False):
-        super().__init__(with_zaux=with_zaux, n_squeeze=2)
+    def __init__(self, **kwargs):
+        super().__init__(n_squeeze=2, **kwargs)
 
     def forward(self, x: tf.Tensor, zaux: tf.Tensor = None, **kwargs):
         """
@@ -100,8 +100,8 @@ class Squeeze(SqueezeBase):
 
 
 class Squeeze2DWithMask(SqueezeBase):
-    def __init__(self, with_zaux: bool = False, n_squeeze: int = 2):
-        super().__init__(with_zaux=with_zaux, n_squeeze=n_squeeze)
+    def __init__(self, n_squeeze: int = 2, **kwargs):
+        super().__init__(n_squeeze=n_squeeze, **kwargs)
 
     def forward(
         self, x: tf.Tensor, zaux: tf.Tensor = None, mask: tf.Tensor = None, **kwargs

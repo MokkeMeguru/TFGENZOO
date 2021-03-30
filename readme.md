@@ -108,6 +108,12 @@ see more detail, you can see [my internship&rsquo;s report](https://docs.google.
 
 Add some tutorial into `./tutorial`
 
+## News [2021/3/30]
+
+I wrote the master's paper about japanese text style transfer.  "AutoEncoder に基づく半教師あり和文スタ
+イル変換"
+https://drive.google.com/file/d/1KtkLZi6PUvL7msAqbg_KRdEC0pmmpbhf/view?usp=sharing
+
 # Contact
 
 MokkeMeguru ([@MokkeMeguru](https://twitter.com/MeguruMokke)): DM or Mention Please (in Any language).

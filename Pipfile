@@ -4,7 +4,6 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-python-language-server = {extras = ["all"],version = "*"}
 ipython = "*"
 matplotlib = "*"
 ptvsd = "*"
@@ -16,8 +15,8 @@ tensorflow-datasets = "*"
 black = "*"
 
 [packages]
-tensorflow = "==2.2.0"
-tensorflow-probability = "==0.10.1"
+tensorflow = "==2.4.0"
+tensorflow-probability = "==0.12.2"
 pandas = "*"
 matplotlib = "*"
 tensorflow-datasets = "*"

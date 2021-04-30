@@ -26,11 +26,11 @@ I NEED YOUR HELP(please let me know about formula, implementation and anything y
 
 - pipenv
 
-      pipenv install TFGENZOO==1.2.4.post7
+      pipenv install TFGENZOO==1.2.5
 
 - pip
 
-      pip install TFGENZOO==1.2.4.post7
+      pip install TFGENZOO==1.2.5
 
 ## Source build for development
 

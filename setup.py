@@ -14,7 +14,7 @@ with open(os.path.join(here, "readme.md"), encoding="utf-8") as f:
 setuptools.setup(
     name=PACKAGE,
     packages=setuptools.find_packages(),
-    install_requires=["tensorflow>=2.1.0", "tensorflow_probability>=0.9.0", "pandas"],
+    install_requires=["tensorflow>=2.4.0", "tensorflow_probability>=0.10.1", "pandas"],
     version=about["__version__"],
     author="MokkeMeguru",
     author_email="meguru.mokke@gmail.com",

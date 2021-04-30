@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: TFGENZOO
-Version: 1.2.4.post8
+Version: 1.2.5
 Summary: helper of building generative model with Tensorflow 2.x
 Home-page: https://github.com/MokkeMeguru/TFGENZOO
 Author: MokkeMeguru
@@ -115,6 +115,12 @@ Description: # TFGENZOO (Generative Model x Tensorflow 2.x)
         ## News [2020/7/11]
         
         Add some tutorial into `./tutorial`
+        
+        ## News [2021/3/30]
+        
+        I wrote the master's paper about japanese text style transfer.  "AutoEncoder に基づく半教師あり和文スタ
+        イル変換"
+        https://drive.google.com/file/d/1KtkLZi6PUvL7msAqbg_KRdEC0pmmpbhf/view?usp=sharing
         
         # Contact
         
